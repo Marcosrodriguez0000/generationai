@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Sparkles } from 'lucide-react';
+import { Sparkles, Images } from 'lucide-react';
 import { Button } from './ui/button';
 import { Link, useLocation } from 'react-router-dom';
 
@@ -18,10 +18,18 @@ const Header = () => {
         </Link>
       </div>
       <div className="flex items-center gap-3">
-        <Button className="bg-gradient-to-r from-gold-400 to-brown-600 text-white hover:opacity-90">
-          <Sparkles className="h-4 w-4 mr-2" />
-          <span>Crear</span>
-        </Button>
+        <Link to="/creaciones">
+          <Button variant="outline" className="bg-gold-500/10 border-gold-400/20 text-gold-400 hover:bg-gold-500/20">
+            <Images className="h-4 w-4 mr-2" />
+            <span>Mis Creaciones</span>
+          </Button>
+        </Link>
+        <Link to="/">
+          <Button className="bg-gradient-to-r from-gold-400 to-brown-600 text-white hover:opacity-90">
+            <Sparkles className="h-4 w-4 mr-2" />
+            <span>Crear</span>
+          </Button>
+        </Link>
       </div>
     </header>
   );

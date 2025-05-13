@@ -11,9 +11,10 @@ interface ImageItem {
 
 interface ImageGalleryProps {
   images: ImageItem[];
+  showTitle?: boolean;
 }
 
-const ImageGallery = ({ images }: ImageGalleryProps) => {
+const ImageGallery = ({ images, showTitle = false }: ImageGalleryProps) => {
   if (images.length === 0) return null;
 
   const handleDownload = (url: string, index: number) => {
@@ -27,7 +28,9 @@ const ImageGallery = ({ images }: ImageGalleryProps) => {
 
   return (
     <div className="mt-12">
-      <h2 className="text-2xl font-bold mb-6 text-brown-800 dark:text-gold-300">Imágenes Generadas</h2>
+      {showTitle && (
+        <h2 className="text-2xl font-bold mb-6 text-brown-800 dark:text-gold-300">Imágenes Generadas</h2>
+      )}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {images.map((image, index) => (
           <div 

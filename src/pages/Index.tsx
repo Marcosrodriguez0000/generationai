@@ -1,13 +1,15 @@
 
 import React, { useState } from 'react';
 import { toast } from "sonner";
+import { Link } from "react-router-dom";
 import Header from "@/components/Header";
 import PromptInput from "@/components/PromptInput";
-import ImageGallery from "@/components/ImageGallery";
 import GenerationSettings from "@/components/GenerationSettings";
 import CosmosBackground from "@/components/CosmosBackground";
+import { Images } from "lucide-react";
 import { generateImage, GenerationSettings as Settings } from "@/services/imageService";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 
 interface ImageItem {
   id: string;
@@ -39,9 +41,13 @@ const exampleImages: ImageItem[] = [
   }
 ];
 
-const Index = () => {
+interface IndexProps {
+  generatedImages: ImageItem[];
+  setGeneratedImages: React.Dispatch<React.SetStateAction<ImageItem[]>>;
+}
+
+const Index = ({ generatedImages, setGeneratedImages }: IndexProps) => {
   const [isGenerating, setIsGenerating] = useState(false);
-  const [generatedImages, setGeneratedImages] = useState<ImageItem[]>([]);
   const [settings, setSettings] = useState<Settings>({
     resolution: "512x512",
     quality: 7
@@ -101,48 +107,53 @@ const Index = () => {
         <PromptInput onGenerate={handleGenerate} isGenerating={isGenerating} />
         <GenerationSettings settings={settings} onSettingsChange={handleSettingsChange} />
 
-        {generatedImages.length === 0 && !isGenerating && (
-          <>
-            <div className="text-center mt-8 mb-12">
-              <h2 className="text-2xl font-bold text-brown-800 dark:text-gold-300 mb-4">
-                Ejemplos de Imágenes
-              </h2>
-              <p className="text-brown-600 dark:text-brown-400 mb-8 max-w-2xl mx-auto">
-                Inspírate con estos ejemplos creados con nuestra IA. Prueba usar estos prompts o crea tus propios diseños únicos.
-              </p>
-            </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto mb-12">
-              {exampleImages.map((example) => (
-                <Card key={example.id} className="overflow-hidden border-gold-200 dark:border-gold-900 bg-white/50 dark:bg-black/50 backdrop-blur-sm hover:shadow-md transition-all duration-300">
-                  <div className="aspect-square overflow-hidden">
-                    <img 
-                      src={example.url} 
-                      alt={example.prompt} 
-                      className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
-                    />
-                  </div>
-                  <CardHeader className="py-3">
-                    <CardTitle className="text-lg text-gold-700 dark:text-gold-400">Ejemplo de Prompt</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <CardDescription className="text-brown-800 dark:text-brown-300">
-                      {example.prompt}
-                    </CardDescription>
-                    <button 
-                      onClick={() => handleGenerate(example.prompt)}
-                      className="mt-4 px-4 py-2 bg-gradient-to-r from-gold-400 to-brown-600 text-white rounded-md hover:opacity-90 transition-opacity w-full"
-                    >
-                      Usar este prompt
-                    </button>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </>
+        {generatedImages.length > 0 && (
+          <div className="text-center mt-8">
+            <Link to="/creaciones">
+              <Button variant="outline" className="bg-gold-500/10 border-gold-400/20 text-gold-400 hover:bg-gold-500/20">
+                <Images className="h-4 w-4 mr-2" />
+                Ver mis creaciones ({generatedImages.length})
+              </Button>
+            </Link>
+          </div>
         )}
-
-        <ImageGallery images={generatedImages} />
+        
+        <div className="mt-8">
+          <h2 className="text-2xl font-bold text-center text-brown-800 dark:text-gold-300 mb-4">
+            Ejemplos de Imágenes
+          </h2>
+          <p className="text-brown-600 dark:text-brown-400 mb-8 max-w-2xl mx-auto text-center">
+            Inspírate con estos ejemplos creados con nuestra IA. Prueba usar estos prompts o crea tus propios diseños únicos.
+          </p>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto mb-12">
+            {exampleImages.map((example) => (
+              <Card key={example.id} className="overflow-hidden border-gold-200 dark:border-gold-900 bg-white/50 dark:bg-black/50 backdrop-blur-sm hover:shadow-md transition-all duration-300">
+                <div className="aspect-square overflow-hidden">
+                  <img 
+                    src={example.url} 
+                    alt={example.prompt} 
+                    className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+                  />
+                </div>
+                <CardHeader className="py-3">
+                  <CardTitle className="text-lg text-gold-700 dark:text-gold-400">Ejemplo de Prompt</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <CardDescription className="text-brown-800 dark:text-brown-300">
+                    {example.prompt}
+                  </CardDescription>
+                  <button 
+                    onClick={() => handleGenerate(example.prompt)}
+                    className="mt-4 px-4 py-2 bg-gradient-to-r from-gold-400 to-brown-600 text-white rounded-md hover:opacity-90 transition-opacity w-full"
+                  >
+                    Usar este prompt
+                  </button>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
       </main>
       <footer className="py-6 text-center text-sm text-brown-500">
         <p>© 2025 Luxury AI</p>
