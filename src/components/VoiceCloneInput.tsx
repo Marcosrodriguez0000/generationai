@@ -10,12 +10,12 @@ interface VoiceCloneInputProps {
   apiKey: string | null;
 }
 
-const VoiceCloneInput = ({ onGenerate, isProcessing, apiKey }: VoiceCloneInputProps) => {
+const VoiceCloneInput = ({ onGenerate, isProcessing }: VoiceCloneInputProps) => {
   const [text, setText] = useState('');
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (text.trim() && !isProcessing && apiKey) {
+    if (text.trim() && !isProcessing) {
       onGenerate(text);
     }
   };
@@ -40,7 +40,7 @@ const VoiceCloneInput = ({ onGenerate, isProcessing, apiKey }: VoiceCloneInputPr
         className="min-h-[120px] resize-none border-gray-200 dark:border-gray-700 bg-white/50 dark:bg-zinc-800/50 backdrop-blur-sm focus-visible:ring-cosmos-purple"
         value={text}
         onChange={(e) => setText(e.target.value)}
-        disabled={isProcessing || !apiKey}
+        disabled={isProcessing}
       />
       
       {/* Ejemplos de texto predefinidos */}
@@ -53,7 +53,6 @@ const VoiceCloneInput = ({ onGenerate, isProcessing, apiKey }: VoiceCloneInputPr
               type="button"
               onClick={() => handleUseExample(example)}
               className="text-sm px-3 py-1 bg-white/70 dark:bg-zinc-800/70 rounded-full border border-gray-200 dark:border-gray-700 hover:border-cosmos-purple dark:hover:border-cosmos-purple transition-colors"
-              disabled={!apiKey}
             >
               {example.substring(0, 20)}...
             </button>
@@ -63,7 +62,7 @@ const VoiceCloneInput = ({ onGenerate, isProcessing, apiKey }: VoiceCloneInputPr
       
       <Button 
         type="submit" 
-        disabled={!text.trim() || isProcessing || !apiKey} 
+        disabled={!text.trim() || isProcessing} 
         className="bg-gradient-to-r from-cosmos-purple to-cosmos-pink text-white py-6 px-8 hover:opacity-90"
       >
         {isProcessing ? (
@@ -81,12 +80,6 @@ const VoiceCloneInput = ({ onGenerate, isProcessing, apiKey }: VoiceCloneInputPr
           </span>
         )}
       </Button>
-      
-      {!apiKey && (
-        <p className="text-amber-600 text-sm text-center">
-          Por favor, configura tu API key de ElevenLabs para utilizar esta función
-        </p>
-      )}
     </form>
   );
 };
