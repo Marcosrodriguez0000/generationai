@@ -14,6 +14,7 @@ const VoiceCloner = () => {
   const [generatedAudio, setGeneratedAudio] = useState<string | null>(null);
   const [audioGenerated, setAudioGenerated] = useState(false);
   const [audioLoadError, setAudioLoadError] = useState(false);
+  const [audioLoaded, setAudioLoaded] = useState(false);
   const audioPlayerRef = useRef<HTMLAudioElement>(null);
   const sampleAudioRef = useRef<HTMLAudioElement>(null);
 
@@ -31,6 +32,7 @@ const VoiceCloner = () => {
     setGeneratedAudio(null);
     setAudioGenerated(false);
     setAudioLoadError(false);
+    setAudioLoaded(false);
     
     // Revocar URL anterior si existe
     if (audioSampleUrl) {
@@ -57,6 +59,7 @@ const VoiceCloner = () => {
     setIsProcessing(true);
     setAudioGenerated(false);
     setAudioLoadError(false);
+    setAudioLoaded(false);
 
     try {
       toast("Generando audio...", {
@@ -92,11 +95,11 @@ const VoiceCloner = () => {
       console.error("Error clonando voz:", error);
       setAudioLoadError(true);
       toast("Error al clonar la voz", {
-        description: "Ha ocurrido un error. Por favor intenta nuevamente.",
+        description: "Ha ocurrido un error. Usando audio alternativo.",
       });
       
-      // Usar un audio de fallback
-      const fallbackAudio = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3";
+      // Usar un audio de fallback comprobado
+      const fallbackAudio = "https://cdn.sndup.net/wcxx/sample-15s.mp3?token=OOfz9_MbZRf-JzL2ZdV1kxE2JejKg06T7bTI2NnWEmA&token_path=%2Fwcxx%2F&expires=1748004552";
       setGeneratedAudio(fallbackAudio);
       
       if (audioPlayerRef.current) {
@@ -112,11 +115,23 @@ const VoiceCloner = () => {
   const handleAudioLoad = () => {
     console.log("Audio cargado correctamente con duración:", 
                 audioPlayerRef.current?.duration);
-    if (audioPlayerRef.current?.duration === 0) {
+    
+    setAudioLoaded(true);
+    
+    if (audioPlayerRef.current?.duration === 0 || audioPlayerRef.current?.duration === undefined) {
       setAudioLoadError(true);
       toast("Error", {
-        description: "El audio generado parece estar vacío o dañado.",
+        description: "El audio generado parece estar vacío. Intentando con fuente alternativa...",
       });
+      
+      // Usar un audio de fallback comprobado si la duración es 0
+      const fallbackAudio = "https://cdn.sndup.net/wcxx/sample-15s.mp3?token=OOfz9_MbZRf-JzL2ZdV1kxE2JejKg06T7bTI2NnWEmA&token_path=%2Fwcxx%2F&expires=1748004552";
+      setGeneratedAudio(fallbackAudio);
+      
+      if (audioPlayerRef.current) {
+        audioPlayerRef.current.src = fallbackAudio;
+        audioPlayerRef.current.load();
+      }
     }
   };
 
@@ -129,7 +144,7 @@ const VoiceCloner = () => {
     });
     
     // Usar audio alternativo
-    const fallbackAudio = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3";
+    const fallbackAudio = "https://cdn.sndup.net/wcxx/sample-15s.mp3?token=OOfz9_MbZRf-JzL2ZdV1kxE2JejKg06T7bTI2NnWEmA&token_path=%2Fwcxx%2F&expires=1748004552";
     setGeneratedAudio(fallbackAudio);
     
     if (audioPlayerRef.current) {
@@ -190,6 +205,13 @@ const VoiceCloner = () => {
         {generatedAudio && (
           <div className="mt-12 max-w-3xl mx-auto bg-white/50 dark:bg-zinc-800/50 backdrop-blur-lg p-8 rounded-xl border border-gray-200 dark:border-zinc-700">
             <h2 className="text-2xl font-semibold mb-4 text-center">Audio Generado</h2>
+            <div className="mb-4 text-center">
+              {!audioLoaded && !audioLoadError && (
+                <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
+                  Cargando audio...
+                </p>
+              )}
+            </div>
             <audio 
               ref={audioPlayerRef}
               controls 

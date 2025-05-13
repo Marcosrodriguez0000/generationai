@@ -21,9 +21,9 @@ const VoiceCloneInput = ({ onGenerate, isProcessing }: VoiceCloneInputProps) => 
 
   // Predefined text examples to help users
   const examples = [
-    "Hola, este es un ejemplo de mi voz clonada.",
-    "La inteligencia artificial está revolucionando la forma en que interactuamos con la tecnología.",
-    "Me encanta poder clonar mi voz para crear contenido de audio personalizado."
+    "Hola, este es un ejemplo de mi voz clonada. La tecnología es increíble.",
+    "La inteligencia artificial está revolucionando la forma en que interactuamos con la tecnología y cambiando nuestras vidas.",
+    "Me encanta poder clonar mi voz para crear contenido de audio personalizado. Es una herramienta muy útil."
   ];
 
   const handleUseExample = (exampleText: string) => {
