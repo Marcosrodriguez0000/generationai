@@ -18,6 +18,8 @@ export const saveUserImage = async (imageUrl: string, prompt: string) => {
     if (!user) {
       throw new Error('Usuario no autenticado');
     }
+    
+    console.log('Intentando guardar imagen para el usuario:', user.id);
 
     const { data, error } = await supabase
       .from('user_images')
@@ -30,7 +32,15 @@ export const saveUserImage = async (imageUrl: string, prompt: string) => {
       ])
       .select();
 
-    if (error) throw error;
+    if (error) {
+      console.error('Error en Supabase:', error);
+      
+      if (error.code === '42501') {
+        throw new Error('Error de permisos: verifica que las políticas RLS estén correctamente configuradas');
+      }
+      
+      throw error;
+    }
     
     toast('Imagen guardada', {
       description: 'La imagen se ha guardado en tu colección'
@@ -54,6 +64,8 @@ export const getUserImages = async (): Promise<UserImage[]> => {
     if (!user) {
       return [];
     }
+    
+    console.log('Obteniendo imágenes para el usuario:', user.id);
 
     const { data, error } = await supabase
       .from('user_images')
@@ -61,7 +73,10 @@ export const getUserImages = async (): Promise<UserImage[]> => {
       .eq('user_id', user.id)
       .order('created_at', { ascending: false });
 
-    if (error) throw error;
+    if (error) {
+      console.error('Error en Supabase al obtener imágenes:', error);
+      throw error;
+    }
     
     return data || [];
   } catch (error) {
@@ -78,7 +93,10 @@ export const deleteUserImage = async (imageId: string) => {
       .delete()
       .eq('id', imageId);
 
-    if (error) throw error;
+    if (error) {
+      console.error('Error en Supabase al eliminar la imagen:', error);
+      throw error;
+    }
     
     toast('Imagen eliminada', {
       description: 'La imagen se ha eliminado de tu colección'
