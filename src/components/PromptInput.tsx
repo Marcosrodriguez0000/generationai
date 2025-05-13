@@ -25,7 +25,7 @@ const PromptInput = ({ onGenerate, isGenerating }: PromptInputProps) => {
         <div className="relative">
           <Input
             placeholder="Describe la imagen que quieres crear..."
-            className="py-6 px-4 text-lg rounded-xl border-gold-200 dark:border-gold-900 bg-white/50 dark:bg-zinc-800/50 backdrop-blur-sm focus-visible:ring-gold-400"
+            className="py-6 px-4 text-lg rounded-xl border-gold-200 dark:border-gold-900 bg-black/30 backdrop-blur-sm focus-visible:ring-gold-400 text-gold-100"
             value={prompt}
             onChange={(e) => setPrompt(e.target.value)}
             disabled={isGenerating}
@@ -35,7 +35,7 @@ const PromptInput = ({ onGenerate, isGenerating }: PromptInputProps) => {
           <Button 
             type="submit" 
             disabled={!prompt.trim() || isGenerating} 
-            className="bg-gradient-to-r from-gold-400 to-brown-600 text-white py-6 px-8 hover:opacity-90"
+            className="bg-gradient-to-r from-gold-400 to-brown-600 text-white py-6 px-8 hover:opacity-90 rounded-xl"
           >
             {isGenerating ? (
               <span className="flex items-center gap-2">

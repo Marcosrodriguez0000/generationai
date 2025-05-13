@@ -10,6 +10,7 @@ import { Images } from "lucide-react";
 import { generateImage, GenerationSettings as Settings } from "@/services/imageService";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { AspectRatio } from "@/components/ui/aspect-ratio";
 
 interface ImageItem {
   id: string;
@@ -21,23 +22,23 @@ interface ImageItem {
 const exampleImages: ImageItem[] = [
   {
     id: "example1",
-    url: "https://images.unsplash.com/photo-1582562124811-c09040d0a901",
-    prompt: "Un gato majestuoso de color naranja y blanco recostado en una alfombra de lujo con iluminación cálida y ambiente dorado, estilo realista"
+    url: "/lovable-uploads/67c20ac8-f57f-4415-9e95-ab013380ea69.png",
+    prompt: "Casa moderna de diseño minimalista con fachada de cristal curvada, rodeada de árboles, iluminación cálida interior al atardecer, estilo arquitectónico contemporáneo futurista"
   },
   {
     id: "example2",
-    url: "https://images.unsplash.com/photo-1486718448742-163732cd1544",
-    prompt: "Patrón minimalista de líneas doradas y marrones onduladas sobre fondo negro, estilo abstracto elegante"
+    url: "/lovable-uploads/734f2359-a7ce-4a38-87a5-b1da0be658dd.png",
+    prompt: "Pareja bailando bajo un cielo estrellado con la Vía Láctea visible, en un camino pavimentado rodeado de árboles, fotografía nocturna romántica con iluminación natural"
   },
   {
     id: "example3",
-    url: "https://images.unsplash.com/photo-1482881497185-d4a9ddbe4151",
-    prompt: "Paisaje de dunas de arena al atardecer con tonos dorados y marrones, sombras dramáticas y textura fina, estilo cinematográfico"
+    url: "/lovable-uploads/d39c38e0-84e5-4d33-808f-89c51a0a571b.png",
+    prompt: "Frasco de perfume de lujo con etiqueta azul y dorada, sobre fondo negro, fotografía de producto de alta definición con iluminación profesional, transparencia y reflejos"
   },
   {
     id: "example4",
-    url: "https://images.unsplash.com/photo-1618160702438-9b02ab6515c9",
-    prompt: "Bodegón con frutas exóticas sobre una mesa de madera oscura, iluminación de estudio con ambiente cálido, tonos dorados y marrones, estilo fotográfico de alta definición"
+    url: "/lovable-uploads/320d93c4-bd61-47d1-895b-3aae110db3f2.png",
+    prompt: "Retrato hiperrealista de un hombre mayor con expresión pensativa, arrugas detalladas, iluminación dramática lateral, fotografía en primer plano con enfoque en la textura de la piel"
   }
 ];
 
@@ -91,7 +92,7 @@ const Index = ({ generatedImages, setGeneratedImages }: IndexProps) => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-black">
       <CosmosBackground />
       <Header />
       <main className="flex-1 container mx-auto px-4 py-8">
@@ -99,7 +100,7 @@ const Index = ({ generatedImages, setGeneratedImages }: IndexProps) => {
           <h1 className="text-4xl md:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-gold-400 to-brown-600 mb-4">
             Luxury AI
           </h1>
-          <p className="text-lg text-brown-800 dark:text-brown-300 mb-6">
+          <p className="text-lg text-gold-300 mb-6">
             Describe lo que imaginas y deja que la IA lo convierta en realidad
           </p>
         </div>
@@ -118,44 +119,52 @@ const Index = ({ generatedImages, setGeneratedImages }: IndexProps) => {
           </div>
         )}
         
-        <div className="mt-8">
-          <h2 className="text-2xl font-bold text-center text-brown-800 dark:text-gold-300 mb-4">
-            Ejemplos de Imágenes
+        <div className="mt-16">
+          <h2 className="text-2xl font-bold text-center text-gold-300 mb-4">
+            El Poder de la IA en Tus Manos
           </h2>
-          <p className="text-brown-600 dark:text-brown-400 mb-8 max-w-2xl mx-auto text-center">
-            Inspírate con estos ejemplos creados con nuestra IA. Prueba usar estos prompts o crea tus propios diseños únicos.
+          <p className="text-gold-100/80 mb-8 max-w-3xl mx-auto text-center">
+            Nuestra tecnología de inteligencia artificial puede generar imágenes impresionantes a partir de tus descripciones. Inspírate con estos ejemplos creados por nuestra IA.
           </p>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto mb-12">
             {exampleImages.map((example) => (
-              <Card key={example.id} className="overflow-hidden border-gold-200 dark:border-gold-900 bg-white/50 dark:bg-black/50 backdrop-blur-sm hover:shadow-md transition-all duration-300">
-                <div className="aspect-square overflow-hidden">
-                  <img 
-                    src={example.url} 
-                    alt={example.prompt} 
-                    className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
-                  />
+              <Card key={example.id} className="overflow-hidden border-gold-200/20 dark:border-gold-900/20 bg-black/50 backdrop-blur-sm hover:shadow-gold-500/10 hover:shadow-lg transition-all duration-300">
+                <div className="overflow-hidden">
+                  <AspectRatio ratio={1/1}>
+                    <img 
+                      src={example.url} 
+                      alt={example.prompt} 
+                      className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+                    />
+                  </AspectRatio>
                 </div>
                 <CardHeader className="py-3">
-                  <CardTitle className="text-lg text-gold-700 dark:text-gold-400">Ejemplo de Prompt</CardTitle>
+                  <CardTitle className="text-lg text-gold-400">Ejemplo de Prompt</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <CardDescription className="text-brown-800 dark:text-brown-300">
+                  <CardDescription className="text-gold-100/80">
                     {example.prompt}
                   </CardDescription>
-                  <button 
-                    onClick={() => handleGenerate(example.prompt)}
-                    className="mt-4 px-4 py-2 bg-gradient-to-r from-gold-400 to-brown-600 text-white rounded-md hover:opacity-90 transition-opacity w-full"
-                  >
-                    Usar este prompt
-                  </button>
                 </CardContent>
               </Card>
             ))}
           </div>
+          
+          <div className="max-w-3xl mx-auto mt-16 p-8 bg-black/40 backdrop-blur-md rounded-xl border border-gold-500/10">
+            <h3 className="text-2xl font-bold text-gold-400 mb-4">Crea tu cuenta para guardar tus creaciones</h3>
+            <p className="text-gold-100/80 mb-6">
+              Regístrate para guardar todas tus imágenes generadas y acceder a ellas en cualquier momento desde cualquier dispositivo.
+            </p>
+            <div className="flex justify-center">
+              <Button className="bg-gradient-to-r from-gold-400 to-brown-600 text-white py-6 px-8 hover:opacity-90 rounded-xl">
+                Crear Cuenta
+              </Button>
+            </div>
+          </div>
         </div>
       </main>
-      <footer className="py-6 text-center text-sm text-brown-500">
+      <footer className="py-6 text-center text-sm text-gold-500/50">
         <p>© 2025 Luxury AI</p>
       </footer>
     </div>
