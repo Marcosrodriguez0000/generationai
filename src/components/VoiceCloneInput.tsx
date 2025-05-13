@@ -19,6 +19,17 @@ const VoiceCloneInput = ({ onGenerate, isProcessing }: VoiceCloneInputProps) => 
     }
   };
 
+  // Predefined text examples to help users
+  const examples = [
+    "Hola, este es un ejemplo de mi voz clonada.",
+    "La inteligencia artificial está revolucionando la forma en que interactuamos con la tecnología.",
+    "Me encanta poder clonar mi voz para crear contenido de audio personalizado."
+  ];
+
+  const handleUseExample = (exampleText: string) => {
+    setText(exampleText);
+  };
+
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4">
       <Textarea
@@ -28,6 +39,24 @@ const VoiceCloneInput = ({ onGenerate, isProcessing }: VoiceCloneInputProps) => 
         onChange={(e) => setText(e.target.value)}
         disabled={isProcessing}
       />
+      
+      {/* Ejemplos de texto predefinidos */}
+      <div className="flex flex-col gap-2">
+        <p className="text-sm text-gray-500 dark:text-gray-400">O utiliza uno de estos ejemplos:</p>
+        <div className="flex flex-wrap gap-2">
+          {examples.map((example, index) => (
+            <button
+              key={index}
+              type="button"
+              onClick={() => handleUseExample(example)}
+              className="text-sm px-3 py-1 bg-white/70 dark:bg-zinc-800/70 rounded-full border border-gray-200 dark:border-gray-700 hover:border-cosmos-purple dark:hover:border-cosmos-purple transition-colors"
+            >
+              {example.substring(0, 20)}...
+            </button>
+          ))}
+        </div>
+      </div>
+      
       <Button 
         type="submit" 
         disabled={!text.trim() || isProcessing} 

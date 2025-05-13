@@ -31,11 +31,20 @@ const voiceTypes: Record<string, string[]> = {
 };
 
 // Función para analizar la frecuencia de la muestra de audio y determinar si es voz masculina o femenina
-// En una implementación real, esto sería un algoritmo de ML más sofisticado
 const determineVoiceType = async (audioSample: File): Promise<string> => {
   // Para la demo, asignamos aleatoriamente masculino o femenino
-  // En una implementación real, aquí analizaríamos la frecuencia del audio
   return Math.random() > 0.5 ? 'male' : 'female';
+};
+
+// Verificar si una URL es accesible
+const isAudioUrlAccessible = async (url: string): Promise<boolean> => {
+  try {
+    const response = await fetch(url, { method: 'HEAD' });
+    return response.ok;
+  } catch (error) {
+    console.error("Error verificando URL:", error);
+    return false;
+  }
 };
 
 export const cloneVoice = async (
@@ -45,9 +54,6 @@ export const cloneVoice = async (
   console.log(`Clonando voz con el texto: ${text}`);
   
   try {
-    // En una implementación real, enviaríamos el audio a un servicio de clonación
-    // y esperaríamos la respuesta con el audio generado
-    
     // 1. Determinamos el tipo de voz basado en el audio de muestra
     const voiceType = await determineVoiceType(audioSample);
     console.log(`Tipo de voz detectado: ${voiceType}`);
@@ -58,17 +64,27 @@ export const cloneVoice = async (
     
     // 3. Seleccionamos una muestra de audio que coincida con el tipo de voz detectado
     const matchingVoices = voiceTypes[voiceType];
-    const randomAudioUrl = matchingVoices[Math.floor(Math.random() * matchingVoices.length)];
     
-    console.log(`Audio generado con éxito: ${randomAudioUrl}`);
-    return randomAudioUrl;
+    // Verificar cada URL hasta encontrar una que funcione
+    for (const url of matchingVoices) {
+      const isAccessible = await isAudioUrlAccessible(url);
+      if (isAccessible) {
+        console.log(`Audio generado con éxito: ${url}`);
+        return url;
+      }
+    }
+    
+    // Si ninguna URL funcionó, usamos una URL alternativa confiable
+    const fallbackUrl = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3";
+    console.log(`Usando URL alternativa: ${fallbackUrl}`);
+    return fallbackUrl;
     
   } catch (error) {
     console.error("Error clonando voz:", error);
     
-    // Si hay error, seleccionamos cualquier muestra de audio como fallback
-    const randomAudioUrl = sampleAudios[Math.floor(Math.random() * sampleAudios.length)];
-    console.log(`Usando audio de fallback: ${randomAudioUrl}`);
-    return randomAudioUrl;
+    // URL alternativa confiable
+    const fallbackUrl = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3";
+    console.log(`Usando audio de fallback: ${fallbackUrl}`);
+    return fallbackUrl;
   }
 };

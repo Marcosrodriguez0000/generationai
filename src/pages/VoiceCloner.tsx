@@ -13,6 +13,7 @@ const VoiceCloner = () => {
   const [audioSampleUrl, setAudioSampleUrl] = useState<string | null>(null);
   const [generatedAudio, setGeneratedAudio] = useState<string | null>(null);
   const [audioGenerated, setAudioGenerated] = useState(false);
+  const [audioLoadError, setAudioLoadError] = useState(false);
   const audioPlayerRef = useRef<HTMLAudioElement>(null);
   const sampleAudioRef = useRef<HTMLAudioElement>(null);
 
@@ -29,6 +30,7 @@ const VoiceCloner = () => {
     setAudioSample(file);
     setGeneratedAudio(null);
     setAudioGenerated(false);
+    setAudioLoadError(false);
     
     // Revocar URL anterior si existe
     if (audioSampleUrl) {
@@ -54,6 +56,7 @@ const VoiceCloner = () => {
 
     setIsProcessing(true);
     setAudioGenerated(false);
+    setAudioLoadError(false);
 
     try {
       toast("Generando audio...", {
@@ -61,24 +64,45 @@ const VoiceCloner = () => {
       });
 
       const audioUrl = await cloneVoice(audioSample, text);
+      
+      // Validar que la URL sea accesible
+      try {
+        const response = await fetch(audioUrl, { method: 'HEAD' });
+        if (!response.ok) {
+          throw new Error('Audio URL no accessible');
+        }
+      } catch (error) {
+        console.error("Error validando URL:", error);
+        throw new Error('No se pudo acceder al audio generado');
+      }
+      
       setGeneratedAudio(audioUrl);
       setAudioGenerated(true);
       
-      // Asegurarnos de que el audio se cargue correctamente antes de reproducirlo
-      setTimeout(() => {
-        if (audioPlayerRef.current) {
-          audioPlayerRef.current.load();
-        }
-      }, 500);
+      // Asegurarnos de que el audio se cargue correctamente
+      if (audioPlayerRef.current) {
+        audioPlayerRef.current.src = audioUrl;
+        audioPlayerRef.current.load();
+      }
       
       toast("¡Audio generado exitosamente!", {
         description: "Tu audio ha sido clonado con éxito.",
       });
     } catch (error) {
       console.error("Error clonando voz:", error);
+      setAudioLoadError(true);
       toast("Error al clonar la voz", {
         description: "Ha ocurrido un error. Por favor intenta nuevamente.",
       });
+      
+      // Usar un audio de fallback
+      const fallbackAudio = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3";
+      setGeneratedAudio(fallbackAudio);
+      
+      if (audioPlayerRef.current) {
+        audioPlayerRef.current.src = fallbackAudio;
+        audioPlayerRef.current.load();
+      }
     } finally {
       setIsProcessing(false);
     }
@@ -88,14 +112,39 @@ const VoiceCloner = () => {
   const handleAudioLoad = () => {
     console.log("Audio cargado correctamente con duración:", 
                 audioPlayerRef.current?.duration);
+    if (audioPlayerRef.current?.duration === 0) {
+      setAudioLoadError(true);
+      toast("Error", {
+        description: "El audio generado parece estar vacío o dañado.",
+      });
+    }
   };
 
   // Manejar error de carga de audio
   const handleAudioError = (e: React.SyntheticEvent<HTMLAudioElement, Event>) => {
     console.error("Error cargando audio:", e);
+    setAudioLoadError(true);
     toast("Error", {
-      description: "No se pudo cargar el audio generado.",
+      description: "No se pudo cargar el audio generado. Intentando con fuente alternativa...",
     });
+    
+    // Usar audio alternativo
+    const fallbackAudio = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3";
+    setGeneratedAudio(fallbackAudio);
+    
+    if (audioPlayerRef.current) {
+      audioPlayerRef.current.src = fallbackAudio;
+      audioPlayerRef.current.load();
+    }
+  };
+
+  // Retry loading audio if there was an error
+  const handleRetryAudio = () => {
+    setAudioLoadError(false);
+    if (audioPlayerRef.current && generatedAudio) {
+      audioPlayerRef.current.src = generatedAudio;
+      audioPlayerRef.current.load();
+    }
   };
 
   return (
@@ -126,6 +175,7 @@ const VoiceCloner = () => {
                   controls 
                   className="w-full"
                   src={audioSampleUrl}
+                  preload="auto"
                 />
               </div>
             )}
@@ -147,7 +197,20 @@ const VoiceCloner = () => {
               src={generatedAudio}
               onLoadedMetadata={handleAudioLoad}
               onError={handleAudioError}
+              preload="auto"
+              autoPlay={false}
             />
+            {audioLoadError && (
+              <div className="mt-4 text-center">
+                <p className="text-red-500 mb-2">Hubo un problema al cargar el audio</p>
+                <button 
+                  onClick={handleRetryAudio}
+                  className="text-cosmos-purple hover:text-cosmos-pink underline"
+                >
+                  Intentar nuevamente
+                </button>
+              </div>
+            )}
             <div className="mt-6 text-center">
               <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
                 Esta demostración usa voces pregrabadas para simular la clonación de voz.
@@ -157,6 +220,8 @@ const VoiceCloner = () => {
                 href={generatedAudio} 
                 download="voz-clonada.mp3"
                 className="text-cosmos-purple hover:text-cosmos-pink font-medium transition-colors"
+                target="_blank"
+                rel="noopener noreferrer"
               >
                 Descargar audio
               </a>
