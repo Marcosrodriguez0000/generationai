@@ -65,16 +65,12 @@ const Index = () => {
       <Header />
       <main className="flex-1 container mx-auto px-4 py-8">
         <div className="text-center mb-10 max-w-2xl mx-auto">
-          <h1 className="text-4xl md:text-5xl font-bold bg-clip-text text-transparent cosmos-gradient mb-4 animate-float">
-            CosmosAI Image Generator
+          <h1 className="text-4xl md:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-fuchsia-600 to-pink-600 mb-4">
+            Generation AI
           </h1>
-          <p className="text-lg text-gray-600 dark:text-gray-300 mb-4">
+          <p className="text-lg text-gray-600 dark:text-gray-300 mb-6">
             Describe lo que imaginas y deja que la IA lo convierta en realidad
           </p>
-          <div className="bg-gradient-to-r from-purple-500 to-pink-500 text-white p-3 rounded-lg shadow-lg mx-auto max-w-lg mb-4">
-            <p className="text-sm font-medium">✨ ¡Sin API key necesaria! ✨</p>
-            <p className="text-xs mt-1">Generación de imágenes gratuita usando Pollinations.ai</p>
-          </div>
         </div>
 
         <PromptInput onGenerate={handleGenerate} isGenerating={isGenerating} />
@@ -82,7 +78,7 @@ const Index = () => {
         <ImageGallery images={generatedImages} />
 
         {generatedImages.length === 0 && !isGenerating && (
-          <div className="text-center mt-20 glass-panel p-10 mx-auto max-w-md">
+          <div className="text-center mt-20 bg-white/50 dark:bg-zinc-800/50 backdrop-blur-lg p-10 mx-auto max-w-md rounded-xl border border-gray-200 dark:border-zinc-700">
             <h3 className="text-xl font-medium mb-2">Crea tu primera imagen</h3>
             <p className="text-muted-foreground">
               Escribe un prompt detallado y presiona generar para crear tu primera imagen con IA.
@@ -91,7 +87,7 @@ const Index = () => {
         )}
       </main>
       <footer className="py-6 text-center text-sm text-gray-500">
-        <p>© 2025 CosmosAI Image Generator</p>
+        <p>© 2025 Generation AI</p>
       </footer>
     </div>
   );
