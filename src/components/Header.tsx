@@ -30,7 +30,7 @@ const Header = () => {
         <Sparkles className="h-6 w-6 text-gold-400" />
         <Link to="/">
           <h1 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-gold-400 to-brown-600">
-            Luxury AI
+            Generation.AI
           </h1>
         </Link>
       </div>

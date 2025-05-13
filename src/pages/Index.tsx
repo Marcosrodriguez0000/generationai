@@ -116,7 +116,7 @@ const Index = ({ generatedImages, setGeneratedImages }: IndexProps) => {
       <main className="flex-1 container mx-auto px-4 py-8">
         <div className="text-center mb-10 max-w-2xl mx-auto">
           <h1 className="text-4xl md:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-gold-400 to-brown-600 mb-4">
-            Luxury AI
+            Generation.AI
           </h1>
           <p className="text-lg text-gold-300 mb-6">
             Describe lo que imaginas y deja que la IA lo convierta en realidad
@@ -223,7 +223,7 @@ const Index = ({ generatedImages, setGeneratedImages }: IndexProps) => {
               </>
             ) : (
               <>
-                <h3 className="text-2xl font-bold text-gold-400 mb-4">¡Gracias por unirte a Luxury AI!</h3>
+                <h3 className="text-2xl font-bold text-gold-400 mb-4">¡Gracias por unirte a Generation.AI!</h3>
                 <p className="text-gold-100/80 mb-6">
                   Ahora puedes guardar todas tus creaciones y acceder a ellas desde cualquier dispositivo.
                 </p>
@@ -241,7 +241,7 @@ const Index = ({ generatedImages, setGeneratedImages }: IndexProps) => {
         </div>
       </main>
       <footer className="py-6 text-center text-sm text-gold-500/50">
-        <p>© 2025 Luxury AI</p>
+        <p>© 2025 Generation.AI</p>
       </footer>
     </div>
   );

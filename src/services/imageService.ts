@@ -1,6 +1,7 @@
 
 // Image generation service using a public API that doesn't require authentication
 // Fallback to sample images if the API fails
+import { addWatermark } from './watermarkService';
 
 export interface GenerationSettings {
   resolution: string;
@@ -40,8 +41,11 @@ export const generateImage = async (
     // Pollinations.ai provides a simple URL-based API for image generation
     const imageUrl = `https://image.pollinations.ai/prompt/${encodedPrompt}?width=${width}&height=${height}&noStore=true&quality=${settings.quality}`;
     
-    // Return the URL directly - the image will be generated when loaded
-    return imageUrl;
+    // Add our watermark to the generated image
+    const watermarkedUrl = addWatermark(imageUrl);
+    
+    // Return the URL with watermark - the image will be generated when loaded
+    return watermarkedUrl;
     
   } catch (error) {
     console.error("Error generating image:", error);
