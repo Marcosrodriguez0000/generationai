@@ -63,11 +63,29 @@ export default {
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
 				},
-				cosmos: {
-					'purple': '#7856FF',
-					'blue': '#3287FF',
-					'pink': '#FF5EFA',
-					'dark': '#0f172a',
+				gold: {
+					'50': '#fbf8e9',
+					'100': '#f7efd0',
+					'200': '#eedd9a',
+					'300': '#e2c359',
+					'400': '#d8af32',
+					'500': '#c7952c',
+					'600': '#a97224',
+					'700': '#855420',
+					'800': '#714420',
+					'900': '#623a21',
+				},
+				brown: {
+					'50': '#f8f6f4',
+					'100': '#f0ebe5',
+					'200': '#e1d3c7',
+					'300': '#ccb39e',
+					'400': '#b38f73',
+					'500': '#a17558',
+					'600': '#8e6248',
+					'700': '#76503c',
+					'800': '#624335',
+					'900': '#523831',
 				}
 			},
 			borderRadius: {
@@ -108,7 +126,7 @@ export default {
 				'float': 'float 6s ease-in-out infinite',
 			},
 			backgroundImage: {
-				'gradient-cosmos': 'linear-gradient(90deg, rgba(120, 86, 255, 1) 0%, rgba(255, 94, 250, 1) 100%)',
+				'gradient-gold': 'linear-gradient(90deg, rgba(216, 175, 50, 1) 0%, rgba(169, 114, 36, 1) 100%)',
 			}
 		}
 	},

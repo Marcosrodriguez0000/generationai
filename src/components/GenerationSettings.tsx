@@ -17,8 +17,8 @@ interface GenerationSettingsProps {
 const GenerationSettings = ({ settings, onSettingsChange }: GenerationSettingsProps) => {
   return (
     <div className="w-full max-w-3xl mx-auto mt-6">
-      <div className="glass-panel p-6 space-y-6">
-        <h3 className="text-lg font-medium">Configuración de Generación</h3>
+      <div className="glass-panel p-6 space-y-6 border-gold-200 dark:border-gold-900 bg-white/50 dark:bg-black/50">
+        <h3 className="text-lg font-medium text-brown-800 dark:text-gold-300">Configuración de Generación</h3>
         
         <div className="space-y-4">
           <div className="space-y-2">
@@ -33,7 +33,7 @@ const GenerationSettings = ({ settings, onSettingsChange }: GenerationSettingsPr
               step={1}
               value={[settings.quality]}
               onValueChange={(value) => onSettingsChange({ ...settings, quality: value[0] })}
-              className="cosmos-gradient [&>[role=slider]]:bg-white"
+              className="gold-gradient [&>[role=slider]]:bg-white"
             />
           </div>
           

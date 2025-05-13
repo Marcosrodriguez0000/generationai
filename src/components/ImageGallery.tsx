@@ -19,7 +19,7 @@ const ImageGallery = ({ images }: ImageGalleryProps) => {
   const handleDownload = (url: string, index: number) => {
     const a = document.createElement('a');
     a.href = url;
-    a.download = `cosmosai-image-${index}.png`;
+    a.download = `luxuryai-image-${index}.png`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -27,24 +27,24 @@ const ImageGallery = ({ images }: ImageGalleryProps) => {
 
   return (
     <div className="mt-12">
-      <h2 className="text-2xl font-bold mb-6">Imágenes Generadas</h2>
+      <h2 className="text-2xl font-bold mb-6 text-brown-800 dark:text-gold-300">Imágenes Generadas</h2>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {images.map((image, index) => (
           <div 
             key={image.id} 
-            className="glass-panel overflow-hidden group relative transition-all duration-300 hover:-translate-y-1"
+            className="glass-panel overflow-hidden group relative transition-all duration-300 hover:-translate-y-1 border-gold-200 dark:border-gold-900 bg-white/50 dark:bg-black/50"
           >
             <img 
               src={image.url} 
               alt={image.prompt} 
               className="w-full aspect-square object-cover"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-cosmos-dark/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4">
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4">
               <p className="text-white text-sm line-clamp-2 mb-2">{image.prompt}</p>
               <Button 
                 size="sm"
                 variant="outline"
-                className="w-full bg-white/10 backdrop-blur-sm border-white/20 text-white hover:bg-white/20"
+                className="w-full bg-gold-500/10 backdrop-blur-sm border-gold-400/20 text-white hover:bg-gold-500/20"
                 onClick={() => handleDownload(image.url, index)}
               >
                 <Download className="h-4 w-4 mr-2" />
