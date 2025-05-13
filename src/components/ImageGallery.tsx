@@ -1,8 +1,10 @@
 
 import React from 'react';
-import { Download } from 'lucide-react';
+import { Download, Trash2 } from 'lucide-react';
 import { Button } from './ui/button';
 import { AspectRatio } from './ui/aspect-ratio';
+import { deleteUserImage } from '@/services/userImageService';
+import { toast } from 'sonner';
 
 interface ImageItem {
   id: string;
@@ -13,9 +15,10 @@ interface ImageItem {
 interface ImageGalleryProps {
   images: ImageItem[];
   showTitle?: boolean;
+  onDelete?: (id: string) => void;
 }
 
-const ImageGallery = ({ images, showTitle = false }: ImageGalleryProps) => {
+const ImageGallery = ({ images, showTitle = false, onDelete }: ImageGalleryProps) => {
   if (images.length === 0) return null;
 
   const handleDownload = (url: string, index: number) => {
@@ -25,6 +28,18 @@ const ImageGallery = ({ images, showTitle = false }: ImageGalleryProps) => {
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
+  };
+
+  const handleDelete = async (id: string) => {
+    try {
+      await deleteUserImage(id);
+      if (onDelete) onDelete(id);
+    } catch (error) {
+      console.error('Error deleting image:', error);
+      toast('Error', {
+        description: 'No se pudo eliminar la imagen'
+      });
+    }
   };
 
   return (
@@ -47,15 +62,27 @@ const ImageGallery = ({ images, showTitle = false }: ImageGalleryProps) => {
             </AspectRatio>
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4">
               <p className="text-gold-100 text-sm line-clamp-2 mb-2">{image.prompt}</p>
-              <Button 
-                size="sm"
-                variant="outline"
-                className="w-full bg-gold-500/10 backdrop-blur-sm border-gold-400/20 text-gold-100 hover:bg-gold-500/20"
-                onClick={() => handleDownload(image.url, index)}
-              >
-                <Download className="h-4 w-4 mr-2" />
-                Descargar
-              </Button>
+              <div className="flex gap-2 justify-between">
+                <Button 
+                  size="sm"
+                  variant="outline"
+                  className="flex-1 bg-gold-500/10 backdrop-blur-sm border-gold-400/20 text-gold-100 hover:bg-gold-500/20"
+                  onClick={() => handleDownload(image.url, index)}
+                >
+                  <Download className="h-4 w-4 mr-2" />
+                  Descargar
+                </Button>
+                {onDelete && (
+                  <Button 
+                    size="sm"
+                    variant="destructive"
+                    className="bg-red-500/40 hover:bg-red-500/60 backdrop-blur-sm"
+                    onClick={() => handleDelete(image.id)}
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                )}
+              </div>
             </div>
           </div>
         ))}
