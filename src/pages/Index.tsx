@@ -4,10 +4,9 @@ import { toast } from "sonner";
 import { Link } from "react-router-dom";
 import Header from "@/components/Header";
 import PromptInput from "@/components/PromptInput";
-import GenerationSettings from "@/components/GenerationSettings";
 import CosmosBackground from "@/components/CosmosBackground";
 import { Images } from "lucide-react";
-import { generateImage, GenerationSettings as Settings } from "@/services/imageService";
+import { generateImage } from "@/services/imageService";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
@@ -49,10 +48,6 @@ interface IndexProps {
 
 const Index = ({ generatedImages, setGeneratedImages }: IndexProps) => {
   const [isGenerating, setIsGenerating] = useState(false);
-  const [settings, setSettings] = useState<Settings>({
-    resolution: "512x512",
-    quality: 7
-  });
 
   const handleGenerate = async (prompt: string) => {
     setIsGenerating(true);
@@ -62,7 +57,8 @@ const Index = ({ generatedImages, setGeneratedImages }: IndexProps) => {
         description: "Esto puede tomar unos segundos.",
       });
 
-      const imageUrl = await generateImage(prompt, settings);
+      // Use default settings
+      const imageUrl = await generateImage(prompt, { resolution: "512x512", quality: 7 });
       
       // Create new image object
       const newImage: ImageItem = {
@@ -87,10 +83,6 @@ const Index = ({ generatedImages, setGeneratedImages }: IndexProps) => {
     }
   };
 
-  const handleSettingsChange = (newSettings: Settings) => {
-    setSettings(newSettings);
-  };
-
   return (
     <div className="min-h-screen flex flex-col bg-black">
       <CosmosBackground />
@@ -106,7 +98,6 @@ const Index = ({ generatedImages, setGeneratedImages }: IndexProps) => {
         </div>
 
         <PromptInput onGenerate={handleGenerate} isGenerating={isGenerating} />
-        <GenerationSettings settings={settings} onSettingsChange={handleSettingsChange} />
 
         {generatedImages.length > 0 && (
           <div className="text-center mt-8">
