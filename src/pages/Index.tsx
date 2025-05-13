@@ -5,11 +5,13 @@ import { Link } from "react-router-dom";
 import Header from "@/components/Header";
 import PromptInput from "@/components/PromptInput";
 import CosmosBackground from "@/components/CosmosBackground";
-import { Images } from "lucide-react";
+import { Images, Save } from "lucide-react";
 import { generateImage } from "@/services/imageService";
+import { saveUserImage } from "@/services/userImageService";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
+import { useAuth } from '@/lib/auth';
 
 interface ImageItem {
   id: string;
@@ -48,6 +50,8 @@ interface IndexProps {
 
 const Index = ({ generatedImages, setGeneratedImages }: IndexProps) => {
   const [isGenerating, setIsGenerating] = useState(false);
+  const [lastGeneratedImage, setLastGeneratedImage] = useState<ImageItem | null>(null);
+  const { user } = useAuth();
 
   const handleGenerate = async (prompt: string) => {
     setIsGenerating(true);
@@ -67,12 +71,24 @@ const Index = ({ generatedImages, setGeneratedImages }: IndexProps) => {
         prompt
       };
 
+      // Store the last generated image
+      setLastGeneratedImage(newImage);
+      
       // Add the new image to the beginning of the array
       setGeneratedImages(prev => [newImage, ...prev]);
 
       toast("¡Imagen generada exitosamente!", {
         description: "Tu imagen ha sido creada.",
       });
+      
+      // If user is logged in, save the image automatically
+      if (user) {
+        try {
+          await saveUserImage(imageUrl, prompt);
+        } catch (error) {
+          console.error("Error saving image to user account:", error);
+        }
+      }
     } catch (error) {
       console.error("Error generating image:", error);
       toast("Error al generar la imagen", {
@@ -80,6 +96,16 @@ const Index = ({ generatedImages, setGeneratedImages }: IndexProps) => {
       });
     } finally {
       setIsGenerating(false);
+    }
+  };
+
+  const handleSaveImage = async () => {
+    if (!lastGeneratedImage || !user) return;
+    
+    try {
+      await saveUserImage(lastGeneratedImage.url, lastGeneratedImage.prompt);
+    } catch (error) {
+      console.error("Error saving image:", error);
     }
   };
 
@@ -98,6 +124,39 @@ const Index = ({ generatedImages, setGeneratedImages }: IndexProps) => {
         </div>
 
         <PromptInput onGenerate={handleGenerate} isGenerating={isGenerating} />
+
+        {lastGeneratedImage && (
+          <div className="my-8 max-w-md mx-auto">
+            <Card className="overflow-hidden border-gold-200/20 bg-black/50 backdrop-blur-sm">
+              <AspectRatio ratio={1/1}>
+                <img 
+                  src={lastGeneratedImage.url} 
+                  alt={lastGeneratedImage.prompt} 
+                  className="w-full h-full object-cover"
+                />
+              </AspectRatio>
+              <CardHeader className="py-3">
+                <CardTitle className="text-lg text-gold-400">Última creación</CardTitle>
+              </CardHeader>
+              <CardContent className="pb-4">
+                <CardDescription className="text-gold-100/80 mb-4">
+                  {lastGeneratedImage.prompt}
+                </CardDescription>
+                <div className="flex gap-3 justify-center">
+                  {user && (
+                    <Button 
+                      onClick={handleSaveImage}
+                      className="bg-gradient-to-r from-gold-400 to-brown-600 text-white hover:opacity-90"
+                    >
+                      <Save className="h-4 w-4 mr-2" />
+                      Guardar en mi colección
+                    </Button>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        )}
 
         {generatedImages.length > 0 && (
           <div className="text-center mt-8">
@@ -143,15 +202,41 @@ const Index = ({ generatedImages, setGeneratedImages }: IndexProps) => {
           </div>
           
           <div className="max-w-3xl mx-auto mt-16 p-8 bg-black/40 backdrop-blur-md rounded-xl border border-gold-500/10">
-            <h3 className="text-2xl font-bold text-gold-400 mb-4">Crea tu cuenta para guardar tus creaciones</h3>
-            <p className="text-gold-100/80 mb-6">
-              Regístrate para guardar todas tus imágenes generadas y acceder a ellas en cualquier momento desde cualquier dispositivo.
-            </p>
-            <div className="flex justify-center">
-              <Button className="bg-gradient-to-r from-gold-400 to-brown-600 text-white py-6 px-8 hover:opacity-90 rounded-xl">
-                Crear Cuenta
-              </Button>
-            </div>
+            {!user ? (
+              <>
+                <h3 className="text-2xl font-bold text-gold-400 mb-4">Crea tu cuenta para guardar tus creaciones</h3>
+                <p className="text-gold-100/80 mb-6">
+                  Regístrate para guardar todas tus imágenes generadas y acceder a ellas en cualquier momento desde cualquier dispositivo.
+                </p>
+                <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                  <Link to="/login">
+                    <Button className="bg-gradient-to-r from-gold-400 to-brown-600 text-white hover:opacity-90">
+                      Iniciar sesión
+                    </Button>
+                  </Link>
+                  <Link to="/registro">
+                    <Button variant="outline" className="border-gold-400/20 bg-gold-500/10 text-gold-400 hover:bg-gold-500/20">
+                      Crear cuenta
+                    </Button>
+                  </Link>
+                </div>
+              </>
+            ) : (
+              <>
+                <h3 className="text-2xl font-bold text-gold-400 mb-4">¡Gracias por unirte a Luxury AI!</h3>
+                <p className="text-gold-100/80 mb-6">
+                  Ahora puedes guardar todas tus creaciones y acceder a ellas desde cualquier dispositivo.
+                </p>
+                <div className="flex justify-center">
+                  <Link to="/creaciones">
+                    <Button className="bg-gradient-to-r from-gold-400 to-brown-600 text-white hover:opacity-90">
+                      <Images className="h-4 w-4 mr-2" />
+                      Ver mis creaciones
+                    </Button>
+                  </Link>
+                </div>
+              </>
+            )}
           </div>
         </div>
       </main>
