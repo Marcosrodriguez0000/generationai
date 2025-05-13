@@ -1,5 +1,4 @@
 
-
 // Image generation service using a public API that doesn't require authentication
 // Fallback to sample images if the API fails
 
@@ -7,6 +6,12 @@ export interface GenerationSettings {
   resolution: string;
   quality: number;
 }
+
+// Default settings
+const DEFAULT_SETTINGS: GenerationSettings = {
+  resolution: "512x512",
+  quality: 7
+};
 
 // Fallback sample images in case API fails
 const sampleImages = [
@@ -18,7 +23,7 @@ const sampleImages = [
 
 export const generateImage = async (
   prompt: string,
-  settings: GenerationSettings
+  settings: GenerationSettings = DEFAULT_SETTINGS
 ): Promise<string> => {
   console.log(`Generating image with prompt: ${prompt}`);
   console.log(`Settings: ${JSON.stringify(settings)}`);
