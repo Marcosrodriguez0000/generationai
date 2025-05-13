@@ -1,48 +1,47 @@
 
+
 // Image generation service using a public API that doesn't require authentication
 // Fallback to sample images if the API fails
-import { addWatermark } from "./watermarkService";
 
 export interface GenerationSettings {
   resolution: string;
   quality: number;
 }
 
-// Default settings
-const DEFAULT_SETTINGS: GenerationSettings = {
-  resolution: "512x512",
-  quality: 7
-};
-
 // Fallback sample images in case API fails
 const sampleImages = [
   "https://images.unsplash.com/photo-1518770660439-4636190af475?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA",
   "https://images.unsplash.com/photo-1487058792275-0ad4aaf24ca7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA",
+  "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA",
+  "https://images.unsplash.com/photo-1470813740244-df37b8c1edcb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA"
 ];
 
-// Fetch a random image from the given API
-export const generateImage = async (prompt: string, settings: Partial<GenerationSettings> = {}): Promise<string> => {
-  const mergedSettings = { ...DEFAULT_SETTINGS, ...settings };
-  const [width, height] = mergedSettings.resolution.split("x").map(Number);
-
+export const generateImage = async (
+  prompt: string,
+  settings: GenerationSettings
+): Promise<string> => {
+  console.log(`Generating image with prompt: ${prompt}`);
+  console.log(`Settings: ${JSON.stringify(settings)}`);
+  
   try {
-    // Use Pollinations.ai for image generation
-    const baseUrl = "https://image.pollinations.ai/prompt/";
+    // Using the free public Pollinations.ai API - no API key needed
+    // Create the URL with the prompt and settings
     const encodedPrompt = encodeURIComponent(prompt);
-    const imageParams = `width=${width},height=${height},seed=${Math.floor(Math.random() * 1000)}`;
-    const apiUrl = `${baseUrl}${encodedPrompt}?${imageParams}`;
-
-    // First get the raw image URL
-    const rawImageUrl = apiUrl;
     
-    // Then add our custom watermark
-    const watermarkedImageUrl = await addWatermark(rawImageUrl, "GenerationAi");
+    // Extract resolution values
+    const [width, height] = settings.resolution.split("x").map(Number);
     
-    return watermarkedImageUrl;
+    // Construct the API URL with parameters
+    // Pollinations.ai provides a simple URL-based API for image generation
+    const imageUrl = `https://image.pollinations.ai/prompt/${encodedPrompt}?width=${width}&height=${height}&noStore=true&quality=${settings.quality}`;
+    
+    // Return the URL directly - the image will be generated when loaded
+    return imageUrl;
+    
   } catch (error) {
     console.error("Error generating image:", error);
-    
-    // Return a random sample image as fallback
-    return sampleImages[Math.floor(Math.random() * sampleImages.length)];
+    // Fallback to sample images if the API fails
+    const randomImageUrl = sampleImages[Math.floor(Math.random() * sampleImages.length)];
+    return randomImageUrl;
   }
 };
