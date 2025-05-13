@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -10,7 +9,7 @@ import { useAuth } from "@/lib/auth";
 import { toast } from "sonner";
 import Header from "@/components/Header";
 import ImageGallery from "@/components/ImageGallery";
-import { CosmosBackground } from "@/components/CosmosBackground";
+import CosmosBackground from "@/components/CosmosBackground";
 
 interface GeneratorProps {
   generatedImages: any[];
