@@ -64,9 +64,9 @@ export default {
 					ring: 'hsl(var(--sidebar-ring))'
 				},
 				cosmos: {
-					'purple': '#4c35de',
-					'blue': '#3f87f5',
-					'pink': '#ff72e1',
+					'purple': '#7856FF',
+					'blue': '#3287FF',
+					'pink': '#FF5EFA',
 					'dark': '#0f172a',
 				}
 			},
@@ -108,7 +108,7 @@ export default {
 				'float': 'float 6s ease-in-out infinite',
 			},
 			backgroundImage: {
-				'gradient-cosmos': 'linear-gradient(90deg, hsla(277, 75%, 84%, 1) 0%, hsla(297, 50%, 51%, 1) 100%)',
+				'gradient-cosmos': 'linear-gradient(90deg, rgba(120, 86, 255, 1) 0%, rgba(255, 94, 250, 1) 100%)',
 			}
 		}
 	},

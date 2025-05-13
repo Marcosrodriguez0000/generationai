@@ -65,7 +65,7 @@ const Index = () => {
       <Header />
       <main className="flex-1 container mx-auto px-4 py-8">
         <div className="text-center mb-10 max-w-2xl mx-auto">
-          <h1 className="text-4xl md:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-fuchsia-600 to-pink-600 mb-4">
+          <h1 className="text-4xl md:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-cosmos-purple to-cosmos-pink mb-4">
             Generation AI
           </h1>
           <p className="text-lg text-gray-600 dark:text-gray-300 mb-6">
