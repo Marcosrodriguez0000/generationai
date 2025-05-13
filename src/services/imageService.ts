@@ -1,6 +1,7 @@
 
-// Image generation service using Hugging Face API
-// https://huggingface.co/docs/api-inference/detailed_parameters#text-to-image
+
+// Image generation service using a public API that doesn't require authentication
+// Fallback to sample images if the API fails
 
 export interface GenerationSettings {
   resolution: string;
@@ -17,48 +18,26 @@ const sampleImages = [
 
 export const generateImage = async (
   prompt: string,
-  settings: GenerationSettings,
-  apiKey?: string
+  settings: GenerationSettings
 ): Promise<string> => {
   console.log(`Generating image with prompt: ${prompt}`);
   console.log(`Settings: ${JSON.stringify(settings)}`);
   
   try {
-    // If no API key is provided, fall back to sample images
-    if (!apiKey) {
-      throw new Error("No API key provided");
-    }
-
-    // Convert resolution string to numbers for the API call
+    // Using the free public Pollinations.ai API - no API key needed
+    // Create the URL with the prompt and settings
+    const encodedPrompt = encodeURIComponent(prompt);
+    
+    // Extract resolution values
     const [width, height] = settings.resolution.split("x").map(Number);
     
-    // Use HuggingFace inference API (stable-diffusion-2)
-    const response = await fetch(
-      "https://api-inference.huggingface.co/models/stabilityai/stable-diffusion-2",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${apiKey}`,
-        },
-        body: JSON.stringify({
-          inputs: prompt,
-          parameters: {
-            width: width,
-            height: height,
-            guidance_scale: settings.quality, // Using quality as guidance scale
-          }
-        }),
-      }
-    );
-
-    if (!response.ok) {
-      throw new Error(`API request failed with status ${response.status}`);
-    }
-
-    // The API returns the image directly as binary data
-    const blob = await response.blob();
-    return URL.createObjectURL(blob);
+    // Construct the API URL with parameters
+    // Pollinations.ai provides a simple URL-based API for image generation
+    const imageUrl = `https://image.pollinations.ai/prompt/${encodedPrompt}?width=${width}&height=${height}&noStore=true&quality=${settings.quality}`;
+    
+    // Return the URL directly - the image will be generated when loaded
+    return imageUrl;
+    
   } catch (error) {
     console.error("Error generating image:", error);
     // Fallback to sample images if the API fails
