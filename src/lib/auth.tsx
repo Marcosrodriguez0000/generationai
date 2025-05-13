@@ -1,18 +1,11 @@
-
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { Session, User } from '@supabase/supabase-js';
 import { createClient } from '@supabase/supabase-js';
 import { toast } from 'sonner';
 
-// Initialize the Supabase client
-// Use fallback empty strings to prevent initialization errors, but show a warning if not set
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || '';
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
-
-// Warning for missing environment variables
-if (!supabaseUrl || !supabaseAnonKey) {
-  console.error('Missing Supabase environment variables. Authentication will not work properly.');
-}
+// Initialize the Supabase client with your provided credentials
+const supabaseUrl = 'https://xvkzkbxngrbhhubkqnvx.supabase.co';
+const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh2a3prYnhuZ3JiaGh1YmtxbnZ4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDcxNDM2MjQsImV4cCI6MjA2MjcxOTYyNH0.wRzoxVZ0jaOAvZ8Mh7EQUl5dFRc33NKqHHd3Aayk_fc';
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
