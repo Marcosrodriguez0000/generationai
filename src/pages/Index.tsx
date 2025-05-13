@@ -1,248 +1,184 @@
 
-import React, { useState } from 'react';
-import { toast } from "sonner";
-import { Link } from "react-router-dom";
-import Header from "@/components/Header";
-import PromptInput from "@/components/PromptInput";
-import CosmosBackground from "@/components/CosmosBackground";
-import { Images, Save } from "lucide-react";
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { generateImage } from "@/services/imageService";
 import { saveUserImage } from "@/services/userImageService";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { AspectRatio } from "@/components/ui/aspect-ratio";
-import { useAuth } from '@/lib/auth';
+import { useAuth } from "@/lib/auth";
+import { toast } from "sonner";
+import Header from "@/components/Header";
+import ImageGallery from "@/components/ImageGallery";
+import { CosmosBackground } from "@/components/CosmosBackground";
 
-interface ImageItem {
-  id: string;
-  url: string;
-  prompt: string;
+interface GeneratorProps {
+  generatedImages: any[];
+  setGeneratedImages: React.Dispatch<React.SetStateAction<any[]>>;
 }
 
-// Ejemplos de imágenes IA con sus prompts
-const exampleImages: ImageItem[] = [
-  {
-    id: "example1",
-    url: "/lovable-uploads/67c20ac8-f57f-4415-9e95-ab013380ea69.png",
-    prompt: "Casa moderna de diseño minimalista con fachada de cristal curvada, rodeada de árboles, iluminación cálida interior al atardecer, estilo arquitectónico contemporáneo futurista"
-  },
-  {
-    id: "example2",
-    url: "/lovable-uploads/734f2359-a7ce-4a38-87a5-b1da0be658dd.png",
-    prompt: "Pareja bailando bajo un cielo estrellado con la Vía Láctea visible, en un camino pavimentado rodeado de árboles, fotografía nocturna romántica con iluminación natural"
-  },
-  {
-    id: "example3",
-    url: "/lovable-uploads/d39c38e0-84e5-4d33-808f-89c51a0a571b.png",
-    prompt: "Frasco de perfume de lujo con etiqueta azul y dorada, sobre fondo negro, fotografía de producto de alta definición con iluminación profesional, transparencia y reflejos"
-  },
-  {
-    id: "example4",
-    url: "/lovable-uploads/320d93c4-bd61-47d1-895b-3aae110db3f2.png",
-    prompt: "Retrato hiperrealista de un hombre mayor con expresión pensativa, arrugas detalladas, iluminación dramática lateral, fotografía en primer plano con enfoque en la textura de la piel"
-  }
-];
-
-interface IndexProps {
-  generatedImages: ImageItem[];
-  setGeneratedImages: React.Dispatch<React.SetStateAction<ImageItem[]>>;
-}
-
-const Index = ({ generatedImages, setGeneratedImages }: IndexProps) => {
+const Index = ({ generatedImages, setGeneratedImages }: GeneratorProps) => {
+  const [prompt, setPrompt] = useState("");
+  const [imageUrl, setImageUrl] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
-  const [lastGeneratedImage, setLastGeneratedImage] = useState<ImageItem | null>(null);
-  const { user } = useAuth();
+  const { session } = useAuth();
 
-  const handleGenerate = async (prompt: string) => {
+  const handleGenerate = async () => {
+    if (!prompt.trim()) {
+      toast('Error', {
+        description: 'Ingresa una descripción para generar una imagen'
+      });
+      return;
+    }
+
     setIsGenerating(true);
-
     try {
-      toast("Generando imagen...", {
-        description: "Esto puede tomar unos segundos.",
-      });
-
-      // Use default settings
-      const imageUrl = await generateImage(prompt, { resolution: "512x512", quality: 7 });
+      const generatedImageUrl = await generateImage(prompt);
+      setImageUrl(generatedImageUrl);
       
-      // Create new image object
-      const newImage: ImageItem = {
-        id: Date.now().toString(),
-        url: imageUrl,
-        prompt
+      // Update recent generations
+      const newImage = {
+        id: Date.now().toString(), // temporary ID
+        url: generatedImageUrl,
+        prompt: prompt
       };
-
-      // Store the last generated image
-      setLastGeneratedImage(newImage);
       
-      // Add the new image to the beginning of the array
-      setGeneratedImages(prev => [newImage, ...prev]);
-
-      toast("¡Imagen generada exitosamente!", {
-        description: "Tu imagen ha sido creada.",
-      });
-      
-      // If user is logged in, save the image automatically
-      if (user) {
-        try {
-          await saveUserImage(imageUrl, prompt);
-        } catch (error) {
-          console.error("Error saving image to user account:", error);
-        }
-      }
+      setGeneratedImages((prev) => [newImage, ...prev].slice(0, 9));
     } catch (error) {
       console.error("Error generating image:", error);
-      toast("Error al generar la imagen", {
-        description: "Ha ocurrido un error. Por favor intenta nuevamente.",
+      toast('Error', {
+        description: 'No se pudo generar la imagen. Inténtalo nuevamente.'
       });
     } finally {
       setIsGenerating(false);
     }
   };
 
-  const handleSaveImage = async () => {
-    if (!lastGeneratedImage || !user) return;
-    
+  const handleSave = async () => {
+    if (!imageUrl) {
+      toast('Error', {
+        description: 'Genera una imagen primero'
+      });
+      return;
+    }
+
+    if (!session) {
+      toast('Error', {
+        description: 'Debes iniciar sesión para guardar imágenes'
+      });
+      return;
+    }
+
     try {
-      await saveUserImage(lastGeneratedImage.url, lastGeneratedImage.prompt);
+      await saveUserImage(prompt, imageUrl);
     } catch (error) {
       console.error("Error saving image:", error);
+      toast('Error', {
+        description: 'No se pudo guardar la imagen. Inténtalo nuevamente.'
+      });
     }
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-black">
+    <div className="flex flex-col min-h-screen relative">
       <CosmosBackground />
-      <Header />
-      <main className="flex-1 container mx-auto px-4 py-8">
-        <div className="text-center mb-10 max-w-2xl mx-auto">
-          <h1 className="text-4xl md:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-gold-400 to-brown-600 mb-4">
-            Luxury AI
-          </h1>
-          <p className="text-lg text-gold-300 mb-6">
-            Describe lo que imaginas y deja que la IA lo convierta en realidad
-          </p>
-        </div>
+      <div className="relative z-10">
+        <Header />
 
-        <PromptInput onGenerate={handleGenerate} isGenerating={isGenerating} />
+        <main className="container max-w-5xl mx-auto py-8 px-4 flex flex-col gap-8">
+          <div className="text-center space-y-4">
+            <h1 className="text-4xl md:text-6xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-gold-400 via-gold-200 to-gold-400">
+              LuxuryAI
+            </h1>
+            <p className="text-lg md:text-xl text-gold-100 max-w-2xl mx-auto">
+              Genera imágenes únicas con inteligencia artificial
+            </p>
+          </div>
 
-        {lastGeneratedImage && (
-          <div className="my-8 max-w-md mx-auto">
-            <Card className="overflow-hidden border-gold-200/20 bg-black/50 backdrop-blur-sm">
-              <AspectRatio ratio={1/1}>
-                <img 
-                  src={lastGeneratedImage.url} 
-                  alt={lastGeneratedImage.prompt} 
-                  className="w-full h-full object-cover"
-                />
-              </AspectRatio>
-              <CardHeader className="py-3">
-                <CardTitle className="text-lg text-gold-400">Última creación</CardTitle>
-              </CardHeader>
-              <CardContent className="pb-4">
-                <CardDescription className="text-gold-100/80 mb-4">
-                  {lastGeneratedImage.prompt}
-                </CardDescription>
-                <div className="flex gap-3 justify-center">
-                  {user && (
-                    <Button 
-                      onClick={handleSaveImage}
-                      className="bg-gradient-to-r from-gold-400 to-brown-600 text-white hover:opacity-90"
-                    >
-                      <Save className="h-4 w-4 mr-2" />
-                      Guardar en mi colección
-                    </Button>
-                  )}
+          <div className="bg-black/20 backdrop-blur-lg rounded-2xl p-6 border border-gold-500/20">
+            <Tabs defaultValue="generator">
+              <TabsList className="grid grid-cols-2 mb-6">
+                <TabsTrigger value="generator">Generador</TabsTrigger>
+                <TabsTrigger value="info">Instrucciones</TabsTrigger>
+              </TabsList>
+              
+              <TabsContent value="generator" className="space-y-6">
+                <div>
+                  <label className="block text-gold-100 mb-2">Descripción</label>
+                  <Textarea
+                    value={prompt}
+                    onChange={(e) => setPrompt(e.target.value)}
+                    placeholder="Describe la imagen que deseas generar..."
+                    className="min-h-[100px] bg-black/40 border-gold-500/30"
+                  />
                 </div>
-              </CardContent>
-            </Card>
-          </div>
-        )}
 
-        {generatedImages.length > 0 && (
-          <div className="text-center mt-8">
-            <Link to="/creaciones">
-              <Button variant="outline" className="bg-gold-500/10 border-gold-400/20 text-gold-400 hover:bg-gold-500/20">
-                <Images className="h-4 w-4 mr-2" />
-                Ver mis creaciones ({generatedImages.length})
-              </Button>
-            </Link>
-          </div>
-        )}
-        
-        <div className="mt-16">
-          <h2 className="text-2xl font-bold text-center text-gold-300 mb-4">
-            El Poder de la IA en Tus Manos
-          </h2>
-          <p className="text-gold-100/80 mb-8 max-w-3xl mx-auto text-center">
-            Nuestra tecnología de inteligencia artificial puede generar imágenes impresionantes a partir de tus descripciones. Inspírate con estos ejemplos creados por nuestra IA.
-          </p>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto mb-12">
-            {exampleImages.map((example) => (
-              <Card key={example.id} className="overflow-hidden border-gold-200/20 dark:border-gold-900/20 bg-black/50 backdrop-blur-sm hover:shadow-gold-500/10 hover:shadow-lg transition-all duration-300">
-                <div className="overflow-hidden">
-                  <AspectRatio ratio={1/1}>
-                    <img 
-                      src={example.url} 
-                      alt={example.prompt} 
-                      className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
-                    />
-                  </AspectRatio>
+                <div className="flex justify-end">
+                  <Button 
+                    onClick={handleGenerate} 
+                    disabled={isGenerating || !prompt.trim()}
+                    className="bg-gold-500 hover:bg-gold-600 text-black"
+                  >
+                    {isGenerating ? "Generando..." : "Generar Imagen"}
+                  </Button>
                 </div>
-                <CardHeader className="py-3">
-                  <CardTitle className="text-lg text-gold-400">Ejemplo de Prompt</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <CardDescription className="text-gold-100/80">
-                    {example.prompt}
-                  </CardDescription>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-          
-          <div className="max-w-3xl mx-auto mt-16 p-8 bg-black/40 backdrop-blur-md rounded-xl border border-gold-500/10">
-            {!user ? (
-              <>
-                <h3 className="text-2xl font-bold text-gold-400 mb-4">Crea tu cuenta para guardar tus creaciones</h3>
-                <p className="text-gold-100/80 mb-6">
-                  Regístrate para guardar todas tus imágenes generadas y acceder a ellas en cualquier momento desde cualquier dispositivo.
-                </p>
-                <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                  <Link to="/login">
-                    <Button className="bg-gradient-to-r from-gold-400 to-brown-600 text-white hover:opacity-90">
-                      Iniciar sesión
-                    </Button>
-                  </Link>
-                  <Link to="/registro">
-                    <Button variant="outline" className="border-gold-400/20 bg-gold-500/10 text-gold-400 hover:bg-gold-500/20">
-                      Crear cuenta
-                    </Button>
-                  </Link>
+
+                {imageUrl && (
+                  <div className="mt-6 space-y-4">
+                    <div className="aspect-square relative rounded-lg overflow-hidden bg-black/30 border border-gold-500/20">
+                      <img
+                        src={imageUrl}
+                        alt="Generated"
+                        className="w-full h-full object-contain"
+                      />
+                    </div>
+
+                    {session && (
+                      <div className="flex justify-end">
+                        <Button 
+                          onClick={handleSave}
+                          variant="outline" 
+                          className="border-gold-500/30 text-gold-100 hover:bg-gold-500/10"
+                        >
+                          Guardar en Mi Colección
+                        </Button>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </TabsContent>
+
+              <TabsContent value="info">
+                <div className="prose prose-invert max-w-none">
+                  <h3 className="text-gold-300">Cómo usar el generador</h3>
+                  <ol className="list-decimal pl-5 space-y-2">
+                    <li>Escribe una descripción detallada de la imagen que deseas crear</li>
+                    <li>Haz clic en "Generar Imagen" y espera unos segundos</li>
+                    <li>Si te gusta el resultado, puedes guardarla en tu colección</li>
+                    <li>Accede a tu colección desde el menú "Mis Creaciones"</li>
+                  </ol>
+                  
+                  <h3 className="text-gold-300 mt-4">Consejos para mejores resultados</h3>
+                  <ul className="list-disc pl-5 space-y-2">
+                    <li>Sé específico en tu descripción</li>
+                    <li>Incluye detalles sobre el estilo (ej. fotografía, pintura, 3D)</li>
+                    <li>Menciona la iluminación, colores y ambiente</li>
+                    <li>Si no te gusta el resultado, intenta con otra descripción</li>
+                  </ul>
                 </div>
-              </>
-            ) : (
-              <>
-                <h3 className="text-2xl font-bold text-gold-400 mb-4">¡Gracias por unirte a Luxury AI!</h3>
-                <p className="text-gold-100/80 mb-6">
-                  Ahora puedes guardar todas tus creaciones y acceder a ellas desde cualquier dispositivo.
-                </p>
-                <div className="flex justify-center">
-                  <Link to="/creaciones">
-                    <Button className="bg-gradient-to-r from-gold-400 to-brown-600 text-white hover:opacity-90">
-                      <Images className="h-4 w-4 mr-2" />
-                      Ver mis creaciones
-                    </Button>
-                  </Link>
-                </div>
-              </>
-            )}
+              </TabsContent>
+            </Tabs>
           </div>
-        </div>
-      </main>
-      <footer className="py-6 text-center text-sm text-gold-500/50">
-        <p>© 2025 Luxury AI</p>
-      </footer>
+
+          {/* Recent Generations */}
+          {generatedImages.length > 0 && (
+            <ImageGallery 
+              images={generatedImages} 
+              showTitle={true}
+            />
+          )}
+        </main>
+      </div>
     </div>
   );
 };
