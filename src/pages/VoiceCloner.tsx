@@ -10,12 +10,19 @@ import { cloneVoice } from "@/services/voiceService";
 const VoiceCloner = () => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [audioSample, setAudioSample] = useState<File | null>(null);
+  const [audioSampleUrl, setAudioSampleUrl] = useState<string | null>(null);
   const [generatedAudio, setGeneratedAudio] = useState<string | null>(null);
   const audioPlayerRef = useRef<HTMLAudioElement>(null);
+  const sampleAudioRef = useRef<HTMLAudioElement>(null);
 
   const handleAudioUpload = (file: File) => {
     setAudioSample(file);
     setGeneratedAudio(null);
+    
+    // Create a URL for the uploaded audio sample
+    const audioUrl = URL.createObjectURL(file);
+    setAudioSampleUrl(audioUrl);
+    
     toast("Audio cargado correctamente", {
       description: `Archivo: ${file.name}`,
     });
@@ -70,6 +77,19 @@ const VoiceCloner = () => {
           <div className="bg-white/50 dark:bg-zinc-800/50 backdrop-blur-lg p-6 rounded-xl border border-gray-200 dark:border-zinc-700">
             <h2 className="text-xl font-semibold mb-4">Paso 1: Sube tu muestra de voz</h2>
             <AudioUploader onAudioUpload={handleAudioUpload} isProcessing={isProcessing} />
+            
+            {/* Audio sample preview */}
+            {audioSampleUrl && (
+              <div className="mt-6 pt-4 border-t border-gray-200 dark:border-zinc-700">
+                <h3 className="text-md font-medium mb-3">Muestra de audio cargada:</h3>
+                <audio 
+                  ref={sampleAudioRef}
+                  controls 
+                  className="w-full"
+                  src={audioSampleUrl}
+                />
+              </div>
+            )}
           </div>
 
           <div className="bg-white/50 dark:bg-zinc-800/50 backdrop-blur-lg p-6 rounded-xl border border-gray-200 dark:border-zinc-700">
@@ -99,7 +119,7 @@ const VoiceCloner = () => {
           </div>
         )}
 
-        {!generatedAudio && !isProcessing && (
+        {!generatedAudio && !isProcessing && !audioSampleUrl && (
           <div className="text-center mt-20 bg-white/50 dark:bg-zinc-800/50 backdrop-blur-lg p-10 mx-auto max-w-md rounded-xl border border-gray-200 dark:border-zinc-700">
             <h3 className="text-xl font-medium mb-2">Crea tu primera clonación de voz</h3>
             <p className="text-muted-foreground">
