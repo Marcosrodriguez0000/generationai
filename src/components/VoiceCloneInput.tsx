@@ -19,11 +19,13 @@ const VoiceCloneInput = ({ onGenerate, isProcessing }: VoiceCloneInputProps) => 
     }
   };
 
-  // Predefined text examples to help users - shorter examples for better reliability
+  // Ejemplos de texto más variados para demostrar diferentes emociones y estilos
   const examples = [
-    "Hola, este es un ejemplo de mi voz clonada.",
-    "La tecnología permite clonar voces de manera increíble.",
-    "Esta es una demostración de clonación de voz."
+    "Hola, este es un ejemplo de mi voz clonada. Me encanta cómo suena.",
+    "La tecnología permite clonar voces de manera increíble. ¡Es fascinante!",
+    "Esta es una demostración seria de clonación de voz con un tono profesional.",
+    "Necesito ayuda urgente para resolver este problema. Es muy importante.",
+    "Hoy es un día tranquilo y sereno, perfecto para reflexionar sobre la vida."
   ];
 
   const handleUseExample = (exampleText: string) => {
