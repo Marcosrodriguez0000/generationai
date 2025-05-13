@@ -1,5 +1,5 @@
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { toast } from "sonner";
 import Header from "@/components/Header";
 import CosmosBackground from "@/components/CosmosBackground";
@@ -12,14 +12,30 @@ const VoiceCloner = () => {
   const [audioSample, setAudioSample] = useState<File | null>(null);
   const [audioSampleUrl, setAudioSampleUrl] = useState<string | null>(null);
   const [generatedAudio, setGeneratedAudio] = useState<string | null>(null);
+  const [audioGenerated, setAudioGenerated] = useState(false);
   const audioPlayerRef = useRef<HTMLAudioElement>(null);
   const sampleAudioRef = useRef<HTMLAudioElement>(null);
+
+  // Efecto para limpiar las URLs de objetos cuando el componente se desmonte
+  useEffect(() => {
+    return () => {
+      if (audioSampleUrl) {
+        URL.revokeObjectURL(audioSampleUrl);
+      }
+    };
+  }, [audioSampleUrl]);
 
   const handleAudioUpload = (file: File) => {
     setAudioSample(file);
     setGeneratedAudio(null);
+    setAudioGenerated(false);
     
-    // Create a URL for the uploaded audio sample
+    // Revocar URL anterior si existe
+    if (audioSampleUrl) {
+      URL.revokeObjectURL(audioSampleUrl);
+    }
+    
+    // Crear una URL para la muestra de audio subida
     const audioUrl = URL.createObjectURL(file);
     setAudioSampleUrl(audioUrl);
     
@@ -37,6 +53,7 @@ const VoiceCloner = () => {
     }
 
     setIsProcessing(true);
+    setAudioGenerated(false);
 
     try {
       toast("Generando audio...", {
@@ -45,6 +62,14 @@ const VoiceCloner = () => {
 
       const audioUrl = await cloneVoice(audioSample, text);
       setGeneratedAudio(audioUrl);
+      setAudioGenerated(true);
+      
+      // Asegurarnos de que el audio se cargue correctamente antes de reproducirlo
+      setTimeout(() => {
+        if (audioPlayerRef.current) {
+          audioPlayerRef.current.load();
+        }
+      }, 500);
       
       toast("¡Audio generado exitosamente!", {
         description: "Tu audio ha sido clonado con éxito.",
@@ -57,6 +82,20 @@ const VoiceCloner = () => {
     } finally {
       setIsProcessing(false);
     }
+  };
+
+  // Manejar evento de carga del audio para verificar que se reproduce correctamente
+  const handleAudioLoad = () => {
+    console.log("Audio cargado correctamente con duración:", 
+                audioPlayerRef.current?.duration);
+  };
+
+  // Manejar error de carga de audio
+  const handleAudioError = (e: React.SyntheticEvent<HTMLAudioElement, Event>) => {
+    console.error("Error cargando audio:", e);
+    toast("Error", {
+      description: "No se pudo cargar el audio generado.",
+    });
   };
 
   return (
@@ -106,8 +145,14 @@ const VoiceCloner = () => {
               controls 
               className="w-full"
               src={generatedAudio}
+              onLoadedMetadata={handleAudioLoad}
+              onError={handleAudioError}
             />
-            <div className="mt-4 text-center">
+            <div className="mt-6 text-center">
+              <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+                Esta demostración usa voces pregrabadas para simular la clonación de voz.
+                En una implementación real, se utilizaría un modelo de IA para generar audio similar a tu voz original.
+              </p>
               <a 
                 href={generatedAudio} 
                 download="voz-clonada.mp3"
