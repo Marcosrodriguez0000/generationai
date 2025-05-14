@@ -23,9 +23,16 @@ const TextGenerator = () => {
       try {
         // Import dynamically to avoid SSR issues
         const { pipeline } = await import('@huggingface/transformers');
-        await pipeline('text-generation', 'Xenova/distilgpt2-spanish', { progress_callback: (progress) => {
-          console.log(`Model loading: ${Math.round(progress.progress * 100)}%`);
-        }});
+        await pipeline('text-generation', 'Xenova/distilgpt2-spanish', { 
+          progress_callback: (progressInfo) => {
+            // The type definition expects progressInfo.status, not progressInfo.progress
+            console.log(`Model loading: ${Math.round(
+              'progress' in progressInfo 
+                ? (progressInfo as any).progress * 100 
+                : 0
+            )}%`);
+          }
+        });
         setIsModelLoading(false);
       } catch (error) {
         console.error("Error preloading model:", error);
