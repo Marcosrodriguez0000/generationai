@@ -3,14 +3,13 @@
 import { addWatermark } from './watermarkService';
 
 export interface TextGenerationSettings {
-  prompt: string;
   maxLength?: number;
   temperature?: number;
   format?: string;
 }
 
 // Default settings
-const DEFAULT_SETTINGS: Omit<TextGenerationSettings, 'prompt'> = {
+const DEFAULT_SETTINGS: TextGenerationSettings = {
   maxLength: 500,
   temperature: 0.7,
   format: 'paragraph'
@@ -18,7 +17,7 @@ const DEFAULT_SETTINGS: Omit<TextGenerationSettings, 'prompt'> = {
 
 export const generateTextWithPollinations = async (
   prompt: string,
-  settings: Partial<Omit<TextGenerationSettings, 'prompt'>> = {}
+  settings: TextGenerationSettings = {}
 ): Promise<string> => {
   console.log(`Generating text with prompt: ${prompt}`);
   

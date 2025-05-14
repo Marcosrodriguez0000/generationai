@@ -2,8 +2,9 @@
 import React, { useState } from 'react';
 import { toast } from "sonner";
 import TextPromptInput from './TextPromptInput';
-import { generateTextWithPollinations, TextGenerationSettings } from '@/services/textGenerationService';
+import { generateTextWithPollinations } from '@/services/textGenerationService';
 import GeneratedTextDisplay from './GeneratedTextDisplay';
+import { TextGenerationSettings } from './TextPromptInput';
 
 interface GeneratedTextItem {
   id: string;
