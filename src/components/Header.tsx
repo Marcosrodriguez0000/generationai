@@ -21,8 +21,8 @@ const Header = () => {
             <Link to="/" className={`text-sm ${location.pathname === '/' ? 'text-white' : 'text-gray-400 hover:text-white'} transition-colors`}>
               Imágenes
             </Link>
-            <Link to="/studio" className={`text-sm ${location.pathname === '/studio' ? 'text-white' : 'text-gray-400 hover:text-white'} transition-colors`}>
-              Studio
+            <Link to="/videos" className={`text-sm ${location.pathname === '/videos' ? 'text-white' : 'text-gray-400 hover:text-white'} transition-colors`}>
+              Videos
             </Link>
             <Link to="/creaciones" className={`text-sm ${location.pathname === '/creaciones' ? 'text-white' : 'text-gray-400 hover:text-white'} transition-colors`}>
               Mis Creaciones

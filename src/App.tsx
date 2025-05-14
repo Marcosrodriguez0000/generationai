@@ -3,7 +3,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { useState } from "react";
 import { AuthProvider } from "./lib/auth";
 import Index from "./pages/Index";
@@ -30,9 +30,7 @@ const App = () => {
               <Route path="/creaciones" element={<Creaciones images={generatedImages} />} />
               <Route path="/login" element={<Login />} />
               <Route path="/registro" element={<Registro />} />
-              <Route path="/studio" element={<GeneradorVideos />} />
-              {/* Add a redirect for /videos to point to /studio */}
-              <Route path="/videos" element={<Navigate to="/studio" replace />} />
+              <Route path="/videos" element={<GeneradorVideos />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
