@@ -1,68 +1,145 @@
 
-import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { Button } from './ui/button';
+import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/lib/auth';
+import { Button } from './ui/button';
+import { Menu, X, Images } from 'lucide-react';
+import useMobile from '@/hooks/use-mobile';
 
 const Header = () => {
-  const location = useLocation();
-  const { user, signOut } = useAuth();
+  const [isOpen, setIsOpen] = useState(false);
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+  const { isMobile } = useMobile();
+
+  const toggleMenu = () => {
+    setIsOpen(!isOpen);
+  };
+
+  const handleLogout = async () => {
+    await logout();
+    navigate('/');
+  };
 
   return (
-    <header className="w-full py-4 px-5 z-10 relative backdrop-blur-md bg-black/20 border-b border-white/5">
-      <div className="container mx-auto flex justify-between items-center">
-        <div className="flex items-center">
-          <Link to="/" className="text-white text-xl font-bold">
-            <span className="bg-clip-text text-transparent bg-gradient-to-r from-neon-pink to-neon-blue">
+    <header className="sticky top-0 z-50 border-b border-white/10 bg-black/50 backdrop-blur-xl">
+      <div className="container mx-auto px-4 py-3">
+        <div className="flex items-center justify-between">
+          <Link to="/" className="flex items-center text-white">
+            <span className="text-xl md:text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-neon-pink to-neon-blue">
               Generation.AI
             </span>
           </Link>
-          <nav className="ml-8 hidden md:flex gap-6">
-            <Link to="/" className={`text-sm ${location.pathname === '/' ? 'text-white' : 'text-gray-400 hover:text-white'} transition-colors`}>
-              Imágenes
-            </Link>
-            <Link to="/videos" className={`text-sm ${location.pathname === '/videos' ? 'text-white' : 'text-gray-400 hover:text-white'} transition-colors`}>
-              Videos
-            </Link>
-            <Link to="/creaciones" className={`text-sm ${location.pathname === '/creaciones' ? 'text-white' : 'text-gray-400 hover:text-white'} transition-colors`}>
-              Mis Creaciones
-            </Link>
-          </nav>
-        </div>
-        <div className="flex items-center gap-4">
-          {user ? (
-            <>
-              <Button 
-                onClick={signOut}
-                variant="outline" 
-                className="hidden sm:flex bg-transparent border-white/10 text-white hover:bg-white/10"
-                size="sm"
+
+          {isMobile ? (
+            <div className="flex items-center">
+              <button
+                onClick={toggleMenu}
+                className="p-2 text-white hover:text-neon-blue transition-colors"
+                aria-label="Toggle menu"
               >
-                Cerrar Sesión
-              </Button>
-            </>
+                {isOpen ? <X size={24} /> : <Menu size={24} />}
+              </button>
+            </div>
           ) : (
-            <>
-              <Link to="/login">
-                <Button 
-                  variant="outline" 
-                  className="bg-transparent border-white/10 text-white hover:bg-white/10"
-                  size="sm"
-                >
-                  Iniciar Sesión
-                </Button>
+            <nav className="flex items-center space-x-1">
+              <Link
+                to="/"
+                className="px-3 py-2 text-sm text-gray-300 hover:text-white hover:bg-white/5 rounded-md transition-colors"
+              >
+                Generador
               </Link>
-              <Link to="/registro">
-                <Button 
-                  className="bg-gradient-to-r from-neon-pink to-neon-blue text-white hover:opacity-90"
-                  size="sm"
-                >
-                  Registrarse
-                </Button>
+              <Link
+                to="/cartoon"
+                className="px-3 py-2 text-sm text-gray-300 hover:text-white hover:bg-white/5 rounded-md transition-colors flex items-center"
+              >
+                <Images size={16} className="mr-1" />
+                Transformador
               </Link>
-            </>
+              <Link
+                to="/creaciones"
+                className="px-3 py-2 text-sm text-gray-300 hover:text-white hover:bg-white/5 rounded-md transition-colors"
+              >
+                Mis Creaciones
+              </Link>
+              {user ? (
+                <Button variant="ghost" className="text-sm text-gray-300" onClick={handleLogout}>
+                  Cerrar sesión
+                </Button>
+              ) : (
+                <div className="flex items-center space-x-1">
+                  <Link to="/login">
+                    <Button variant="ghost" size="sm">
+                      Iniciar sesión
+                    </Button>
+                  </Link>
+                  <Link to="/registro">
+                    <Button size="sm" className="bg-gradient-to-r from-neon-pink to-neon-blue text-white">
+                      Registro
+                    </Button>
+                  </Link>
+                </div>
+              )}
+            </nav>
           )}
         </div>
+
+        {/* Mobile Menu */}
+        {isMobile && isOpen && (
+          <nav className="mt-3 py-2 bg-black/80 backdrop-blur-lg rounded-lg border border-white/10">
+            <Link
+              to="/"
+              className="block px-4 py-2.5 text-gray-300 hover:bg-white/5"
+              onClick={() => setIsOpen(false)}
+            >
+              Generador
+            </Link>
+            <Link
+              to="/cartoon"
+              className="block px-4 py-2.5 text-gray-300 hover:bg-white/5 flex items-center"
+              onClick={() => setIsOpen(false)}
+            >
+              <Images size={16} className="mr-2" />
+              Transformador
+            </Link>
+            <Link
+              to="/creaciones"
+              className="block px-4 py-2.5 text-gray-300 hover:bg-white/5"
+              onClick={() => setIsOpen(false)}
+            >
+              Mis Creaciones
+            </Link>
+            {user ? (
+              <Button
+                variant="ghost"
+                className="w-full justify-start text-left px-4 py-2.5 text-gray-300 hover:bg-white/5 rounded-none"
+                onClick={() => {
+                  handleLogout();
+                  setIsOpen(false);
+                }}
+              >
+                Cerrar sesión
+              </Button>
+            ) : (
+              <>
+                <Link
+                  to="/login"
+                  className="block px-4 py-2.5 text-gray-300 hover:bg-white/5"
+                  onClick={() => setIsOpen(false)}
+                >
+                  Iniciar sesión
+                </Link>
+                <Link
+                  to="/registro"
+                  className="block px-4 py-2.5 text-gray-300 hover:bg-white/5"
+                  onClick={() => setIsOpen(false)}
+                >
+                  Registro
+                </Link>
+              </>
+            )}
+          </nav>
+        )}
       </div>
     </header>
   );
