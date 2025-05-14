@@ -17,7 +17,7 @@ const ExamplesSection = ({ exampleImages }: ExamplesSectionProps) => {
         Nuestra tecnología de inteligencia artificial puede generar imágenes impresionantes a partir de tus descripciones. Inspírate con estos ejemplos creados por nuestra IA.
       </p>
       
-      <ImageGallery images={exampleImages} columns={4} />
+      <ImageGallery images={exampleImages} columns={6} galleryType="examples" />
     </div>
   );
 };

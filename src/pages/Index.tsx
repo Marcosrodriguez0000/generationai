@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { toast } from "sonner";
 import Header from "@/components/Header";
@@ -11,6 +10,7 @@ import LastGeneratedImage from '@/components/LastGeneratedImage';
 import CreationsCallToAction from '@/components/CreationsCallToAction';
 import Footer from '@/components/Footer';
 import { ImageItem } from '@/types/image';
+import ExamplesSection from '@/components/ExamplesSection';
 
 // Ejemplos de imágenes IA con sus prompts y badges
 const exampleImages: ImageItem[] = [
@@ -46,6 +46,39 @@ const exampleImages: ImageItem[] = [
     url: "/lovable-uploads/960f4a5e-5cbc-4422-b617-a6e3243cf080.png",
     prompt: "Taza de café con leche con espuma cremosa y caramelo",
     badge: "NEW"
+  },
+  {
+    id: "example7",
+    url: "/lovable-uploads/933918f5-51fe-44d5-a927-ff1f83961b9c.png",
+    prompt: "Paisaje de montañas con lago cristalino reflejo al atardecer",
+    badge: "NEW"
+  },
+  {
+    id: "example8",
+    url: "/lovable-uploads/5397d569-8d3a-4c33-bc04-ba917f7dc3a1.png",
+    prompt: "Anillo de compromiso con diamante brillante sobre terciopelo negro",
+  },
+  {
+    id: "example9",
+    url: "/lovable-uploads/7170fe0d-9fa1-475e-ae85-387d309f32e9.png",
+    prompt: "Automóvil deportivo rojo brillante en carretera costera curva",
+    badge: "UPDATE"
+  },
+  {
+    id: "example10",
+    url: "/lovable-uploads/a2fe8353-b15a-4164-995a-de27a770bf92.png",
+    prompt: "Plato gourmet con presentación elegante y salsas decorativas",
+  },
+  {
+    id: "example11",
+    url: "/lovable-uploads/a5178690-a147-4f3b-a9ea-6930e431c878.png",
+    prompt: "Cascada tropical en selva densa con aguas turquesas",
+    badge: "NEW"
+  },
+  {
+    id: "example12",
+    url: "/lovable-uploads/fecfd663-f992-4ed7-94d2-9e13e26eb0e3.png",
+    prompt: "Habitación moderna minimalista con grandes ventanales y vista al mar",
   },
 ];
 
@@ -154,45 +187,8 @@ const Index = ({ generatedImages, setGeneratedImages }: IndexProps) => {
           <CreationsCallToAction count={generatedImages.length} />
         </div>
         
-        {/* Sección de proyectos destacados */}
-        <div className="mt-24 mb-12">
-          <h2 className="text-2xl font-semibold text-white mb-2">PROYECTOS DESTACADOS</h2>
-          <p className="text-gray-400 mb-8">Imágenes generadas por IA con distintos estilos y temáticas</p>
-          
-          {/* Grid de ejemplos con el estilo de la imagen de referencia */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {exampleImages.slice(0, 6).map((image) => (
-              <div key={image.id} className="relative group overflow-hidden rounded-lg">
-                {/* Badge condicional */}
-                {image.badge && (
-                  <div className={`absolute top-3 left-3 z-10 py-1 px-2 text-xs font-medium rounded-full
-                    ${image.badge === 'NEW' ? 'bg-neon-blue text-white' : 'bg-neon-pink text-white'}`}>
-                    {image.badge}
-                  </div>
-                )}
-                
-                {/* Imagen */}
-                <div className="aspect-square bg-[#13131e] overflow-hidden relative">
-                  <img 
-                    src={image.url} 
-                    alt={image.prompt} 
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                  />
-                </div>
-                
-                {/* Texto inferior */}
-                <div className="p-4 bg-[#13131e]">
-                  <h3 className="text-white font-medium mb-1 truncate">
-                    {image.prompt.split(' ').slice(0, 3).join(' ')}...
-                  </h3>
-                  <p className="text-gray-400 text-sm">
-                    {image.prompt.length > 50 ? `${image.prompt.substring(0, 50)}...` : image.prompt}
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
+        {/* Sección de ejemplos */}
+        <ExamplesSection exampleImages={exampleImages} />
       </main>
       <Footer />
     </div>
