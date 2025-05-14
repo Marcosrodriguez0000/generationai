@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from './ui/button';
 import { Textarea } from './ui/textarea';
@@ -12,12 +11,7 @@ import {
 import { Slider } from './ui/slider';
 import { Label } from './ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
-
-export interface TextGenerationSettings {
-  maxLength: number;
-  temperature: number;
-  format: string;
-}
+import { TextGenerationSettings } from '@/services/textGenerationService';
 
 interface TextPromptInputProps {
   onGenerate: (prompt: string, settings: TextGenerationSettings) => void;
