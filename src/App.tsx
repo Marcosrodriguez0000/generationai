@@ -11,8 +11,7 @@ import NotFound from "./pages/NotFound";
 import Creaciones from "./pages/Creaciones";
 import Login from "./pages/Login";
 import Registro from "./pages/Registro";
-import CartoonPage from "./pages/CartoonPage";
-import VideoGeneratorPage from "./pages/VideoGeneratorPage";
+import TextGeneratorPage from "./pages/TextGeneratorPage";
 
 const queryClient = new QueryClient();
 
@@ -31,8 +30,7 @@ const App = () => {
               <Route path="/creaciones" element={<Creaciones images={generatedImages} />} />
               <Route path="/login" element={<Login />} />
               <Route path="/registro" element={<Registro />} />
-              <Route path="/cartoon" element={<CartoonPage />} />
-              <Route path="/videos" element={<VideoGeneratorPage />} />
+              <Route path="/texto" element={<TextGeneratorPage />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>

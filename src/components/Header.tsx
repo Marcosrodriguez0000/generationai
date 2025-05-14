@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/lib/auth';
 import { Button } from './ui/button';
-import { Menu, X, Images, Film } from 'lucide-react';
+import { Menu, X, Images, Text } from 'lucide-react';
 import { useIsMobile } from '@/hooks/use-mobile';
 
 const Header = () => {
@@ -50,18 +50,11 @@ const Header = () => {
                 Generador
               </Link>
               <Link
-                to="/videos"
+                to="/texto"
                 className="px-3 py-2 text-sm text-gray-300 hover:text-white hover:bg-white/5 rounded-md transition-colors flex items-center"
               >
-                <Film size={16} className="mr-1" />
-                Videos
-              </Link>
-              <Link
-                to="/cartoon"
-                className="px-3 py-2 text-sm text-gray-300 hover:text-white hover:bg-white/5 rounded-md transition-colors flex items-center"
-              >
-                <Images size={16} className="mr-1" />
-                Transformador
+                <Text size={16} className="mr-1" />
+                Textos
               </Link>
               <Link
                 to="/creaciones"
@@ -102,20 +95,12 @@ const Header = () => {
               Generador
             </Link>
             <Link
-              to="/videos"
+              to="/texto"
               className="block px-4 py-2.5 text-gray-300 hover:bg-white/5 flex items-center"
               onClick={() => setIsOpen(false)}
             >
-              <Film size={16} className="mr-2" />
-              Videos
-            </Link>
-            <Link
-              to="/cartoon"
-              className="block px-4 py-2.5 text-gray-300 hover:bg-white/5 flex items-center"
-              onClick={() => setIsOpen(false)}
-            >
-              <Images size={16} className="mr-2" />
-              Transformador
+              <Text size={16} className="mr-2" />
+              Textos
             </Link>
             <Link
               to="/creaciones"
