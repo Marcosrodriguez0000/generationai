@@ -3,7 +3,6 @@ import React, { useState } from 'react';
 import { Button } from './ui/button';
 import { Textarea } from './ui/textarea';
 import { Film, Settings2 } from 'lucide-react';
-import { VideoGenerationSettings } from '@/services/videoService';
 import { toast } from 'sonner';
 import { 
   Popover,
@@ -13,6 +12,13 @@ import {
 import { Slider } from './ui/slider';
 import { Label } from './ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
+
+export interface VideoGenerationSettings {
+  resolution: string;
+  fps: number;
+  duration: number;
+  stylizeStrength?: number;
+}
 
 interface VideoPromptInputProps {
   onGenerate: (prompt: string, settings: VideoGenerationSettings) => void;
@@ -26,6 +32,7 @@ const VideoPromptInput = ({ onGenerate, isGenerating }: VideoPromptInputProps) =
   const [resolution, setResolution] = useState<string>("512x512");
   const [fps, setFps] = useState<number>(24);
   const [duration, setDuration] = useState<number>(3);
+  const [stylizeStrength, setStylizeStrength] = useState<number>(0.7);
   const [showAdvanced, setShowAdvanced] = useState<boolean>(false);
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -43,7 +50,7 @@ const VideoPromptInput = ({ onGenerate, isGenerating }: VideoPromptInputProps) =
       resolution,
       fps,
       duration,
-      apiKey: "" // Ya no necesitamos API key
+      stylizeStrength
     });
   };
 
@@ -121,6 +128,21 @@ const VideoPromptInput = ({ onGenerate, isGenerating }: VideoPromptInputProps) =
                       step={1}
                       value={[duration]}
                       onValueChange={(value) => setDuration(value[0])}
+                    />
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <div className="flex justify-between">
+                      <Label htmlFor="stylize">Intensidad estilo: {stylizeStrength.toFixed(1)}</Label>
+                      <span className="text-sm text-muted-foreground">{stylizeStrength.toFixed(1)}</span>
+                    </div>
+                    <Slider
+                      id="stylize"
+                      min={0.1}
+                      max={1.0}
+                      step={0.1}
+                      value={[stylizeStrength]}
+                      onValueChange={(value) => setStylizeStrength(value[0])}
                     />
                   </div>
                 </div>
