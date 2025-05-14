@@ -23,7 +23,7 @@ const LastGeneratedVideo = ({ video, onSave }: LastGeneratedVideoProps) => {
   if (!video) return null;
 
   const handleDownload = () => {
-    // Abre el video en una nueva pestaña para que el usuario pueda descargarlo
+    // Open the video in a new tab so the user can download it
     window.open(video.url, '_blank');
   };
 

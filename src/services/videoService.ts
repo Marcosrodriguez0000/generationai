@@ -53,4 +53,3 @@ export const generateVideo = async (
     return randomVideoUrl;
   }
 };
-
