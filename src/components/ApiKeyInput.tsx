@@ -30,23 +30,23 @@ const ApiKeyInput: React.FC<ApiKeyInputProps> = ({ onApiKeyChange, apiKey }) => 
       </DialogTrigger>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>API Key de Hugging Face</DialogTitle>
+          <DialogTitle>API Key de Stability AI</DialogTitle>
           <DialogDescription>
-            Introduce tu API key de Hugging Face para generar imágenes.
+            Introduce tu API key de Stability AI para generar videos.
           </DialogDescription>
         </DialogHeader>
         
         <div className="space-y-4 py-4">
           <Alert>
             <AlertDescription>
-              Para obtener una API key gratuita, regístrate en <a href="https://huggingface.co/join" target="_blank" rel="noreferrer" className="text-blue-500 hover:underline">huggingface.co</a> y genera tu token en la sección de ajustes.
+              Para obtener una API key, visita <a href="https://platform.stability.ai/account/keys" target="_blank" rel="noreferrer" className="text-blue-500 hover:underline">stability.ai</a> y regístrate para obtener tu token.
             </AlertDescription>
           </Alert>
           
           <Input
             value={inputKey}
             onChange={(e) => setInputKey(e.target.value)}
-            placeholder="hf_..."
+            placeholder="sk-..."
             className="w-full"
           />
         </div>

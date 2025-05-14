@@ -2,12 +2,9 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from './ui/button';
 import { Textarea } from './ui/textarea';
-import { Film, Key } from 'lucide-react';
-import { Label } from './ui/label';
-import { Input } from './ui/input';
+import { Film } from 'lucide-react';
 import { VideoGenerationSettings } from '@/services/videoService';
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from './ui/dialog';
-import { Alert, AlertDescription } from './ui/alert';
+import ApiKeyInput from './ApiKeyInput';
 
 interface VideoPromptInputProps {
   onGenerate: (prompt: string, settings: VideoGenerationSettings) => void;
@@ -20,7 +17,6 @@ const VideoPromptInput = ({ onGenerate, isGenerating }: VideoPromptInputProps) =
     // Try to get API key from localStorage
     return localStorage.getItem('videoApiKey') || '';
   });
-  const [isKeyDialogOpen, setIsKeyDialogOpen] = useState(false);
 
   // Store API key in localStorage when it changes
   useEffect(() => {
@@ -41,8 +37,8 @@ const VideoPromptInput = ({ onGenerate, isGenerating }: VideoPromptInputProps) =
     }
   };
 
-  const handleSaveApiKey = () => {
-    setIsKeyDialogOpen(false);
+  const handleApiKeyChange = (newKey: string) => {
+    setApiKey(newKey);
   };
 
   return (
@@ -63,46 +59,12 @@ const VideoPromptInput = ({ onGenerate, isGenerating }: VideoPromptInputProps) =
 
         <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
           <div>
-            <Dialog open={isKeyDialogOpen} onOpenChange={setIsKeyDialogOpen}>
-              <DialogTrigger asChild>
-                <Button variant="outline" size="sm" className="flex items-center gap-2 text-white">
-                  <Key className="h-4 w-4" />
-                  {apiKey ? "API Key Configurada" : "Configurar API Key"}
-                </Button>
-              </DialogTrigger>
-              <DialogContent className="sm:max-w-md">
-                <DialogHeader>
-                  <DialogTitle>API Key para Generación de Videos</DialogTitle>
-                  <DialogDescription>
-                    Introduce tu API key para generar videos.
-                  </DialogDescription>
-                </DialogHeader>
-                
-                <div className="space-y-4 py-4">
-                  <Alert>
-                    <AlertDescription>
-                      Para obtener una API key gratuita, regístrate en un servicio de generación de videos con IA.
-                    </AlertDescription>
-                  </Alert>
-                  
-                  <Input
-                    value={apiKey}
-                    onChange={(e) => setApiKey(e.target.value)}
-                    placeholder="api_key..."
-                    className="w-full"
-                  />
-                </div>
-                
-                <DialogFooter>
-                  <Button onClick={handleSaveApiKey}>Guardar API Key</Button>
-                </DialogFooter>
-              </DialogContent>
-            </Dialog>
+            <ApiKeyInput apiKey={apiKey} onApiKeyChange={handleApiKeyChange} />
           </div>
 
           <Button 
             type="submit" 
-            disabled={!prompt.trim() || isGenerating}
+            disabled={!prompt.trim() || isGenerating || !apiKey}
             className="bg-gradient-to-r from-neon-pink to-neon-blue text-white py-6 px-8 hover:opacity-90 rounded-xl animate-glow"
           >
             {isGenerating ? (
