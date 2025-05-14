@@ -38,6 +38,8 @@ const GeneradorVideos = () => {
   const { user } = useAuth();
 
   const handleGenerate = async (prompt: string, settings: VideoGenerationSettings) => {
+    if (isGenerating) return;
+    
     setIsGenerating(true);
 
     try {
@@ -46,6 +48,13 @@ const GeneradorVideos = () => {
       });
 
       const videoUrl = await generateVideo(prompt, settings);
+      
+      // Verificar que tenemos una URL válida
+      if (!videoUrl) {
+        throw new Error("No se pudo obtener una URL de video válida");
+      }
+      
+      console.log("Video generado:", videoUrl);
       
       // Crear nuevo objeto de video
       const newVideo: VideoItem = {
@@ -61,14 +70,14 @@ const GeneradorVideos = () => {
       // Agregar el nuevo video al principio del array
       setGeneratedVideos(prev => [newVideo, ...prev]);
 
-      toast("¡Video generado exitosamente!", {
+      toast.success("¡Video generado exitosamente!", {
         description: "Tu video ha sido creado.",
       });
       
     } catch (error) {
       console.error("Error generating video:", error);
-      toast("Error al generar el video", {
-        description: "Ha ocurrido un error. Por favor intenta nuevamente.",
+      toast.error("Error al generar el video", {
+        description: "Ha ocurrido un error. Por favor intenta nuevamente con otra frase.",
       });
     } finally {
       setIsGenerating(false);
@@ -81,12 +90,12 @@ const GeneradorVideos = () => {
     try {
       // Aquí iría la lógica para guardar el video
       // Por ahora solo mostramos una notificación
-      toast("Video guardado", {
+      toast.success("Video guardado", {
         description: "El video se ha guardado en tu colección",
       });
     } catch (error) {
       console.error("Error saving video:", error);
-      toast("Error al guardar", {
+      toast.error("Error al guardar", {
         description: "No se pudo guardar el video",
       });
     }

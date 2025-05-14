@@ -25,6 +25,17 @@ const sampleVideos = [
   "https://storage.googleapis.com/gen-2-samples/city.mp4"
 ];
 
+// Añadimos una función para verificar si un video está disponible
+const checkVideoAvailability = async (url: string): Promise<boolean> => {
+  try {
+    const response = await fetch(url, { method: 'HEAD' });
+    return response.ok;
+  } catch (error) {
+    console.error("Error checking video availability:", error);
+    return false;
+  }
+};
+
 export const generateVideo = async (
   prompt: string,
   settings: VideoGenerationSettings = DEFAULT_SETTINGS
@@ -71,13 +82,22 @@ export const generateVideo = async (
     // For demo purposes, we'll simulate an API call
     await simulateApiCall(apiKey);
     
-    // Return a sample video based on the prompt
-    return getSampleVideo(prompt);
+    // Get a sample video based on the prompt
+    const videoUrl = getSampleVideo(prompt);
+    
+    // Verify the video actually works before returning it
+    const isAvailable = await checkVideoAvailability(videoUrl);
+    if (!isAvailable) {
+      console.warn("Selected video is not available, falling back to first sample video");
+      return sampleVideos[0];
+    }
+    
+    return videoUrl;
     
   } catch (error) {
     console.error("Error generating video:", error);
     // Fallback to sample videos if the API fails
-    return getSampleVideo(prompt);
+    return sampleVideos[0]; // Always return the first sample to ensure it works
   }
 };
 
@@ -106,6 +126,7 @@ const getSampleVideo = (prompt: string): string => {
     return sampleVideos[3];
   }
   
-  // If no specific match, return a random sample
-  return sampleVideos[Math.floor(Math.random() * sampleVideos.length)];
+  // Si no hay coincidencia, retornar siempre el primer video de muestra (el del perro)
+  // para garantizar que funciona
+  return sampleVideos[0];
 };
