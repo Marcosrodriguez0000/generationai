@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -6,7 +5,7 @@ import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import VideoPromptInput from './VideoPromptInput';
 import { generateVideoWithPollinations } from '@/services/videoGenerationService';
-import { Save, AlertCircle, RefreshCw } from "lucide-react";
+import { Save, AlertCircle, RefreshCw, Download } from "lucide-react";
 import { VideoItem } from '@/types/image';
 
 interface VideoGenerationSettings {
@@ -115,7 +114,8 @@ const VideoGenerator = () => {
                        generatedVideo?.url?.includes('storage.googleapis.com') ||
                        generatedVideo?.url?.includes('cdn.videvo.net') ||
                        generatedVideo?.url?.includes('api.stability.ai') ||
-                       generatedVideo?.url?.startsWith('/videos/');
+                       generatedVideo?.url?.startsWith('/videos/') ||
+                       generatedVideo?.url?.includes('video=true');
 
   return (
     <div className="max-w-3xl mx-auto mb-12 mt-8">

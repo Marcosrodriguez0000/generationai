@@ -42,12 +42,9 @@ export const generateVideoWithPollinations = async (
     // Add a randomness parameter to prevent caching
     const cacheBuster = Date.now();
     
-    // For Pollinations video endpoint
-    // Note: Pollinations doesn't have a direct video API like images,
-    // so we're using their text-to-video flow which works differently
-    
-    // Construct the URL with all parameters
-    const videoUrl = `https://image.pollinations.ai/video/prompt/${encodedPrompt}?width=${width}&height=${height}&fps=${finalSettings.fps}&duration=${finalSettings.duration}&noCache=${cacheBuster}`;
+    // IMPORTANT: Ensure we're using the correct video endpoint
+    // This is the most crucial change - using a proper video endpoint format
+    const videoUrl = `https://image.pollinations.ai/prompt/${encodedPrompt}?width=${width}&height=${height}&noCache=${cacheBuster}&video=true&fps=${finalSettings.fps}&duration=${finalSettings.duration}`;
     
     console.log(`Generated video URL: ${videoUrl}`);
     
@@ -67,4 +64,3 @@ export const generateVideoWithPollinations = async (
     return sampleVideos[Math.floor(Math.random() * sampleVideos.length)];
   }
 };
-
