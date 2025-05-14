@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { toast } from "sonner";
 import Header from "@/components/Header";
@@ -14,19 +15,19 @@ import { VideoItem } from '@/types/image';
 const exampleVideos: VideoItem[] = [
   {
     id: "video1",
-    url: "https://pollinations.ai/p/sunset_over_mountains/omGGvFbTYCievLkDJQSR",
-    prompt: "Atardecer sobre montañas",
+    url: "https://storage.googleapis.com/gen-2-samples/dog.mp4",
+    prompt: "Perro corriendo en el parque",
     badge: "NEW"
   },
   {
     id: "video2",
-    url: "https://pollinations.ai/p/northern_lights_in_sky/xsI2LpuzmLSxDq5c96Cf",
-    prompt: "Aurora boreal en el cielo nocturno",
+    url: "https://storage.googleapis.com/gen-2-samples/sunset.mp4",
+    prompt: "Atardecer sobre montañas",
   },
   {
     id: "video3",
-    url: "https://pollinations.ai/p/ocean_waves_crashing/2SOfu6PM6DjlmKLxnvBe",
-    prompt: "Olas del océano rompiendo en la costa",
+    url: "https://storage.googleapis.com/gen-2-samples/beach.mp4",
+    prompt: "Playa con olas",
   }
 ];
 
@@ -44,7 +45,6 @@ const GeneradorVideos = () => {
         description: "Esto puede tomar varios segundos.",
       });
 
-      // Use the provided settings for video generation
       const videoUrl = await generateVideo(prompt, settings);
       
       // Crear nuevo objeto de video

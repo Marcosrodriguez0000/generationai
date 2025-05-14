@@ -1,10 +1,13 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from './ui/button';
 import { Textarea } from './ui/textarea';
-import { Play, Film } from 'lucide-react';
+import { Film, Key } from 'lucide-react';
 import { Label } from './ui/label';
-import { VIDEO_MODELS, VideoGenerationSettings } from '@/services/videoService';
+import { Input } from './ui/input';
+import { VideoGenerationSettings } from '@/services/videoService';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from './ui/dialog';
+import { Alert, AlertDescription } from './ui/alert';
 
 interface VideoPromptInputProps {
   onGenerate: (prompt: string, settings: VideoGenerationSettings) => void;
@@ -13,20 +16,33 @@ interface VideoPromptInputProps {
 
 const VideoPromptInput = ({ onGenerate, isGenerating }: VideoPromptInputProps) => {
   const [prompt, setPrompt] = useState('');
-  const [modelType, setModelType] = useState(VIDEO_MODELS.POLLINATIONS);
+  const [apiKey, setApiKey] = useState(() => {
+    // Try to get API key from localStorage
+    return localStorage.getItem('videoApiKey') || '';
+  });
+  const [isKeyDialogOpen, setIsKeyDialogOpen] = useState(false);
+
+  // Store API key in localStorage when it changes
+  useEffect(() => {
+    if (apiKey) {
+      localStorage.setItem('videoApiKey', apiKey);
+    }
+  }, [apiKey]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (prompt.trim() && !isGenerating) {
-      // Use the selected model in the settings
-      onGenerate(prompt, { 
-        resolution: "512x512", 
-        frameCount: 24, 
-        quality: 7, 
+      onGenerate(prompt, {
+        resolution: "512x512",
+        fps: 24,
         duration: 3,
-        model: modelType
+        apiKey
       });
     }
+  };
+
+  const handleSaveApiKey = () => {
+    setIsKeyDialogOpen(false);
   };
 
   return (
@@ -46,19 +62,42 @@ const VideoPromptInput = ({ onGenerate, isGenerating }: VideoPromptInputProps) =
         </div>
 
         <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
-          <div className="flex items-center gap-3">
-            <Label htmlFor="model-select" className="text-white">Modelo de IA:</Label>
-            <select
-              id="model-select"
-              className="bg-black/40 text-white border border-neon-blue/20 rounded-lg px-3 py-2"
-              value={modelType}
-              onChange={(e) => setModelType(e.target.value)}
-              disabled={isGenerating}
-            >
-              <option value={VIDEO_MODELS.POLLINATIONS}>Pollinations AI</option>
-              <option value={VIDEO_MODELS.RUNWAY}>Runway Gen-2</option>
-              <option value={VIDEO_MODELS.STABLE_DIFFUSION}>Stable Video Diffusion</option>
-            </select>
+          <div>
+            <Dialog open={isKeyDialogOpen} onOpenChange={setIsKeyDialogOpen}>
+              <DialogTrigger asChild>
+                <Button variant="outline" size="sm" className="flex items-center gap-2 text-white">
+                  <Key className="h-4 w-4" />
+                  {apiKey ? "API Key Configurada" : "Configurar API Key"}
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-md">
+                <DialogHeader>
+                  <DialogTitle>API Key para Generación de Videos</DialogTitle>
+                  <DialogDescription>
+                    Introduce tu API key para generar videos.
+                  </DialogDescription>
+                </DialogHeader>
+                
+                <div className="space-y-4 py-4">
+                  <Alert>
+                    <AlertDescription>
+                      Para obtener una API key gratuita, regístrate en un servicio de generación de videos con IA.
+                    </AlertDescription>
+                  </Alert>
+                  
+                  <Input
+                    value={apiKey}
+                    onChange={(e) => setApiKey(e.target.value)}
+                    placeholder="api_key..."
+                    className="w-full"
+                  />
+                </div>
+                
+                <DialogFooter>
+                  <Button onClick={handleSaveApiKey}>Guardar API Key</Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
           </div>
 
           <Button 
