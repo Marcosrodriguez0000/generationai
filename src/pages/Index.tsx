@@ -1,25 +1,19 @@
 
 import React, { useState } from 'react';
 import { toast } from "sonner";
-import { Link } from "react-router-dom";
 import Header from "@/components/Header";
 import PromptInput from "@/components/PromptInput";
 import CosmosBackground from "@/components/CosmosBackground";
-import { Images, Save } from "lucide-react";
 import { generateImage } from "@/services/imageService";
 import { saveUserImage } from "@/services/userImageService";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { useAuth } from '@/lib/auth';
-import ImageGallery from '@/components/ImageGallery';
-import { useIsMobile } from '@/hooks/use-mobile';
-
-interface ImageItem {
-  id: string;
-  url: string;
-  prompt: string;
-}
+import HeroSection from '@/components/HeroSection';
+import LastGeneratedImage from '@/components/LastGeneratedImage';
+import CreationsCallToAction from '@/components/CreationsCallToAction';
+import ExamplesSection from '@/components/ExamplesSection';
+import InfoSection from '@/components/InfoSection';
+import Footer from '@/components/Footer';
+import { ImageItem } from '@/types/image';
 
 // Ejemplos de imágenes IA con sus prompts
 const exampleImages: ImageItem[] = [
@@ -96,7 +90,6 @@ const Index = ({ generatedImages, setGeneratedImages }: IndexProps) => {
   const [isGenerating, setIsGenerating] = useState(false);
   const [lastGeneratedImage, setLastGeneratedImage] = useState<ImageItem | null>(null);
   const { user } = useAuth();
-  const isMobile = useIsMobile();
 
   const handleGenerate = async (prompt: string) => {
     setIsGenerating(true);
@@ -159,120 +152,23 @@ const Index = ({ generatedImages, setGeneratedImages }: IndexProps) => {
       <CosmosBackground />
       <Header />
       <main className="flex-1 container mx-auto px-4 py-8">
-        <div className="text-center mb-10 max-w-2xl mx-auto">
-          <h1 className="text-4xl md:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-gold-400 to-brown-600 mb-4">
-            Generation.AI
-          </h1>
-          <p className="text-lg text-gold-300 mb-6">
-            Describe lo que imaginas y deja que la IA lo convierta en realidad
-          </p>
-        </div>
-
+        <HeroSection />
+        
         {/* Barra para escribir prompts */}
         <PromptInput onGenerate={handleGenerate} isGenerating={isGenerating} />
-
+        
         {/* Sección de la última imagen generada */}
-        {lastGeneratedImage && (
-          <div className="my-12 max-w-md mx-auto">
-            <h2 className="text-xl font-semibold text-center text-gold-300 mb-4">
-              Tu creación más reciente
-            </h2>
-            <Card className="overflow-hidden border-gold-200/20 bg-black/50 backdrop-blur-sm">
-              <AspectRatio ratio={1/1}>
-                <img 
-                  src={lastGeneratedImage.url} 
-                  alt={lastGeneratedImage.prompt} 
-                  className="w-full h-full object-cover"
-                />
-              </AspectRatio>
-              <CardHeader className="py-3">
-                <CardTitle className="text-lg text-gold-400">Última creación</CardTitle>
-              </CardHeader>
-              <CardContent className="pb-4">
-                <CardDescription className="text-gold-100/80 mb-4">
-                  {lastGeneratedImage.prompt}
-                </CardDescription>
-                <div className="flex gap-3 justify-center">
-                  {user && (
-                    <Button 
-                      onClick={handleSaveImage}
-                      className="bg-gradient-to-r from-gold-400 to-brown-600 text-white hover:opacity-90"
-                    >
-                      <Save className="h-4 w-4 mr-2" />
-                      Guardar en mi colección
-                    </Button>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        )}
-
+        <LastGeneratedImage image={lastGeneratedImage} onSave={handleSaveImage} />
+        
         {/* Ver mis creaciones */}
-        {generatedImages.length > 0 && (
-          <div className="text-center mb-16">
-            <Link to="/creaciones">
-              <Button variant="outline" className="bg-gold-500/10 border-gold-400/20 text-gold-400 hover:bg-gold-500/20">
-                <Images className="h-4 w-4 mr-2" />
-                Ver mis creaciones ({generatedImages.length})
-              </Button>
-            </Link>
-          </div>
-        )}
+        <CreationsCallToAction count={generatedImages.length} />
         
         {/* Sección de ejemplos */}
-        <div className="mt-16">
-          <h2 className="text-2xl font-bold text-center text-gold-300 mb-4">
-            El Poder de la IA en Tus Manos
-          </h2>
-          <p className="text-gold-100/80 mb-8 max-w-3xl mx-auto text-center">
-            Nuestra tecnología de inteligencia artificial puede generar imágenes impresionantes a partir de tus descripciones. Inspírate con estos ejemplos creados por nuestra IA.
-          </p>
-          
-          <ImageGallery images={exampleImages} columns={4} />
-          
-          <div className="max-w-3xl mx-auto mt-16 p-8 bg-black/40 backdrop-blur-md rounded-xl border border-gold-500/10">
-            {!user ? (
-              <>
-                <h3 className="text-2xl font-bold text-gold-400 mb-4">Crea tu cuenta para guardar tus creaciones</h3>
-                <p className="text-gold-100/80 mb-6">
-                  Regístrate para guardar todas tus imágenes generadas y acceder a ellas en cualquier momento desde cualquier dispositivo.
-                </p>
-                <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                  <Link to="/login">
-                    <Button className="bg-gradient-to-r from-gold-400 to-brown-600 text-white hover:opacity-90">
-                      Iniciar sesión
-                    </Button>
-                  </Link>
-                  <Link to="/registro">
-                    <Button variant="outline" className="border-gold-400/20 bg-gold-500/10 text-gold-400 hover:bg-gold-500/20">
-                      Crear cuenta
-                    </Button>
-                  </Link>
-                </div>
-              </>
-            ) : (
-              <>
-                <h3 className="text-2xl font-bold text-gold-400 mb-4">¡Gracias por unirte a Generation.AI!</h3>
-                <p className="text-gold-100/80 mb-6">
-                  Ahora puedes guardar todas tus creaciones y acceder a ellas desde cualquier dispositivo.
-                </p>
-                <div className="flex justify-center">
-                  <Link to="/creaciones">
-                    <Button className="bg-gradient-to-r from-gold-400 to-brown-600 text-white hover:opacity-90">
-                      <Images className="h-4 w-4 mr-2" />
-                      Ver mis creaciones
-                    </Button>
-                  </Link>
-                </div>
-              </>
-            )}
-          </div>
-        </div>
+        <ExamplesSection exampleImages={exampleImages} />
+        
+        <InfoSection />
       </main>
-      <footer className="py-6 text-center text-sm text-gold-500/50">
-        <p>© 2025 Generation.AI</p>
-      </footer>
+      <Footer />
     </div>
   );
 };
