@@ -63,6 +63,27 @@ const exampleImages: ImageItem[] = [
     id: "example8",
     url: "/lovable-uploads/933918f5-51fe-44d5-a927-ff1f83961b9c.png",
     prompt: "Oficina en casa minimalista con escritorio de madera, silla ergonómica, ordenador Mac, plantas decorativas y arte en la pared, estilo escandinavo, luz natural"
+  },
+  // Las 4 nuevas imágenes que has enviado
+  {
+    id: "example9",
+    url: "/lovable-uploads/fecfd663-f992-4ed7-94d2-9e13e26eb0e3.png",
+    prompt: "Dragón azul brillante posado sobre una montaña nevada, con amplias alas desplegadas contra un cielo celeste"
+  },
+  {
+    id: "example10",
+    url: "/lovable-uploads/5397d569-8d3a-4c33-bc04-ba917f7dc3a1.png",
+    prompt: "Elefante africano caminando en la sabana al atardecer, con cielo anaranjado y siluetas de árboles de acacia"
+  },
+  {
+    id: "example11",
+    url: "/lovable-uploads/a2fe8353-b15a-4164-995a-de27a770bf92.png",
+    prompt: "Calle lluviosa de Tokio por la noche, con personas caminando con paraguas y luces de neón reflejadas en el pavimento mojado"
+  },
+  {
+    id: "example12",
+    url: "/lovable-uploads/7170fe0d-9fa1-475e-ae85-387d309f32e9.png",
+    prompt: "Escena futurista con nave espacial y astronauta observando dos lunas sobre un planeta distante"
   }
 ];
 
