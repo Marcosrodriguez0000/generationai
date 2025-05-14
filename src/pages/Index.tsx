@@ -168,10 +168,15 @@ const Index = ({ generatedImages, setGeneratedImages }: IndexProps) => {
           </p>
         </div>
 
+        {/* Barra para escribir prompts */}
         <PromptInput onGenerate={handleGenerate} isGenerating={isGenerating} />
 
+        {/* Sección de la última imagen generada */}
         {lastGeneratedImage && (
-          <div className="my-8 max-w-md mx-auto">
+          <div className="my-12 max-w-md mx-auto">
+            <h2 className="text-xl font-semibold text-center text-gold-300 mb-4">
+              Tu creación más reciente
+            </h2>
             <Card className="overflow-hidden border-gold-200/20 bg-black/50 backdrop-blur-sm">
               <AspectRatio ratio={1/1}>
                 <img 
@@ -203,8 +208,9 @@ const Index = ({ generatedImages, setGeneratedImages }: IndexProps) => {
           </div>
         )}
 
+        {/* Ver mis creaciones */}
         {generatedImages.length > 0 && (
-          <div className="text-center mt-8">
+          <div className="text-center mb-16">
             <Link to="/creaciones">
               <Button variant="outline" className="bg-gold-500/10 border-gold-400/20 text-gold-400 hover:bg-gold-500/20">
                 <Images className="h-4 w-4 mr-2" />
@@ -214,6 +220,7 @@ const Index = ({ generatedImages, setGeneratedImages }: IndexProps) => {
           </div>
         )}
         
+        {/* Sección de ejemplos */}
         <div className="mt-16">
           <h2 className="text-2xl font-bold text-center text-gold-300 mb-4">
             El Poder de la IA en Tus Manos
