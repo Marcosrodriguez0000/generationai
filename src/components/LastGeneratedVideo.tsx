@@ -3,16 +3,9 @@ import React, { useState, useEffect } from 'react';
 import { Save, Download, AlertCircle, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
-import { Skeleton } from "@/components/ui/skeleton";
 import { useAuth } from '@/lib/auth';
 import { toast } from "sonner";
-
-interface VideoItem {
-  id: string;
-  url: string;
-  prompt: string;
-  badge?: string;
-}
+import { VideoItem } from '@/types/image';
 
 interface LastGeneratedVideoProps {
   video: VideoItem | null;
@@ -33,6 +26,8 @@ const LastGeneratedVideo = ({ video, onSave }: LastGeneratedVideoProps) => {
       setIsLoading(true);
       setRetryCount(0); // Reset retry count for new video
       setVideoKey(Date.now());
+      
+      console.log("Cargando nuevo video:", video.url);
     }
   }, [video?.url]);
 
@@ -48,7 +43,8 @@ const LastGeneratedVideo = ({ video, onSave }: LastGeneratedVideoProps) => {
                         video.url.includes('replicate.delivery') || 
                         video.url.includes('storage.googleapis.com') ||
                         video.url.includes('cdn.videvo.net') ||
-                        video.url.includes('api.stability.ai');
+                        video.url.includes('api.stability.ai') ||
+                        video.url.startsWith('/videos/');
 
   const handleVideoError = () => {
     console.error("Error loading video:", video.url);
@@ -72,7 +68,7 @@ const LastGeneratedVideo = ({ video, onSave }: LastGeneratedVideoProps) => {
   };
 
   const handleVideoLoaded = () => {
-    console.log("Video loaded successfully");
+    console.log("Video loaded successfully:", video.url);
     setIsLoading(false);
     if (retryCount > 0) {
       toast.success("¡Video cargado exitosamente!");

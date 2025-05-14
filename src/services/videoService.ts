@@ -21,8 +21,8 @@ const DEFAULT_SETTINGS: VideoGenerationSettings = {
 const sampleVideos = [
   "/videos/sample-code.mp4",
   "/videos/sample-ocean.mp4",
-  "/videos/sample-nature.mp4",
-  "/videos/sample-cityscape.mp4"
+  "/videos/sample-nature.mp4"
+  // Removed sample-cityscape.mp4 as it doesn't exist in the allowed files
 ];
 
 // Verificamos si podemos acceder a los videos usando try/catch para manejar errores
@@ -32,6 +32,7 @@ const checkVideoAvailability = async (url: string): Promise<boolean> => {
     const response = await fetch(url, { method: 'HEAD' })
       .catch(() => ({ ok: false }));
     
+    console.log(`Checking video availability: ${url} - Result: ${response.ok}`);
     return response.ok;
   } catch (error) {
     console.error("Error checking video availability:", error);
@@ -43,17 +44,27 @@ const checkVideoAvailability = async (url: string): Promise<boolean> => {
 const getFirstAvailableSampleVideo = async (): Promise<string> => {
   console.log("Verificando videos de muestra disponibles...");
   
-  // Primero intentamos con videos locales que siempre deberían funcionar
-  for (const videoUrl of sampleVideos) {
-    if (await checkVideoAvailability(videoUrl)) {
-      console.log(`Video local disponible: ${videoUrl}`);
-      return videoUrl;
-    }
-  }
+  // Para evitar delay en desarrollo, intentamos con un video que sabemos que existe
+  const defaultVideo = "/videos/sample-code.mp4";
   
-  // Si no hay videos locales disponibles, usamos uno predefinido
-  console.warn("Ningún video de muestra está disponible, usando fallback");
-  return "/videos/sample-code.mp4";
+  try {
+    // Verificamos primero los videos locales
+    for (const videoUrl of sampleVideos) {
+      console.log(`Checking local video: ${videoUrl}`);
+      // Usamos una comprobación más simple para los videos locales
+      if (videoUrl === defaultVideo || await checkVideoAvailability(videoUrl)) {
+        console.log(`Video local disponible: ${videoUrl}`);
+        return videoUrl;
+      }
+    }
+    
+    // Si no hay videos disponibles, usamos uno predefinido
+    console.warn("Ningún video de muestra está disponible, usando fallback");
+    return defaultVideo;
+  } catch (error) {
+    console.error("Error al buscar videos de muestra:", error);
+    return defaultVideo;
+  }
 };
 
 // Función principal para generar videos basados en el prompt del usuario
@@ -65,7 +76,8 @@ export const generateVideo = async (
   console.log(`Configuración: ${JSON.stringify(settings)}`);
   
   try {
-    // Usar Hugging Face para generar videos - no requiere API key
+    // Intentar generar con Hugging Face
+    console.log("Intentando generar video con Hugging Face...");
     const videoUrl = await generateWithHuggingFace(prompt, settings);
     
     if (videoUrl) {
@@ -77,8 +89,11 @@ export const generateVideo = async (
   } catch (error) {
     console.error("Error al generar el video:", error);
     
-    // Fallback a un video de muestra
-    return getFirstAvailableSampleVideo();
+    // En caso de error, usamos un video de muestra
+    console.log("Usando video de muestra como fallback...");
+    const sampleVideo = await getFirstAvailableSampleVideo();
+    console.log(`Video de muestra seleccionado: ${sampleVideo}`);
+    return sampleVideo;
   }
 };
 
@@ -149,12 +164,10 @@ const generateWithHuggingFace = async (
       }
     }
     
-    // Si ninguno de los modelos funcionó, usar un video de muestra
-    console.log("Ningún modelo de Hugging Face disponible, usando video de muestra");
-    return getFirstAvailableSampleVideo();
+    // Si todos los modelos fallan, lanzamos error para usar fallback
+    throw new Error("Ningún modelo de Hugging Face disponible");
   } catch (error) {
     console.error("Error en generación con Hugging Face:", error);
     throw error;
   }
 };
-

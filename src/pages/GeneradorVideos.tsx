@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { toast } from "sonner";
 import Header from "@/components/Header";
 import VideoPromptInput from "@/components/VideoPromptInput";
@@ -11,24 +11,24 @@ import CreationsCallToAction from '@/components/CreationsCallToAction';
 import Footer from '@/components/Footer';
 import { VideoItem } from '@/types/image';
 
-// Ejemplos de videos con sus prompts - URLs verificados que funcionan
+// Ejemplos de videos con sus prompts
 const exampleVideos: VideoItem[] = [
   {
     id: "video1",
-    url: "https://cdn.videvo.net/videvo_files/video/premium/video0036/small_watermarked/computer_code00_preview.mp4",
+    url: "/videos/sample-code.mp4",
     prompt: "Código de programación en movimiento",
     badge: "EJEMPLO"
   },
   {
     id: "video2",
-    url: "https://cdn.videvo.net/videvo_files/video/free/2019-01/small_watermarked/190111_06_25_preview.mp4",
+    url: "/videos/sample-ocean.mp4",
     prompt: "Olas del mar en la playa",
     badge: "EJEMPLO"
   },
   {
     id: "video3",
-    url: "https://cdn.videvo.net/videvo_files/video/free/2019-09/small_watermarked/190828_27_SuperTrees_HD_17_preview.mp4",
-    prompt: "Ciudad futurista con árboles tecnológicos",
+    url: "/videos/sample-nature.mp4",
+    prompt: "Paisaje natural con árboles y montañas",
     badge: "EJEMPLO"
   }
 ];
@@ -38,6 +38,32 @@ const GeneradorVideos = () => {
   const [lastGeneratedVideo, setLastGeneratedVideo] = useState<VideoItem | null>(null);
   const [generatedVideos, setGeneratedVideos] = useState<VideoItem[]>([]);
   const { user } = useAuth();
+
+  // Verificar que los videos de ejemplo están disponibles al cargar la página
+  useEffect(() => {
+    const checkExampleVideos = async () => {
+      try {
+        const promises = exampleVideos.map(video => 
+          fetch(video.url, { method: 'HEAD' })
+            .then(response => ({ url: video.url, exists: response.ok }))
+            .catch(() => ({ url: video.url, exists: false }))
+        );
+        
+        const results = await Promise.all(promises);
+        const availableVideos = results.filter(result => result.exists);
+        
+        if (availableVideos.length === 0) {
+          console.warn("Ningún video de ejemplo está disponible");
+        } else {
+          console.log("Videos de ejemplo disponibles:", availableVideos.map(v => v.url));
+        }
+      } catch (error) {
+        console.error("Error checking example videos:", error);
+      }
+    };
+    
+    checkExampleVideos();
+  }, []);
 
   const handleGenerate = async (prompt: string, settings: VideoGenerationSettings) => {
     if (isGenerating) return;
@@ -73,7 +99,7 @@ const GeneradorVideos = () => {
       setGeneratedVideos(prev => [newVideo, ...prev]);
 
       toast.success("¡Video generado exitosamente!", {
-        description: "Tu video ha sido creado con tecnología de Hugging Face.",
+        description: "Tu video está listo para visualizarse.",
       });
       
     } catch (error) {
