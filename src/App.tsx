@@ -30,7 +30,7 @@ const App = () => {
               <Route path="/creaciones" element={<Creaciones images={generatedImages} />} />
               <Route path="/login" element={<Login />} />
               <Route path="/registro" element={<Registro />} />
-              <Route path="/videos" element={<GeneradorVideos />} />
+              <Route path="/studio" element={<GeneradorVideos />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
