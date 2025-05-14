@@ -78,6 +78,42 @@ const exampleImages: ImageItem[] = [
     url: "/lovable-uploads/7170fe0d-9fa1-475e-ae85-387d309f32e9.png",
     prompt: "Automóvil deportivo rojo brillante en carretera costera curva",
   },
+  {
+    id: "example13",
+    url: "/lovable-uploads/a2fe8353-b15a-4164-995a-de27a770bf92.png",
+    prompt: "Calle lluviosa de Tokio por la noche, con luces de neón reflejadas en el pavimento mojado",
+    badge: "NEW"
+  },
+  {
+    id: "example14",
+    url: "https://images.unsplash.com/photo-1518770660439-4636190af475",
+    prompt: "Placa de circuito moderno con componentes electrónicos de alta tecnología",
+    badge: "NEW"
+  },
+  {
+    id: "example15",
+    url: "https://images.unsplash.com/photo-1487058792275-0ad4aaf24ca7",
+    prompt: "Código colorido de software en monitor de programador",
+    badge: "NEW"
+  },
+  {
+    id: "example16",
+    url: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5",
+    prompt: "Matriz digital con código verde sobre fondo negro",
+    badge: "NEW"
+  },
+  {
+    id: "example17",
+    url: "https://images.unsplash.com/photo-1470813740244-df37b8c1edcb",
+    prompt: "Amanecer colorido sobre montañas con niebla en el valle",
+    badge: "NEW"
+  },
+  {
+    id: "example18",
+    url: "https://images.unsplash.com/photo-1461749280684-dccba630e2f6",
+    prompt: "Monitor mostrando código de programación Java con efectos visuales",
+    badge: "NEW"
+  }
 ];
 
 interface IndexProps {

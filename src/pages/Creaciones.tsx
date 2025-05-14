@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import Header from "@/components/Header";
 import ImageGallery from "@/components/ImageGallery";
@@ -35,6 +36,16 @@ const exampleImages: ImageItem[] = [
     id: "example4",
     url: "/lovable-uploads/a2fe8353-b15a-4164-995a-de27a770bf92.png",
     prompt: "Calle lluviosa de Tokio por la noche, con luces de neón reflejadas en el pavimento mojado"
+  },
+  {
+    id: "example5",
+    url: "https://images.unsplash.com/photo-1518770660439-4636190af475",
+    prompt: "Placa de circuito moderno con componentes electrónicos de alta tecnología"
+  },
+  {
+    id: "example6",
+    url: "https://images.unsplash.com/photo-1487058792275-0ad4aaf24ca7",
+    prompt: "Código colorido de software en monitor de programador"
   }
 ];
 
