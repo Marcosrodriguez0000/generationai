@@ -13,9 +13,9 @@ export const addWatermark = (imageUrl: string): string => {
     const promptPart = url.pathname.replace('/prompt/', '');
     
     // Parameters to specify a crop that completely removes the Pollinations.ai watermark
-    // Using a more aggressive crop at the bottom of the image
+    // Using a much more aggressive crop at the bottom of the image
     const cropParams = {
-      crop: '100p,95p,nowe', // Crop 0% from width but 5% from bottom height
+      crop: '100p,90p,nowe', // Crop 0% from width but 10% from bottom height
     };
     
     // Add our own watermark text
