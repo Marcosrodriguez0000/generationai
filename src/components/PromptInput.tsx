@@ -1,22 +1,33 @@
 
 import React, { useState } from 'react';
 import { Button } from './ui/button';
-import { Input } from './ui/input';
 import { Textarea } from './ui/textarea';
-import { Sparkles } from 'lucide-react';
+import { Sparkles, Settings2 } from 'lucide-react';
+import { GenerationSettings } from '@/services/imageService';
+import { 
+  Popover,
+  PopoverContent,
+  PopoverTrigger 
+} from './ui/popover';
+import GenerationSettings from './GenerationSettings';
 
 interface PromptInputProps {
-  onGenerate: (prompt: string) => void;
+  onGenerate: (prompt: string, settings: GenerationSettings) => void;
   isGenerating: boolean;
 }
 
 const PromptInput = ({ onGenerate, isGenerating }: PromptInputProps) => {
   const [prompt, setPrompt] = useState('');
+  const [showSettings, setShowSettings] = useState(false);
+  const [settings, setSettings] = useState<GenerationSettings>({
+    resolution: "512x512",
+    quality: 7
+  });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (prompt.trim() && !isGenerating) {
-      onGenerate(prompt);
+      onGenerate(prompt, settings);
     }
   };
 
@@ -35,7 +46,18 @@ const PromptInput = ({ onGenerate, isGenerating }: PromptInputProps) => {
             {prompt.length > 0 ? `${prompt.length} caracteres` : ''}
           </div>
         </div>
-        <div className="flex justify-end">
+        <div className="flex justify-between items-center">
+          <Button 
+            type="button" 
+            variant="outline" 
+            size="sm" 
+            className="flex items-center gap-2"
+            onClick={() => setShowSettings(!showSettings)}
+          >
+            <Settings2 className="h-4 w-4" />
+            Configuración
+          </Button>
+          
           <Button 
             type="submit" 
             disabled={!prompt.trim() || isGenerating}
@@ -58,6 +80,13 @@ const PromptInput = ({ onGenerate, isGenerating }: PromptInputProps) => {
           </Button>
         </div>
       </form>
+      
+      {showSettings && (
+        <GenerationSettings 
+          settings={settings} 
+          onSettingsChange={setSettings} 
+        />
+      )}
     </div>
   );
 };
