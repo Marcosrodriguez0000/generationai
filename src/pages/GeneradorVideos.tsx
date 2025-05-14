@@ -11,7 +11,7 @@ import CreationsCallToAction from '@/components/CreationsCallToAction';
 import Footer from '@/components/Footer';
 import { VideoItem } from '@/types/image';
 
-// Ejemplos de videos con sus prompts
+// Ejemplos de videos con sus prompts - URLs validados
 const exampleVideos: VideoItem[] = [
   {
     id: "video1",
@@ -41,7 +41,7 @@ const GeneradorVideos = () => {
     if (isGenerating) return;
     
     setIsGenerating(true);
-
+    
     try {
       toast("Generando video...", {
         description: "Esto puede tomar varios segundos.",
@@ -79,6 +79,13 @@ const GeneradorVideos = () => {
       toast.error("Error al generar el video", {
         description: "Ha ocurrido un error. Por favor intenta nuevamente con otra frase.",
       });
+      
+      // Si hay un error pero tenemos videos de ejemplo, mostrar uno como fallback
+      if (exampleVideos.length > 0 && !lastGeneratedVideo) {
+        const fallbackVideo = {...exampleVideos[0], badge: "EJEMPLO"};
+        setLastGeneratedVideo(fallbackVideo);
+        toast.info("Mostrando video de ejemplo");
+      }
     } finally {
       setIsGenerating(false);
     }

@@ -1,9 +1,11 @@
 
-import React, { useState } from 'react';
-import { Save, Download, AlertCircle } from "lucide-react";
+import React, { useState, useEffect } from 'react';
+import { Save, Download, AlertCircle, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useAuth } from '@/lib/auth';
+import { toast } from "sonner";
 
 interface VideoItem {
   id: string;
@@ -21,6 +23,17 @@ const LastGeneratedVideo = ({ video, onSave }: LastGeneratedVideoProps) => {
   const { user } = useAuth();
   const [videoError, setVideoError] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [retryCount, setRetryCount] = useState(0);
+  const [videoKey, setVideoKey] = useState(Date.now()); // Key para forzar la recarga del video
+
+  useEffect(() => {
+    // Resetear estados cuando cambia el video
+    if (video) {
+      setVideoError(false);
+      setIsLoading(true);
+      setVideoKey(Date.now());
+    }
+  }, [video?.url]);
 
   if (!video) return null;
 
@@ -37,11 +50,34 @@ const LastGeneratedVideo = ({ video, onSave }: LastGeneratedVideoProps) => {
   const handleVideoError = () => {
     console.error("Error loading video:", video.url);
     setVideoError(true);
+    setIsLoading(false);
+    
+    if (retryCount === 0) {
+      // Intentar recargar automáticamente una vez
+      setTimeout(() => {
+        setRetryCount(prev => prev + 1);
+        setVideoKey(Date.now());
+        setVideoError(false);
+        setIsLoading(true);
+      }, 1000);
+    } else {
+      toast.error("Error al cargar el video", {
+        description: "No se pudo cargar el video automáticamente. Puedes intentar verlo en una nueva ventana."
+      });
+    }
   };
 
   const handleVideoLoaded = () => {
     console.log("Video loaded successfully");
     setIsLoading(false);
+  };
+
+  const handleRetry = () => {
+    setRetryCount(prev => prev + 1);
+    setVideoKey(Date.now());
+    setVideoError(false);
+    setIsLoading(true);
+    toast.info("Intentando cargar el video nuevamente...");
   };
 
   return (
@@ -52,7 +88,7 @@ const LastGeneratedVideo = ({ video, onSave }: LastGeneratedVideoProps) => {
       <div className="overflow-hidden rounded-lg border border-white/10 bg-[#13131e]">
         <AspectRatio ratio={1/1} className="bg-[#0c0c14] relative">
           {isLoading && (
-            <div className="absolute inset-0 flex items-center justify-center">
+            <div className="absolute inset-0 flex items-center justify-center z-10">
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white"></div>
             </div>
           )}
@@ -62,30 +98,38 @@ const LastGeneratedVideo = ({ video, onSave }: LastGeneratedVideoProps) => {
               <AlertCircle className="h-10 w-10 text-red-500 mb-2" />
               <p className="text-white mb-2">Error al cargar el video</p>
               <p className="text-sm text-gray-400 mb-4">El archivo de video no pudo cargarse correctamente</p>
-              <Button 
-                variant="outline"
-                className="bg-white/10 hover:bg-white/20 text-white"
-                onClick={() => {
-                  setVideoError(false);
-                  setIsLoading(true);
-                  // Force reload by adding timestamp
-                  const timestamp = new Date().getTime();
-                  window.open(`${video.url}?t=${timestamp}`, '_blank');
-                }}
-              >
-                Abrir en nueva ventana
-              </Button>
+              <div className="flex gap-3">
+                <Button 
+                  variant="outline"
+                  className="bg-white/10 hover:bg-white/20 text-white flex items-center gap-2"
+                  onClick={handleRetry}
+                >
+                  <RefreshCw className="h-4 w-4" />
+                  Reintentar
+                </Button>
+                <Button 
+                  variant="outline"
+                  className="bg-white/10 hover:bg-white/20 text-white"
+                  onClick={() => window.open(video.url, '_blank')}
+                >
+                  Abrir en nueva ventana
+                </Button>
+              </div>
             </div>
           ) : isDirectVideo ? (
             <video 
-              src={video.url}
+              key={videoKey}
+              src={`${video.url}?t=${videoKey}`}
               controls
               autoPlay
               loop
               className="w-full h-full object-contain"
               onError={handleVideoError}
               onLoadedData={handleVideoLoaded}
-            />
+              preload="auto"
+            >
+              Tu navegador no soporta el elemento de video.
+            </video>
           ) : (
             <iframe 
               src={video.url} 
@@ -96,6 +140,14 @@ const LastGeneratedVideo = ({ video, onSave }: LastGeneratedVideoProps) => {
               onLoad={handleVideoLoaded}
               onError={handleVideoError}
             />
+          )}
+          
+          {/* Overlay con mensaje mientras carga */}
+          {isLoading && !videoError && (
+            <div className="absolute inset-0 bg-black/50 flex flex-col items-center justify-center z-0">
+              <p className="text-white mb-2">Cargando video...</p>
+              <p className="text-sm text-gray-400">Por favor espera unos momentos</p>
+            </div>
           )}
         </AspectRatio>
         <div className="p-4">

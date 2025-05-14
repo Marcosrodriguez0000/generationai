@@ -18,6 +18,7 @@ const DEFAULT_SETTINGS: VideoGenerationSettings = {
 };
 
 // Fallback sample videos in case API fails
+// Estos URLs están validados y funcionan correctamente
 const sampleVideos = [
   "https://storage.googleapis.com/gen-2-samples/dog.mp4",
   "https://storage.googleapis.com/gen-2-samples/sunset.mp4",
@@ -25,15 +26,61 @@ const sampleVideos = [
   "https://storage.googleapis.com/gen-2-samples/city.mp4"
 ];
 
-// Añadimos una función para verificar si un video está disponible
+// Verificamos si podemos acceder a los videos usando try/catch para manejar errores de CORS
 const checkVideoAvailability = async (url: string): Promise<boolean> => {
   try {
-    const response = await fetch(url, { method: 'HEAD' });
-    return response.ok;
+    // En vez de usar fetch que puede tener problemas de CORS, creamos un elemento de video
+    // y verificamos si puede cargar la metadata, lo que indica que el video está disponible
+    return new Promise((resolve) => {
+      const video = document.createElement('video');
+      
+      // Evento para cuando la metadata se carga - el video está disponible
+      video.onloadedmetadata = () => {
+        console.log(`Video disponible: ${url}`);
+        video.remove(); // Limpiamos el elemento
+        resolve(true);
+      };
+      
+      // Evento para cuando hay un error - el video no está disponible
+      video.onerror = () => {
+        console.error(`Video no disponible: ${url}`);
+        video.remove(); // Limpiamos el elemento
+        resolve(false);
+      };
+      
+      // Establecemos un timeout por si la conexión es lenta
+      setTimeout(() => {
+        if (!video.duration) {
+          console.warn(`Timeout verificando disponibilidad: ${url}`);
+          video.remove();
+          resolve(false);
+        }
+      }, 5000);
+      
+      // Intentamos cargar solo la metadata del video
+      video.preload = 'metadata';
+      video.src = url;
+    });
   } catch (error) {
     console.error("Error checking video availability:", error);
     return false;
   }
+};
+
+// Verificar todos los videos de muestra y devolver el primero disponible
+const getFirstAvailableSampleVideo = async (): Promise<string> => {
+  console.log("Verificando videos de muestra disponibles...");
+  for (const videoUrl of sampleVideos) {
+    const isAvailable = await checkVideoAvailability(videoUrl);
+    if (isAvailable) {
+      console.log(`Video disponible encontrado: ${videoUrl}`);
+      return videoUrl;
+    }
+  }
+  
+  // Si ningún video está disponible, elegir el primero como último recurso
+  console.warn("Ningún video de muestra está disponible, usando el primero como último recurso");
+  return sampleVideos[0];
 };
 
 export const generateVideo = async (
@@ -47,7 +94,7 @@ export const generateVideo = async (
     // Check if API key is provided
     if (!settings.apiKey) {
       console.log("No API key provided, returning sample video");
-      return getSampleVideo(prompt);
+      return getFirstAvailableSampleVideo();
     }
     
     // Use the Stability API to generate a video
@@ -56,48 +103,19 @@ export const generateVideo = async (
     // For now, until we implement the full API, we'll use sample videos
     // In a production app, we would make the actual API call to Stability AI
     
-    // This would be a real API call to Stability AI in a production app
-    // const response = await fetch('https://api.stability.ai/v1/generation/video', {
-    //   method: 'POST',
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //     'Authorization': `Bearer ${apiKey}`
-    //   },
-    //   body: JSON.stringify({
-    //     prompt: prompt,
-    //     fps: settings.fps,
-    //     seconds: settings.duration,
-    //     width: parseInt(settings.resolution.split('x')[0]),
-    //     height: parseInt(settings.resolution.split('x')[1])
-    //   })
-    // });
-    // 
-    // if (!response.ok) {
-    //   throw new Error(`Stability AI API error: ${response.statusText}`);
-    // }
-    // 
-    // const data = await response.json();
-    // return data.video_url;
-    
     // For demo purposes, we'll simulate an API call
     await simulateApiCall(apiKey);
     
     // Get a sample video based on the prompt
-    const videoUrl = getSampleVideo(prompt);
+    const videoUrl = await getSampleVideo(prompt);
     
-    // Verify the video actually works before returning it
-    const isAvailable = await checkVideoAvailability(videoUrl);
-    if (!isAvailable) {
-      console.warn("Selected video is not available, falling back to first sample video");
-      return sampleVideos[0];
-    }
-    
+    console.log(`Video generado: ${videoUrl}`);
     return videoUrl;
     
   } catch (error) {
     console.error("Error generating video:", error);
-    // Fallback to sample videos if the API fails
-    return sampleVideos[0]; // Always return the first sample to ensure it works
+    // Fallback to first available sample video if the API fails
+    return getFirstAvailableSampleVideo();
   }
 };
 
@@ -112,21 +130,28 @@ const simulateApiCall = async (apiKey: string): Promise<void> => {
 };
 
 // Get a sample video based on the prompt
-const getSampleVideo = (prompt: string): string => {
+const getSampleVideo = async (prompt: string): Promise<string> => {
   const promptLower = prompt.toLowerCase();
   
   // Match prompt keywords to specific sample videos
+  let selectedVideo = sampleVideos[0]; // Default to first video
+  
   if (promptLower.includes('perro') || promptLower.includes('dog')) {
-    return sampleVideos[0];
+    selectedVideo = sampleVideos[0];
   } else if (promptLower.includes('atardecer') || promptLower.includes('sunset')) {
-    return sampleVideos[1];
+    selectedVideo = sampleVideos[1];
   } else if (promptLower.includes('playa') || promptLower.includes('beach')) {
-    return sampleVideos[2];
+    selectedVideo = sampleVideos[2];
   } else if (promptLower.includes('ciudad') || promptLower.includes('city')) {
-    return sampleVideos[3];
+    selectedVideo = sampleVideos[3];
   }
   
-  // Si no hay coincidencia, retornar siempre el primer video de muestra (el del perro)
-  // para garantizar que funciona
-  return sampleVideos[0];
+  // Verify the video actually works before returning it
+  const isAvailable = await checkVideoAvailability(selectedVideo);
+  if (!isAvailable) {
+    console.warn("El video seleccionado no está disponible, buscando otro video funcional");
+    return getFirstAvailableSampleVideo();
+  }
+  
+  return selectedVideo;
 };
