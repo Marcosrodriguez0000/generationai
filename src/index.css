@@ -105,6 +105,41 @@
   .gold-glow {
     @apply shadow-[0_0_15px_rgba(212,166,87,0.5)];
   }
+  
+  .responsive-container {
+    @apply w-full px-4 sm:px-6 lg:px-8 mx-auto;
+    max-width: 100%;
+  }
+  
+  @screen sm {
+    .responsive-container {
+      max-width: 540px;
+    }
+  }
+  
+  @screen md {
+    .responsive-container {
+      max-width: 720px;
+    }
+  }
+  
+  @screen lg {
+    .responsive-container {
+      max-width: 960px;
+    }
+  }
+  
+  @screen xl {
+    .responsive-container {
+      max-width: 1140px;
+    }
+  }
+  
+  @screen 2xl {
+    .responsive-container {
+      max-width: 1320px;
+    }
+  }
 }
 
 /* Animated stars */
@@ -178,5 +213,23 @@
   100% {
     transform: translateX(100%) scaleX(0.1);
     opacity: 0;
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+  .text-4xl {
+    font-size: 1.75rem;
+    line-height: 2rem;
+  }
+  
+  .py-6 {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+  }
+  
+  .px-8 {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
   }
 }
