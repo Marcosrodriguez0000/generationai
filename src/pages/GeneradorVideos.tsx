@@ -1,10 +1,9 @@
-
 import React, { useState } from 'react';
 import { toast } from "sonner";
 import Header from "@/components/Header";
 import VideoPromptInput from "@/components/VideoPromptInput";
 import CosmosBackground from "@/components/CosmosBackground";
-import { generateVideo } from "@/services/videoService";
+import { generateVideo, VideoGenerationSettings } from "@/services/videoService";
 import { useAuth } from '@/lib/auth';
 import LastGeneratedVideo from '@/components/LastGeneratedVideo';
 import CreationsCallToAction from '@/components/CreationsCallToAction';
@@ -37,7 +36,7 @@ const GeneradorVideos = () => {
   const [generatedVideos, setGeneratedVideos] = useState<VideoItem[]>([]);
   const { user } = useAuth();
 
-  const handleGenerate = async (prompt: string) => {
+  const handleGenerate = async (prompt: string, settings: VideoGenerationSettings) => {
     setIsGenerating(true);
 
     try {
@@ -45,13 +44,8 @@ const GeneradorVideos = () => {
         description: "Esto puede tomar varios segundos.",
       });
 
-      // Configuración predeterminada para videos
-      const videoUrl = await generateVideo(prompt, { 
-        resolution: "512x512", 
-        frameCount: 24, 
-        quality: 7, 
-        duration: 3 
-      });
+      // Use the provided settings for video generation
+      const videoUrl = await generateVideo(prompt, settings);
       
       // Crear nuevo objeto de video
       const newVideo: VideoItem = {

@@ -2,20 +2,30 @@
 import React, { useState } from 'react';
 import { Button } from './ui/button';
 import { Textarea } from './ui/textarea';
-import { Play } from 'lucide-react';
+import { Play, Film } from 'lucide-react';
+import { Label } from './ui/label';
+import { VIDEO_MODELS, VideoGenerationSettings } from '@/services/videoService';
 
 interface VideoPromptInputProps {
-  onGenerate: (prompt: string) => void;
+  onGenerate: (prompt: string, settings: VideoGenerationSettings) => void;
   isGenerating: boolean;
 }
 
 const VideoPromptInput = ({ onGenerate, isGenerating }: VideoPromptInputProps) => {
   const [prompt, setPrompt] = useState('');
+  const [modelType, setModelType] = useState(VIDEO_MODELS.POLLINATIONS);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (prompt.trim() && !isGenerating) {
-      onGenerate(prompt);
+      // Use the selected model in the settings
+      onGenerate(prompt, { 
+        resolution: "512x512", 
+        frameCount: 24, 
+        quality: 7, 
+        duration: 3,
+        model: modelType
+      });
     }
   };
 
@@ -34,7 +44,23 @@ const VideoPromptInput = ({ onGenerate, isGenerating }: VideoPromptInputProps) =
             {prompt.length > 0 ? `${prompt.length} caracteres` : ''}
           </div>
         </div>
-        <div className="flex justify-end">
+
+        <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
+          <div className="flex items-center gap-3">
+            <Label htmlFor="model-select" className="text-white">Modelo de IA:</Label>
+            <select
+              id="model-select"
+              className="bg-black/40 text-white border border-neon-blue/20 rounded-lg px-3 py-2"
+              value={modelType}
+              onChange={(e) => setModelType(e.target.value)}
+              disabled={isGenerating}
+            >
+              <option value={VIDEO_MODELS.POLLINATIONS}>Pollinations AI</option>
+              <option value={VIDEO_MODELS.RUNWAY}>Runway Gen-2</option>
+              <option value={VIDEO_MODELS.STABLE_DIFFUSION}>Stable Video Diffusion</option>
+            </select>
+          </div>
+
           <Button 
             type="submit" 
             disabled={!prompt.trim() || isGenerating}
@@ -50,7 +76,7 @@ const VideoPromptInput = ({ onGenerate, isGenerating }: VideoPromptInputProps) =
               </span>
             ) : (
               <span className="flex items-center gap-2">
-                <Play className="h-5 w-5" />
+                <Film className="h-5 w-5" />
                 Generar Video
               </span>
             )}
