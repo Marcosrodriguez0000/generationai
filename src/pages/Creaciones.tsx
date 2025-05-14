@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import Header from "@/components/Header";
 import ImageGallery from "@/components/ImageGallery";
@@ -9,12 +8,7 @@ import { Button } from "@/components/ui/button";
 import { useAuth } from '@/lib/auth';
 import { getUserImages, UserImage } from '@/services/userImageService';
 import Footer from "@/components/Footer";
-
-interface ImageItem {
-  id: string;
-  url: string;
-  prompt: string;
-}
+import { ImageItem } from '@/types/image';
 
 interface CreacionesProps {
   images: ImageItem[];
@@ -24,23 +18,23 @@ interface CreacionesProps {
 const exampleImages: ImageItem[] = [
   {
     id: "example1",
-    url: "/lovable-uploads/fecfd663-f992-4ed7-94d2-9e13e26eb0e3.png",
-    prompt: "Dragón azul brillante posado sobre una montaña nevada, con amplias alas desplegadas contra un cielo celeste"
+    url: "/lovable-uploads/1beca87b-3afc-4311-90eb-d102237b51de.png",
+    prompt: "Retrato en blanco y negro de hombre con barba, iluminación dramática de estudio"
   },
   {
     id: "example2",
-    url: "/lovable-uploads/5397d569-8d3a-4c33-bc04-ba917f7dc3a1.png",
-    prompt: "Elefante africano caminando en la sabana al atardecer, con cielo anaranjado y siluetas de árboles de acacia"
+    url: "/lovable-uploads/44077103-c1f1-439e-b79c-17facdc4b0a1.png",
+    prompt: "Estatua griega con gafas de sol rosadas, auriculares y chicle, estilo moderno"
   },
   {
     id: "example3",
-    url: "/lovable-uploads/a2fe8353-b15a-4164-995a-de27a770bf92.png",
-    prompt: "Calle lluviosa de Tokio por la noche, con personas caminando con paraguas y luces de neón reflejadas en el pavimento mojado"
+    url: "/lovable-uploads/ac16ab61-8c45-4060-87af-984af62b0b49.png",
+    prompt: "Dragón dorado con ojos azules brillantes, detalle de escamas y textura realista"
   },
   {
     id: "example4",
-    url: "/lovable-uploads/7170fe0d-9fa1-475e-ae85-387d309f32e9.png",
-    prompt: "Escena futurista con nave espacial y astronauta observando dos lunas sobre un planeta distante"
+    url: "/lovable-uploads/a2fe8353-b15a-4164-995a-de27a770bf92.png",
+    prompt: "Calle lluviosa de Tokio por la noche, con luces de neón reflejadas en el pavimento mojado"
   }
 ];
 

@@ -16,69 +16,67 @@ import ExamplesSection from '@/components/ExamplesSection';
 const exampleImages: ImageItem[] = [
   {
     id: "example1",
-    url: "/lovable-uploads/67c20ac8-f57f-4415-9e95-ab013380ea69.png",
-    prompt: "Casa moderna de diseño minimalista con fachada de cristal curvada",
+    url: "/lovable-uploads/1beca87b-3afc-4311-90eb-d102237b51de.png",
+    prompt: "Retrato en blanco y negro de hombre con barba, iluminación dramática de estudio",
     badge: "NEW"
   },
   {
     id: "example2",
+    url: "/lovable-uploads/44077103-c1f1-439e-b79c-17facdc4b0a1.png",
+    prompt: "Estatua griega con gafas de sol rosadas, auriculares y chicle, estilo moderno",
+    badge: "NEW"
+  },
+  {
+    id: "example3",
+    url: "/lovable-uploads/ac16ab61-8c45-4060-87af-984af62b0b49.png",
+    prompt: "Dragón dorado con ojos azules brillantes, detalle de escamas y textura realista",
+    badge: "NEW"
+  },
+  {
+    id: "example4",
+    url: "/lovable-uploads/67c20ac8-f57f-4415-9e95-ab013380ea69.png",
+    prompt: "Casa moderna de diseño minimalista con fachada de cristal curvada",
+  },
+  {
+    id: "example5",
     url: "/lovable-uploads/734f2359-a7ce-4a38-87a5-b1da0be658dd.png",
     prompt: "Pareja bailando bajo un cielo estrellado con la Vía Láctea visible",
   },
   {
-    id: "example3",
+    id: "example6",
     url: "/lovable-uploads/d39c38e0-84e5-4d33-808f-89c51a0a571b.png",
     prompt: "Frasco de perfume de lujo con etiqueta azul y dorada",
     badge: "UPDATE"
   },
   {
-    id: "example4",
+    id: "example7",
     url: "/lovable-uploads/320d93c4-bd61-47d1-895b-3aae110db3f2.png",
     prompt: "Retrato hiperrealista de un hombre mayor con expresión pensativa",
   },
   {
-    id: "example5",
+    id: "example8",
     url: "/lovable-uploads/81ebe13b-f3e0-4241-ad7f-a8171be4d604.png",
     prompt: "Reloj de lujo con esfera negra y detalles dorados",
   },
   {
-    id: "example6",
+    id: "example9",
     url: "/lovable-uploads/960f4a5e-5cbc-4422-b617-a6e3243cf080.png",
     prompt: "Taza de café con leche con espuma cremosa y caramelo",
-    badge: "NEW"
   },
   {
-    id: "example7",
+    id: "example10",
     url: "/lovable-uploads/933918f5-51fe-44d5-a927-ff1f83961b9c.png",
     prompt: "Paisaje de montañas con lago cristalino reflejo al atardecer",
-    badge: "NEW"
   },
   {
-    id: "example8",
+    id: "example11",
     url: "/lovable-uploads/5397d569-8d3a-4c33-bc04-ba917f7dc3a1.png",
     prompt: "Anillo de compromiso con diamante brillante sobre terciopelo negro",
   },
   {
-    id: "example9",
+    id: "example12",
     url: "/lovable-uploads/7170fe0d-9fa1-475e-ae85-387d309f32e9.png",
     prompt: "Automóvil deportivo rojo brillante en carretera costera curva",
-    badge: "UPDATE"
-  },
-  {
-    id: "example10",
-    url: "/lovable-uploads/a2fe8353-b15a-4164-995a-de27a770bf92.png",
-    prompt: "Plato gourmet con presentación elegante y salsas decorativas",
-  },
-  {
-    id: "example11",
-    url: "/lovable-uploads/a5178690-a147-4f3b-a9ea-6930e431c878.png",
-    prompt: "Cascada tropical en selva densa con aguas turquesas",
-    badge: "NEW"
-  },
-  {
-    id: "example12",
-    url: "/lovable-uploads/fecfd663-f992-4ed7-94d2-9e13e26eb0e3.png",
-    prompt: "Habitación moderna minimalista con grandes ventanales y vista al mar",
   },
 ];
 
