@@ -31,6 +31,7 @@ const LastGeneratedVideo = ({ video, onSave }: LastGeneratedVideoProps) => {
     if (video) {
       setVideoError(false);
       setIsLoading(true);
+      setRetryCount(0); // Reset retry count for new video
       setVideoKey(Date.now());
     }
   }, [video?.url]);
@@ -45,24 +46,26 @@ const LastGeneratedVideo = ({ video, onSave }: LastGeneratedVideoProps) => {
   // Determine if the URL is a direct MP4 file or an embed URL
   const isDirectVideo = video.url.endsWith('.mp4') || 
                         video.url.includes('replicate.delivery') || 
-                        video.url.includes('storage.googleapis.com');
+                        video.url.includes('storage.googleapis.com') ||
+                        video.url.includes('cdn.videvo.net');
 
   const handleVideoError = () => {
     console.error("Error loading video:", video.url);
     setVideoError(true);
     setIsLoading(false);
     
-    if (retryCount === 0) {
-      // Intentar recargar automáticamente una vez
+    if (retryCount < 2) {
+      // Intentar recargar automáticamente hasta 2 veces
+      toast.info("Reintentando cargar el video...");
       setTimeout(() => {
         setRetryCount(prev => prev + 1);
         setVideoKey(Date.now());
         setVideoError(false);
         setIsLoading(true);
-      }, 1000);
+      }, 1500);
     } else {
       toast.error("Error al cargar el video", {
-        description: "No se pudo cargar el video automáticamente. Puedes intentar verlo en una nueva ventana."
+        description: "No se pudo cargar el video después de varios intentos."
       });
     }
   };
@@ -70,14 +73,33 @@ const LastGeneratedVideo = ({ video, onSave }: LastGeneratedVideoProps) => {
   const handleVideoLoaded = () => {
     console.log("Video loaded successfully");
     setIsLoading(false);
+    if (retryCount > 0) {
+      toast.success("¡Video cargado exitosamente!");
+    }
   };
 
   const handleRetry = () => {
-    setRetryCount(prev => prev + 1);
+    setRetryCount(0);
     setVideoKey(Date.now());
     setVideoError(false);
     setIsLoading(true);
     toast.info("Intentando cargar el video nuevamente...");
+  };
+  
+  const renderBadge = () => {
+    if (!video.badge) return null;
+    
+    return (
+      <div className="absolute top-4 right-4 z-20">
+        <span className={`px-2 py-1 text-xs font-semibold rounded-md ${
+          video.badge === 'NUEVO' 
+            ? 'bg-green-500 text-white' 
+            : 'bg-blue-500 text-white'
+        }`}>
+          {video.badge}
+        </span>
+      </div>
+    );
   };
 
   return (
@@ -85,7 +107,9 @@ const LastGeneratedVideo = ({ video, onSave }: LastGeneratedVideoProps) => {
       <h2 className="text-xl font-semibold text-center text-white mb-4">
         Tu video más reciente
       </h2>
-      <div className="overflow-hidden rounded-lg border border-white/10 bg-[#13131e]">
+      <div className="overflow-hidden rounded-lg border border-white/10 bg-[#13131e] relative">
+        {renderBadge()}
+        
         <AspectRatio ratio={1/1} className="bg-[#0c0c14] relative">
           {isLoading && (
             <div className="absolute inset-0 flex items-center justify-center z-10">
@@ -127,6 +151,7 @@ const LastGeneratedVideo = ({ video, onSave }: LastGeneratedVideoProps) => {
               onError={handleVideoError}
               onLoadedData={handleVideoLoaded}
               preload="auto"
+              crossOrigin="anonymous"
             >
               Tu navegador no soporta el elemento de video.
             </video>

@@ -2,9 +2,18 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from './ui/button';
 import { Textarea } from './ui/textarea';
-import { Film } from 'lucide-react';
+import { Film, Settings2 } from 'lucide-react';
 import { VideoGenerationSettings } from '@/services/videoService';
 import ApiKeyInput from './ApiKeyInput';
+import { toast } from 'sonner';
+import { 
+  Popover,
+  PopoverContent,
+  PopoverTrigger 
+} from './ui/popover';
+import { Slider } from './ui/slider';
+import { Label } from './ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 
 interface VideoPromptInputProps {
   onGenerate: (prompt: string, settings: VideoGenerationSettings) => void;
@@ -17,6 +26,12 @@ const VideoPromptInput = ({ onGenerate, isGenerating }: VideoPromptInputProps) =
     // Try to get API key from localStorage
     return localStorage.getItem('videoApiKey') || '';
   });
+  
+  // Configuraciones avanzadas para la generación de video
+  const [resolution, setResolution] = useState<string>("512x512");
+  const [fps, setFps] = useState<number>(24);
+  const [duration, setDuration] = useState<number>(3);
+  const [showAdvanced, setShowAdvanced] = useState<boolean>(false);
 
   // Store API key in localStorage when it changes
   useEffect(() => {
@@ -27,14 +42,28 @@ const VideoPromptInput = ({ onGenerate, isGenerating }: VideoPromptInputProps) =
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (prompt.trim() && !isGenerating) {
-      onGenerate(prompt, {
-        resolution: "512x512",
-        fps: 24,
-        duration: 3,
-        apiKey
-      });
+    if (!prompt.trim()) {
+      toast.error("Por favor, ingresa una descripción para el video");
+      return;
     }
+    
+    if (!apiKey) {
+      toast.error("Se requiere una API key válida", {
+        description: "Por favor, configura tu API key de Stability AI"
+      });
+      return;
+    }
+    
+    if (isGenerating) {
+      return;
+    }
+    
+    onGenerate(prompt, {
+      resolution,
+      fps,
+      duration,
+      apiKey
+    });
   };
 
   const handleApiKeyChange = (newKey: string) => {
@@ -58,8 +87,70 @@ const VideoPromptInput = ({ onGenerate, isGenerating }: VideoPromptInputProps) =
         </div>
 
         <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
-          <div>
+          <div className="flex items-center gap-2">
             <ApiKeyInput apiKey={apiKey} onApiKeyChange={handleApiKeyChange} />
+            
+            <Popover open={showAdvanced} onOpenChange={setShowAdvanced}>
+              <PopoverTrigger asChild>
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="flex items-center gap-2"
+                >
+                  <Settings2 className="h-4 w-4" />
+                  Avanzado
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-80 p-4">
+                <div className="space-y-4">
+                  <h4 className="font-medium mb-2">Configuración Avanzada</h4>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="resolution">Resolución</Label>
+                    <Select value={resolution} onValueChange={setResolution}>
+                      <SelectTrigger id="resolution">
+                        <SelectValue placeholder="Selecciona resolución" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="512x512">512x512</SelectItem>
+                        <SelectItem value="576x320">576x320 (16:9)</SelectItem>
+                        <SelectItem value="768x768">768x768</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <div className="flex justify-between">
+                      <Label htmlFor="fps">FPS: {fps}</Label>
+                      <span className="text-sm text-muted-foreground">{fps}</span>
+                    </div>
+                    <Slider
+                      id="fps"
+                      min={12}
+                      max={30}
+                      step={1}
+                      value={[fps]}
+                      onValueChange={(value) => setFps(value[0])}
+                    />
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <div className="flex justify-between">
+                      <Label htmlFor="duration">Duración (seg.): {duration}</Label>
+                      <span className="text-sm text-muted-foreground">{duration}s</span>
+                    </div>
+                    <Slider
+                      id="duration"
+                      min={1}
+                      max={5}
+                      step={1}
+                      value={[duration]}
+                      onValueChange={(value) => setDuration(value[0])}
+                    />
+                  </div>
+                </div>
+              </PopoverContent>
+            </Popover>
           </div>
 
           <Button 

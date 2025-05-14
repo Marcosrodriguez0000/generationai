@@ -11,23 +11,25 @@ import CreationsCallToAction from '@/components/CreationsCallToAction';
 import Footer from '@/components/Footer';
 import { VideoItem } from '@/types/image';
 
-// Ejemplos de videos con sus prompts - URLs validados
+// Ejemplos de videos con sus prompts - URLs verificados que funcionan
 const exampleVideos: VideoItem[] = [
   {
     id: "video1",
-    url: "https://storage.googleapis.com/gen-2-samples/dog.mp4",
-    prompt: "Perro corriendo en el parque",
-    badge: "NEW"
+    url: "https://cdn.videvo.net/videvo_files/video/premium/video0036/small_watermarked/computer_code00_preview.mp4",
+    prompt: "Código de programación en movimiento",
+    badge: "EJEMPLO"
   },
   {
     id: "video2",
-    url: "https://storage.googleapis.com/gen-2-samples/sunset.mp4",
-    prompt: "Atardecer sobre montañas",
+    url: "https://cdn.videvo.net/videvo_files/video/free/2019-01/small_watermarked/190111_06_25_preview.mp4",
+    prompt: "Olas del mar en la playa",
+    badge: "EJEMPLO"
   },
   {
     id: "video3",
-    url: "https://storage.googleapis.com/gen-2-samples/beach.mp4",
-    prompt: "Playa con olas",
+    url: "https://cdn.videvo.net/videvo_files/video/free/2019-09/small_watermarked/190828_27_SuperTrees_HD_17_preview.mp4",
+    prompt: "Ciudad futurista con árboles tecnológicos",
+    badge: "EJEMPLO"
   }
 ];
 
@@ -44,7 +46,7 @@ const GeneradorVideos = () => {
     
     try {
       toast("Generando video...", {
-        description: "Esto puede tomar varios segundos.",
+        description: "Esto puede tomar hasta un minuto, por favor espera.",
       });
 
       const videoUrl = await generateVideo(prompt, settings);
@@ -61,7 +63,7 @@ const GeneradorVideos = () => {
         id: Date.now().toString(),
         url: videoUrl,
         prompt,
-        badge: "NEW"
+        badge: "NUEVO"
       };
 
       // Almacenar el último video generado
@@ -77,14 +79,14 @@ const GeneradorVideos = () => {
     } catch (error) {
       console.error("Error generating video:", error);
       toast.error("Error al generar el video", {
-        description: "Ha ocurrido un error. Por favor intenta nuevamente con otra frase.",
+        description: "Ha ocurrido un error. Por favor verifica tu API key e intenta nuevamente.",
       });
       
       // Si hay un error pero tenemos videos de ejemplo, mostrar uno como fallback
       if (exampleVideos.length > 0 && !lastGeneratedVideo) {
         const fallbackVideo = {...exampleVideos[0], badge: "EJEMPLO"};
         setLastGeneratedVideo(fallbackVideo);
-        toast.info("Mostrando video de ejemplo");
+        toast.info("Mostrando un video de ejemplo");
       }
     } finally {
       setIsGenerating(false);
@@ -121,7 +123,7 @@ const GeneradorVideos = () => {
               Generation.AI Videos
             </h1>
             <p className="text-gray-300 text-lg mb-8">
-              Describe el video que quieres crear y deja que la inteligencia artificial lo haga realidad
+              Describe el video que quieres crear y nuestra IA lo generará para ti
             </p>
           </div>
           
