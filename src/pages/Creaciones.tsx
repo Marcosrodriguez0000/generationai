@@ -8,6 +8,7 @@ import { ArrowLeft, LogIn, Loader2 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { useAuth } from '@/lib/auth';
 import { getUserImages, UserImage } from '@/services/userImageService';
+import Footer from "@/components/Footer";
 
 interface ImageItem {
   id: string;
@@ -80,91 +81,89 @@ const Creaciones = ({ images }: CreacionesProps) => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-black">
+    <div className="min-h-screen flex flex-col bg-[#050510]">
       <CosmosBackground />
       <Header />
       <main className="flex-1 container mx-auto px-4 py-8">
         <div className="mb-6 flex items-center">
           <Link to="/">
-            <Button variant="outline" className="border-gold-400/20 bg-gold-500/10 text-gold-400 hover:bg-gold-500/20">
+            <Button variant="outline" className="border-white/10 bg-white/5 text-white hover:bg-white/10">
               <ArrowLeft className="h-4 w-4 mr-2" />
               Volver al inicio
             </Button>
           </Link>
-          <h1 className="text-3xl font-bold ml-4 bg-clip-text text-transparent bg-gradient-to-r from-gold-400 to-brown-600">
+          <h1 className="text-3xl font-bold ml-4 bg-clip-text text-transparent bg-gradient-to-r from-neon-pink to-neon-blue">
             Mis Creaciones
           </h1>
         </div>
 
         {loading ? (
           <div className="text-center py-12">
-            <Loader2 className="h-8 w-8 animate-spin mx-auto text-gold-400 mb-4" />
-            <p className="text-gold-300">Cargando tus imágenes...</p>
+            <Loader2 className="h-8 w-8 animate-spin mx-auto text-neon-pink mb-4" />
+            <p className="text-white/80">Cargando tus imágenes...</p>
           </div>
         ) : !user && images.length === 0 ? (
-          <div className="text-center py-12 bg-black/40 backdrop-blur-md rounded-xl border border-gold-500/10 max-w-xl mx-auto">
-            <div className="mb-4 mx-auto w-16 h-16 rounded-full bg-gold-500/10 flex items-center justify-center">
-              <LogIn className="h-8 w-8 text-gold-400" />
+          <div className="text-center py-12 glass-card rounded-xl max-w-xl mx-auto">
+            <div className="mb-4 mx-auto w-16 h-16 rounded-full bg-white/5 flex items-center justify-center">
+              <LogIn className="h-8 w-8 text-neon-blue" />
             </div>
-            <h2 className="text-2xl font-bold text-gold-300 mb-2">
+            <h2 className="text-2xl font-bold text-white mb-2">
               Inicia sesión para guardar tus creaciones
             </h2>
-            <p className="text-gold-100/80 mb-6">
+            <p className="text-white/80 mb-6">
               Crea una cuenta para guardar todas tus imágenes generadas
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link to="/login">
-                <Button className="bg-gradient-to-r from-gold-400 to-brown-600 text-white hover:opacity-90">
+                <Button className="bg-gradient-to-r from-neon-pink to-neon-blue text-white hover:opacity-90 shadow-glow">
                   <LogIn className="h-4 w-4 mr-2" />
                   Iniciar sesión
                 </Button>
               </Link>
               <Link to="/registro">
-                <Button variant="outline" className="border-gold-400/20 bg-gold-500/10 text-gold-400 hover:bg-gold-500/20">
+                <Button variant="outline" className="border-white/10 bg-white/5 text-white hover:bg-white/10">
                   Crear cuenta
                 </Button>
               </Link>
             </div>
           </div>
         ) : displayImages.length === 0 ? (
-          <div className="text-center py-12 bg-black/40 backdrop-blur-md rounded-xl border border-gold-500/10 max-w-xl mx-auto">
-            <div className="mb-4 mx-auto w-16 h-16 rounded-full bg-gold-500/10 flex items-center justify-center">
-              <ArrowLeft className="h-8 w-8 text-gold-400" />
+          <div className="text-center py-12 glass-card rounded-xl max-w-xl mx-auto">
+            <div className="mb-4 mx-auto w-16 h-16 rounded-full bg-white/5 flex items-center justify-center">
+              <ArrowLeft className="h-8 w-8 text-neon-blue" />
             </div>
-            <h2 className="text-2xl font-bold text-gold-300 mb-2">
+            <h2 className="text-2xl font-bold text-white mb-2">
               No tienes creaciones aún
             </h2>
-            <p className="text-gold-100/80 mb-6">
+            <p className="text-white/80 mb-6">
               Regresa a la página principal y genera tu primera imagen
             </p>
             <Link to="/">
-              <Button className="bg-gradient-to-r from-gold-400 to-brown-600 text-white hover:opacity-90">
+              <Button className="bg-gradient-to-r from-neon-pink to-neon-blue text-white hover:opacity-90 shadow-glow">
                 Crear primera imagen
               </Button>
             </Link>
           </div>
         ) : (
           <>
-            <h2 className="text-2xl font-bold mb-6 text-gold-300">Galería de inspiración</h2>
-            <ImageGallery images={displayImages} columns={4} />
+            <h2 className="text-2xl font-bold mb-6 text-white">Galería de inspiración</h2>
+            <ImageGallery images={displayImages} columns={6} />
           </>
         )}
         
-        <div className="max-w-3xl mx-auto mt-16 p-8 bg-black/40 backdrop-blur-md rounded-xl border border-gold-500/10">
-          <h3 className="text-2xl font-bold text-gold-400 mb-4">¿Tienes ideas para mejorar la app?</h3>
-          <p className="text-gold-100/80 mb-6">
+        <div className="max-w-3xl mx-auto mt-16 p-8 glass-card rounded-xl">
+          <h3 className="text-2xl font-bold text-white mb-4 bg-clip-text text-transparent bg-gradient-to-r from-neon-pink to-neon-blue">¿Tienes ideas para mejorar la app?</h3>
+          <p className="text-white/80 mb-6">
             Nos encantaría conocer tu opinión y sugerencias para hacer de Generation.AI una herramienta aún mejor para ti.
           </p>
           <div className="flex justify-center">
-            <Button className="bg-gradient-to-r from-gold-400 to-brown-600 text-white py-6 px-8 hover:opacity-90 rounded-xl">
+            <Button className="bg-gradient-to-r from-neon-pink to-neon-blue text-white py-6 px-8 hover:opacity-90 rounded-xl shadow-glow">
               Enviar Feedback
             </Button>
           </div>
         </div>
       </main>
-      <footer className="py-6 text-center text-sm text-gold-500/50">
-        <p>© 2025 Generation.AI</p>
-      </footer>
+      <Footer />
     </div>
   );
 };
