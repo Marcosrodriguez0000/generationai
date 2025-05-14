@@ -19,4 +19,32 @@ export default defineConfig(({ mode }) => ({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  build: {
+    // Improve build performance
+    target: 'es2015',
+    minify: 'terser',
+    terserOptions: {
+      compress: {
+        // Remove console logs in production
+        drop_console: mode === 'production',
+      },
+    },
+    // Split chunks to improve loading performance
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: [
+            'react',
+            'react-dom',
+            'react-router-dom',
+          ],
+          ui: [
+            '@radix-ui/react-accordion',
+            '@radix-ui/react-alert-dialog',
+            // Other UI components can be listed here
+          ]
+        },
+      },
+    },
+  },
 }));
