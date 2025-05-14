@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
+import { Textarea } from './ui/textarea';
 import { Sparkles } from 'lucide-react';
 
 interface PromptInputProps {
@@ -23,19 +24,22 @@ const PromptInput = ({ onGenerate, isGenerating }: PromptInputProps) => {
     <div className="w-full max-w-3xl mx-auto">
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <div className="relative">
-          <Input
+          <Textarea
             placeholder="Describe la imagen que quieres crear..."
-            className="py-6 px-4 text-lg rounded-xl border-gold-200 dark:border-gold-900 bg-black/30 backdrop-blur-sm focus-visible:ring-gold-400 text-gold-100"
+            className="py-4 px-5 text-base rounded-xl border-neon-blue/20 dark:border-neon-blue/10 bg-black/30 backdrop-blur-sm focus-visible:ring-neon-pink/40 text-white min-h-[100px] resize-none"
             value={prompt}
             onChange={(e) => setPrompt(e.target.value)}
             disabled={isGenerating}
           />
+          <div className="absolute bottom-2 right-2 opacity-50 text-xs text-gray-400">
+            {prompt.length > 0 ? `${prompt.length} caracteres` : ''}
+          </div>
         </div>
         <div className="flex justify-end">
           <Button 
             type="submit" 
-            disabled={!prompt.trim() || isGenerating} 
-            className="bg-gradient-to-r from-gold-400 to-brown-600 text-white py-6 px-8 hover:opacity-90 rounded-xl"
+            disabled={!prompt.trim() || isGenerating}
+            className="bg-gradient-to-r from-neon-pink to-neon-blue text-white py-6 px-8 hover:opacity-90 rounded-xl animate-glow"
           >
             {isGenerating ? (
               <span className="flex items-center gap-2">

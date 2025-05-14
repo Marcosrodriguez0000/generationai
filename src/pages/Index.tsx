@@ -7,11 +7,8 @@ import CosmosBackground from "@/components/CosmosBackground";
 import { generateImage } from "@/services/imageService";
 import { saveUserImage } from "@/services/userImageService";
 import { useAuth } from '@/lib/auth';
-import HeroSection from '@/components/HeroSection';
 import LastGeneratedImage from '@/components/LastGeneratedImage';
 import CreationsCallToAction from '@/components/CreationsCallToAction';
-import ExamplesSection from '@/components/ExamplesSection';
-import InfoSection from '@/components/InfoSection';
 import Footer from '@/components/Footer';
 import { ImageItem } from '@/types/image';
 
@@ -143,7 +140,7 @@ const Index = ({ generatedImages, setGeneratedImages }: IndexProps) => {
           </div>
           
           {/* Barra para escribir prompts con estilo moderno */}
-          <div className="relative mb-12">
+          <div className="relative mb-12 glass-card p-6 rounded-xl backdrop-blur-lg bg-black/20 border border-white/5">
             <PromptInput 
               onGenerate={handleGenerate} 
               isGenerating={isGenerating} 

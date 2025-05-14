@@ -109,6 +109,24 @@
   background-size: 300px 300px;
 }
 
+/* Glow effect for buttons and inputs */
+.shadow-glow {
+  box-shadow: 0 0 15px rgba(255, 113, 154, 0.3), 0 0 25px rgba(0, 194, 255, 0.2);
+}
+
+.animate-glow {
+  animation: glow 2s ease-in-out infinite;
+}
+
+@keyframes glow {
+  0%, 100% {
+    box-shadow: 0 0 15px rgba(255, 113, 154, 0.3), 0 0 25px rgba(0, 194, 255, 0.2);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(255, 113, 154, 0.5), 0 0 30px rgba(0, 194, 255, 0.3);
+  }
+}
+
 /* Responsive adjustments */
 @media (max-width: 640px) {
   .text-4xl {
