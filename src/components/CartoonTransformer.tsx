@@ -37,6 +37,7 @@ const CartoonTransformer = () => {
         description: "Esto puede tomar unos segundos.",
       });
 
+      // Generate a unique timestamp to prevent caching
       const result = await transformToCartoon(sourceImage, settings);
       setTransformedImage(result);
       

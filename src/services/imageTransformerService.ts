@@ -23,8 +23,8 @@ export const transformToCartoon = async (
   
   try {
     // Base pollinations.ai API for cartoon/anime transformation
-    // We'll use the prompt "anime style, cartoon, Ghibli style, illustration" to get a cartoon look
-    const stylePrompt = encodeURIComponent("Convert to anime style, cartoon, Ghibli style, illustration");
+    // We'll use a more specific prompt for better cartoon transformation
+    const stylePrompt = encodeURIComponent("Convert to anime style, detailed cartoon, Ghibli style, vibrant colors, illustration");
     
     // Extract resolution values
     const [width, height] = settings.resolution.split("x").map(Number);
@@ -33,8 +33,14 @@ export const transformToCartoon = async (
     // We'll URL encode the image URL to be able to pass it as a parameter
     const encodedImageUrl = encodeURIComponent(imageUrl);
     
+    // Add a randomness parameter to prevent caching
+    const cacheBuster = Date.now();
+    
     // Construct the URL with all parameters including image source
-    const transformationUrl = `https://image.pollinations.ai/prompt/${stylePrompt}?img=${encodedImageUrl}&width=${width}&height=${height}&stylize=${settings.stylizeStrength}`;
+    // The noCache parameter helps ensure we get a unique transformation each time
+    const transformationUrl = `https://image.pollinations.ai/prompt/${stylePrompt}?img=${encodedImageUrl}&width=${width}&height=${height}&stylize=${settings.stylizeStrength}&noCache=${cacheBuster}`;
+    
+    console.log(`Generated transformation URL: ${transformationUrl}`);
     
     // Process the image to add our own watermark
     const processedUrl = addWatermark(transformationUrl);
