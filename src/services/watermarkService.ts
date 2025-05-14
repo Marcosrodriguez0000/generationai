@@ -13,7 +13,7 @@ export const addWatermark = (imageUrl: string): string => {
     const watermarkText = "Generation.AI";
     const watermarkParams = new URLSearchParams({
       watermark: watermarkText,
-      watermarkPosition: 'bottomRight', // Position of our watermark
+      watermarkPosition: 'bottomRight', // Position of our watermark (abajo a la derecha)
       watermarkSize: '30',              // Size of the watermark text
       watermarkColor: 'd8af32',         // Gold color (to match our theme)
       watermarkBg: '000000e6',          // Semi-transparent black background
