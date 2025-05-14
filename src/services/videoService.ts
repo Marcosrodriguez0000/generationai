@@ -1,3 +1,4 @@
+
 // Video generation service using Stability AI API
 import { addWatermark } from './watermarkService';
 import { toast } from "sonner"; // Import toast from sonner
@@ -17,50 +18,22 @@ const DEFAULT_SETTINGS: VideoGenerationSettings = {
   apiKey: ""
 };
 
-// Fallback sample videos en caso de que falle la API
+// Videos de muestra locales accesibles desde public
 const sampleVideos = [
-  "https://cdn.videvo.net/videvo_files/video/premium/video0036/small_watermarked/computer_code00_preview.mp4",
-  "https://cdn.videvo.net/videvo_files/video/free/2019-01/small_watermarked/190111_06_25_preview.mp4",
-  "https://cdn.videvo.net/videvo_files/video/free/2019-09/small_watermarked/190828_27_SuperTrees_HD_17_preview.mp4",
-  "https://cdn.videvo.net/videvo_files/video/free/2016-05/small_watermarked/506401051_1_preview.mp4"
+  "/videos/sample-code.mp4",
+  "/videos/sample-ocean.mp4",
+  "/videos/sample-nature.mp4",
+  "/videos/sample-cityscape.mp4"
 ];
 
 // Verificamos si podemos acceder a los videos usando try/catch para manejar errores
 const checkVideoAvailability = async (url: string): Promise<boolean> => {
   try {
-    // En vez de usar fetch que puede tener problemas de CORS, creamos un elemento de video
-    // y verificamos si puede cargar la metadata, lo que indica que el video está disponible
-    return new Promise((resolve) => {
-      const video = document.createElement('video');
-      
-      // Evento para cuando la metadata se carga - el video está disponible
-      video.onloadedmetadata = () => {
-        console.log(`Video disponible: ${url}`);
-        video.remove(); // Limpiamos el elemento
-        resolve(true);
-      };
-      
-      // Evento para cuando hay un error - el video no está disponible
-      video.onerror = () => {
-        console.error(`Video no disponible: ${url}`);
-        video.remove(); // Limpiamos el elemento
-        resolve(false);
-      };
-      
-      // Establecemos un timeout por si la conexión es lenta
-      setTimeout(() => {
-        if (!video.duration) {
-          console.warn(`Timeout verificando disponibilidad: ${url}`);
-          video.remove();
-          resolve(false);
-        }
-      }, 3000);
-      
-      // Intentamos cargar solo la metadata del video
-      video.preload = 'metadata';
-      video.src = url;
-      video.crossOrigin = "anonymous"; // Intentar solucionar problemas CORS
-    });
+    // Probamos con una simple solicitud de cabecera para verificar si el video existe
+    const response = await fetch(url, { method: 'HEAD' })
+      .catch(() => ({ ok: false }));
+    
+    return response.ok;
   } catch (error) {
     console.error("Error checking video availability:", error);
     return false;
@@ -70,17 +43,18 @@ const checkVideoAvailability = async (url: string): Promise<boolean> => {
 // Verificar todos los videos de muestra y devolver el primero disponible
 const getFirstAvailableSampleVideo = async (): Promise<string> => {
   console.log("Verificando videos de muestra disponibles...");
+  
+  // Primero intentamos con videos locales que siempre deberían funcionar
   for (const videoUrl of sampleVideos) {
-    const isAvailable = await checkVideoAvailability(videoUrl);
-    if (isAvailable) {
-      console.log(`Video disponible encontrado: ${videoUrl}`);
+    if (await checkVideoAvailability(videoUrl)) {
+      console.log(`Video local disponible: ${videoUrl}`);
       return videoUrl;
     }
   }
   
-  // Si ningún video está disponible, elegir el primero como último recurso
-  console.warn("Ningún video de muestra está disponible, usando el primero como último recurso");
-  return sampleVideos[0];
+  // Si no hay videos locales disponibles, usamos uno predefinido
+  console.warn("Ningún video de muestra está disponible, usando fallback");
+  return "/videos/sample-code.mp4";
 };
 
 // Función principal para generar videos basados en el prompt del usuario
@@ -130,11 +104,16 @@ const callStabilityAIVideoAPI = async (
     console.log("Iniciando llamada a la API de Stability AI...");
     
     // Construimos la URL para la API de Stability
-    const url = "https://api.stability.ai/v2beta/generation/video";
+    const url = "https://api.stability.ai/v1/generation/stable-video-diffusion/text-to-video";
     
     // Configuración de la petición
     const requestData = {
-      prompt: prompt,
+      text_prompts: [
+        {
+          text: prompt,
+          weight: 1
+        }
+      ],
       height: parseInt(settings.resolution.split("x")[1], 10),
       width: parseInt(settings.resolution.split("x")[0], 10),
       output_format: "mp4",
@@ -181,8 +160,8 @@ const callStabilityAIVideoAPI = async (
     const data = await response.json();
     console.log("Respuesta de la API:", data);
     
-    if (data && data.video_url) {
-      return data.video_url;
+    if (data && data.artifacts && data.artifacts[0] && data.artifacts[0].video_url) {
+      return data.artifacts[0].video_url;
     } else if (data && data.artifacts && data.artifacts[0] && data.artifacts[0].url) {
       // Formato alternativo de respuesta
       return data.artifacts[0].url;
@@ -193,31 +172,4 @@ const callStabilityAIVideoAPI = async (
     console.error("Error llamando a la API de Stability:", error);
     throw error; // Propagamos el error para manejarlo en la función principal
   }
-};
-
-// Función para obtener un video de muestra basado en palabras clave del prompt
-const getSampleVideo = async (prompt: string): Promise<string> => {
-  const promptLower = prompt.toLowerCase();
-  
-  // Match prompt keywords to specific sample videos
-  let selectedVideo = sampleVideos[0]; // Default to first video
-  
-  if (promptLower.includes('perro') || promptLower.includes('dog') || promptLower.includes('animal')) {
-    selectedVideo = sampleVideos[3]; // Video de animal
-  } else if (promptLower.includes('atardecer') || promptLower.includes('sunset') || promptLower.includes('naturaleza')) {
-    selectedVideo = sampleVideos[2]; // Video de naturaleza
-  } else if (promptLower.includes('playa') || promptLower.includes('beach') || promptLower.includes('agua')) {
-    selectedVideo = sampleVideos[1]; // Video con agua
-  } else if (promptLower.includes('ciudad') || promptLower.includes('city') || promptLower.includes('tecnología') || promptLower.includes('código')) {
-    selectedVideo = sampleVideos[0]; // Video de código/tecnología
-  }
-  
-  // Verify the video actually works before returning it
-  const isAvailable = await checkVideoAvailability(selectedVideo);
-  if (!isAvailable) {
-    console.warn("El video seleccionado no está disponible, buscando otro video funcional");
-    return getFirstAvailableSampleVideo();
-  }
-  
-  return selectedVideo;
 };

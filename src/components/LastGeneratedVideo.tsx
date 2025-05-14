@@ -47,7 +47,8 @@ const LastGeneratedVideo = ({ video, onSave }: LastGeneratedVideoProps) => {
   const isDirectVideo = video.url.endsWith('.mp4') || 
                         video.url.includes('replicate.delivery') || 
                         video.url.includes('storage.googleapis.com') ||
-                        video.url.includes('cdn.videvo.net');
+                        video.url.includes('cdn.videvo.net') ||
+                        video.url.includes('api.stability.ai');
 
   const handleVideoError = () => {
     console.error("Error loading video:", video.url);
