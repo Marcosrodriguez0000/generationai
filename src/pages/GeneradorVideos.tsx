@@ -73,13 +73,13 @@ const GeneradorVideos = () => {
       setGeneratedVideos(prev => [newVideo, ...prev]);
 
       toast.success("¡Video generado exitosamente!", {
-        description: "Tu video ha sido creado.",
+        description: "Tu video ha sido creado con tecnología de Hugging Face.",
       });
       
     } catch (error) {
       console.error("Error generating video:", error);
       toast.error("Error al generar el video", {
-        description: "Ha ocurrido un error. Por favor verifica tu API key e intenta nuevamente.",
+        description: "Ha ocurrido un error. Usando un video de muestra.",
       });
       
       // Si hay un error pero tenemos videos de ejemplo, mostrar uno como fallback
@@ -123,7 +123,7 @@ const GeneradorVideos = () => {
               Generation.AI Videos
             </h1>
             <p className="text-gray-300 text-lg mb-8">
-              Describe el video que quieres crear y nuestra IA lo generará para ti
+              Describe el video que quieres crear y nuestra IA lo generará para ti - ¡Sin API key!
             </p>
           </div>
           

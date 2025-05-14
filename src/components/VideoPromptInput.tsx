@@ -1,10 +1,9 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Button } from './ui/button';
 import { Textarea } from './ui/textarea';
 import { Film, Settings2 } from 'lucide-react';
 import { VideoGenerationSettings } from '@/services/videoService';
-import ApiKeyInput from './ApiKeyInput';
 import { toast } from 'sonner';
 import { 
   Popover,
@@ -22,10 +21,6 @@ interface VideoPromptInputProps {
 
 const VideoPromptInput = ({ onGenerate, isGenerating }: VideoPromptInputProps) => {
   const [prompt, setPrompt] = useState('');
-  const [apiKey, setApiKey] = useState(() => {
-    // Try to get API key from localStorage
-    return localStorage.getItem('videoApiKey') || '';
-  });
   
   // Configuraciones avanzadas para la generación de video
   const [resolution, setResolution] = useState<string>("512x512");
@@ -33,24 +28,10 @@ const VideoPromptInput = ({ onGenerate, isGenerating }: VideoPromptInputProps) =
   const [duration, setDuration] = useState<number>(3);
   const [showAdvanced, setShowAdvanced] = useState<boolean>(false);
 
-  // Store API key in localStorage when it changes
-  useEffect(() => {
-    if (apiKey) {
-      localStorage.setItem('videoApiKey', apiKey);
-    }
-  }, [apiKey]);
-
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!prompt.trim()) {
       toast.error("Por favor, ingresa una descripción para el video");
-      return;
-    }
-    
-    if (!apiKey) {
-      toast.error("Se requiere una API key válida", {
-        description: "Por favor, configura tu API key de Stability AI"
-      });
       return;
     }
     
@@ -62,12 +43,8 @@ const VideoPromptInput = ({ onGenerate, isGenerating }: VideoPromptInputProps) =
       resolution,
       fps,
       duration,
-      apiKey
+      apiKey: "" // Ya no necesitamos API key
     });
-  };
-
-  const handleApiKeyChange = (newKey: string) => {
-    setApiKey(newKey);
   };
 
   return (
@@ -88,19 +65,17 @@ const VideoPromptInput = ({ onGenerate, isGenerating }: VideoPromptInputProps) =
 
         <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
           <div className="flex items-center gap-2">
-            <ApiKeyInput apiKey={apiKey} onApiKeyChange={handleApiKeyChange} />
+            <Button 
+              variant="outline" 
+              size="sm" 
+              className="flex items-center gap-2"
+              onClick={() => setShowAdvanced(!showAdvanced)}
+            >
+              <Settings2 className="h-4 w-4" />
+              Ajustes Avanzados
+            </Button>
             
             <Popover open={showAdvanced} onOpenChange={setShowAdvanced}>
-              <PopoverTrigger asChild>
-                <Button 
-                  variant="outline" 
-                  size="sm" 
-                  className="flex items-center gap-2"
-                >
-                  <Settings2 className="h-4 w-4" />
-                  Avanzado
-                </Button>
-              </PopoverTrigger>
               <PopoverContent className="w-80 p-4">
                 <div className="space-y-4">
                   <h4 className="font-medium mb-2">Configuración Avanzada</h4>
@@ -155,7 +130,7 @@ const VideoPromptInput = ({ onGenerate, isGenerating }: VideoPromptInputProps) =
 
           <Button 
             type="submit" 
-            disabled={!prompt.trim() || isGenerating || !apiKey}
+            disabled={!prompt.trim() || isGenerating}
             className="bg-gradient-to-r from-neon-pink to-neon-blue text-white py-6 px-8 hover:opacity-90 rounded-xl animate-glow"
           >
             {isGenerating ? (

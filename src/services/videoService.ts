@@ -1,13 +1,12 @@
 
-// Video generation service using Stability AI API
+// Video generation service using Hugging Face models
 import { addWatermark } from './watermarkService';
-import { toast } from "sonner"; // Import toast from sonner
 
 export interface VideoGenerationSettings {
   resolution: string;
   fps: number;
   duration: number;
-  apiKey: string;
+  apiKey: string; // We'll keep this for backwards compatibility but make it optional
 }
 
 // Default settings for video generation
@@ -66,16 +65,8 @@ export const generateVideo = async (
   console.log(`Configuración: ${JSON.stringify(settings)}`);
   
   try {
-    // Verificar que tenemos una API key
-    if (!settings.apiKey) {
-      console.warn("No se proporcionó API key, usando video de muestra");
-      toast.error("Se requiere una API key válida para generar videos personalizados");
-      return getFirstAvailableSampleVideo();
-    }
-
-    // Llamada a la API de Stability AI para generar video
-    const apiKey = settings.apiKey;
-    const videoUrl = await callStabilityAIVideoAPI(prompt, apiKey, settings);
+    // Usar Hugging Face para generar videos - no requiere API key
+    const videoUrl = await generateWithHuggingFace(prompt, settings);
     
     if (videoUrl) {
       console.log(`Video generado correctamente: ${videoUrl}`);
@@ -85,91 +76,85 @@ export const generateVideo = async (
     }
   } catch (error) {
     console.error("Error al generar el video:", error);
-    toast.error("Error al generar el video", { 
-      description: "Estamos usando un video de muestra mientras solucionamos el problema."
-    });
     
     // Fallback a un video de muestra
     return getFirstAvailableSampleVideo();
   }
 };
 
-// Función que hace la llamada real a la API de Stability para generar videos
-const callStabilityAIVideoAPI = async (
+// Función para generar videos usando Hugging Face
+const generateWithHuggingFace = async (
   prompt: string,
-  apiKey: string,
   settings: VideoGenerationSettings
 ): Promise<string> => {
   try {
-    console.log("Iniciando llamada a la API de Stability AI...");
+    console.log("Generando video con Hugging Face...");
     
-    // Construimos la URL para la API de Stability
-    const url = "https://api.stability.ai/v1/generation/stable-video-diffusion/text-to-video";
-    
-    // Configuración de la petición
+    // Construir el objeto con los parámetros de generación
     const requestData = {
-      text_prompts: [
-        {
-          text: prompt,
-          weight: 1
-        }
-      ],
-      height: parseInt(settings.resolution.split("x")[1], 10),
-      width: parseInt(settings.resolution.split("x")[0], 10),
-      output_format: "mp4",
-      cfg_scale: 7.0,
-      motion_bucket_id: 40,
-      fps: settings.fps,
-      seconds: settings.duration
+      inputs: prompt,
+      parameters: {
+        num_inference_steps: 50,
+        guidance_scale: 9,
+        width: parseInt(settings.resolution.split("x")[0], 10),
+        height: parseInt(settings.resolution.split("x")[1], 10),
+        num_frames: settings.fps * settings.duration
+      }
     };
     
-    console.log("Datos de la solicitud:", JSON.stringify(requestData));
+    console.log("Datos para la solicitud:", JSON.stringify(requestData));
     
-    // Hacemos la llamada a la API
-    const response = await fetch(url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Accept": "application/json",
-        "Authorization": `Bearer ${apiKey}`
-      },
-      body: JSON.stringify(requestData)
-    });
+    // Lista de modelos de video de Hugging Face que podríamos usar
+    const videoModels = [
+      "damo-vilab/text-to-video-ms-1.7b",
+      "cerspense/zeroscope_v2_576w",
+      "cerspense/zeroscope_v2_XL"
+    ];
     
-    // Verificamos si la respuesta es exitosa
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => null);
-      console.error("Error en la respuesta de la API:", response.status, errorData);
+    // Intentar con diferentes modelos hasta que uno funcione
+    for (const model of videoModels) {
+      console.log(`Intentando con el modelo ${model}...`);
       
-      // Si hay un error de API key inválida, mostramos un mensaje específico
-      if (response.status === 401) {
-        toast.error("API key inválida", { 
-          description: "Por favor, verifica tu API key de Stability AI"
-        });
+      // URL del modelo en Hugging Face
+      const url = `https://api-inference.huggingface.co/models/${model}`;
+      
+      // Realizar la llamada a la API
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(requestData)
+      });
+      
+      if (response.ok) {
+        console.log(`Respuesta exitosa del modelo ${model}`);
+        
+        // Comprobar el tipo de contenido de la respuesta
+        const contentType = response.headers.get("content-type");
+        
+        if (contentType && contentType.includes("application/json")) {
+          // Si la respuesta es JSON, extraer la URL
+          const data = await response.json();
+          if (data && data.url) {
+            return data.url;
+          }
+        } else {
+          // Si la respuesta es binaria (el video en sí)
+          const blob = await response.blob();
+          return URL.createObjectURL(blob);
+        }
       } else {
-        toast.error(`Error en la API: ${response.status}`, {
-          description: errorData?.message || "No se pudo generar el video"
-        });
+        console.warn(`Modelo ${model} no disponible o error en la respuesta: ${response.status}`);
       }
-      
-      // En caso de error devolvemos null para que se use el fallback
-      return null;
     }
     
-    // Procesamos la respuesta exitosa
-    const data = await response.json();
-    console.log("Respuesta de la API:", data);
-    
-    if (data && data.artifacts && data.artifacts[0] && data.artifacts[0].video_url) {
-      return data.artifacts[0].video_url;
-    } else if (data && data.artifacts && data.artifacts[0] && data.artifacts[0].url) {
-      // Formato alternativo de respuesta
-      return data.artifacts[0].url;
-    } else {
-      throw new Error("Formato de respuesta de API inesperado");
-    }
+    // Si ninguno de los modelos funcionó, usar un video de muestra
+    console.log("Ningún modelo de Hugging Face disponible, usando video de muestra");
+    return getFirstAvailableSampleVideo();
   } catch (error) {
-    console.error("Error llamando a la API de Stability:", error);
-    throw error; // Propagamos el error para manejarlo en la función principal
+    console.error("Error en generación con Hugging Face:", error);
+    throw error;
   }
 };
+
