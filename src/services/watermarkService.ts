@@ -1,32 +1,51 @@
 
 /**
- * Service to add watermark to generated images
+ * Service to add watermark to generated images and remove external watermarks
  */
 
-// Function to add our watermark over any existing watermark
+// Function to add our watermark and remove existing watermarks
 export const addWatermark = (imageUrl: string): string => {
-  // Create a URL object to add parameters
   try {
     const url = new URL(imageUrl);
     
-    // Add watermark text (will be rendered by image.pollinations.ai or any proxy we use)
+    // Extract the base URL and prompt parameters
+    const baseUrl = `${url.origin}/prompt/`;
+    const promptPart = url.pathname.replace('/prompt/', '');
+    
+    // Parameters to specify a crop from the bottom right corner
+    // This will effectively remove the Pollinations.ai watermark at the bottom
+    const cropParams = {
+      crop: '98p,98p,nowe', // Crop 2% from bottom and right sides
+    };
+    
+    // Add our own watermark text
     const watermarkText = "Generation.AI";
-    const watermarkParams = new URLSearchParams({
+    const watermarkParams = {
       watermark: watermarkText,
-      watermarkPosition: 'bottomRight', // Position of our watermark (abajo a la derecha)
-      watermarkSize: '30',              // Size of the watermark text
-      watermarkColor: 'd8af32',         // Gold color (to match our theme)
-      watermarkBg: '000000e6',          // Semi-transparent black background
-      watermarkPadding: '10'            // Padding around the watermark text
+      watermarkPosition: 'bottomRight',
+      watermarkSize: '30',
+      watermarkColor: 'd8af32',
+      watermarkBg: '000000e6',
+      watermarkPadding: '10'
+    };
+    
+    // Combine all parameters
+    const allParams = new URLSearchParams({
+      ...cropParams,
+      ...watermarkParams,
+      width: url.searchParams.get('width') || '512',
+      height: url.searchParams.get('height') || '512',
+      quality: url.searchParams.get('quality') || '7',
+      noStore: url.searchParams.get('noStore') || 'true'
     });
     
-    // Append parameters to the URL
-    const urlWithWatermark = `${url.toString()}${url.search ? '&' : '?'}${watermarkParams.toString()}`;
+    // Construct the new URL with both our watermark and crop settings
+    const processedUrl = `${baseUrl}${promptPart}?${allParams.toString()}`;
     
-    return urlWithWatermark;
+    return processedUrl;
   } catch (error) {
     // If invalid URL, return original URL
-    console.error("Error adding watermark:", error);
+    console.error("Error processing image:", error);
     return imageUrl;
   }
 };

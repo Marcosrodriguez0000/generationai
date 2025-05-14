@@ -37,15 +37,14 @@ export const generateImage = async (
     // Extract resolution values
     const [width, height] = settings.resolution.split("x").map(Number);
     
-    // Construct the API URL with parameters
-    // Pollinations.ai provides a simple URL-based API for image generation
-    const imageUrl = `https://image.pollinations.ai/prompt/${encodedPrompt}?width=${width}&height=${height}&noStore=true&quality=${settings.quality}`;
+    // Construct the base API URL without parameters
+    // We'll let the watermark service handle all parameters
+    const imageUrl = `https://image.pollinations.ai/prompt/${encodedPrompt}`;
     
-    // Add our watermark to the generated image
-    const watermarkedUrl = addWatermark(imageUrl);
+    // Process the image to remove external watermark and add our own
+    const processedUrl = addWatermark(imageUrl);
     
-    // Return the URL with watermark - the image will be generated when loaded
-    return watermarkedUrl;
+    return processedUrl;
     
   } catch (error) {
     console.error("Error generating image:", error);
