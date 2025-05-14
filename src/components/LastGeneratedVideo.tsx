@@ -27,6 +27,11 @@ const LastGeneratedVideo = ({ video, onSave }: LastGeneratedVideoProps) => {
     window.open(video.url, '_blank');
   };
 
+  // Determine if the URL is a direct MP4 file or an embed URL
+  const isDirectVideo = video.url.endsWith('.mp4') || 
+                        video.url.includes('replicate.delivery') || 
+                        video.url.includes('storage.googleapis.com');
+
   return (
     <div className="my-12 max-w-xl mx-auto">
       <h2 className="text-xl font-semibold text-center text-white mb-4">
@@ -34,13 +39,24 @@ const LastGeneratedVideo = ({ video, onSave }: LastGeneratedVideoProps) => {
       </h2>
       <div className="overflow-hidden rounded-lg border border-white/10 bg-[#13131e]">
         <AspectRatio ratio={1/1} className="bg-[#0c0c14]">
-          <iframe 
-            src={video.url} 
-            title={video.prompt}
-            className="w-full h-full"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowFullScreen
-          />
+          {isDirectVideo ? (
+            <video 
+              src={video.url}
+              controls
+              autoPlay
+              muted
+              loop
+              className="w-full h-full object-contain"
+            />
+          ) : (
+            <iframe 
+              src={video.url} 
+              title={video.prompt}
+              className="w-full h-full"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            />
+          )}
         </AspectRatio>
         <div className="p-4">
           <h3 className="text-white font-medium mb-2">Prompt utilizado</h3>
