@@ -4,7 +4,7 @@ import ImageGallery from './ImageGallery';
 import { ImageItem } from '@/types/image';
 import { Button } from './ui/button';
 import { useState } from 'react';
-import { ChevronDown, ChevronUp, Image } from 'lucide-react';
+import { ChevronDown, ChevronUp } from 'lucide-react';
 
 interface ExamplesSectionProps {
   exampleImages: ImageItem[];
