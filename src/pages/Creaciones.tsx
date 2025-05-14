@@ -19,6 +19,30 @@ interface CreacionesProps {
   images: ImageItem[];
 }
 
+// Ejemplos de imágenes IA con sus prompts
+const exampleImages: ImageItem[] = [
+  {
+    id: "example1",
+    url: "/lovable-uploads/fecfd663-f992-4ed7-94d2-9e13e26eb0e3.png",
+    prompt: "Dragón azul brillante posado sobre una montaña nevada, con amplias alas desplegadas contra un cielo celeste"
+  },
+  {
+    id: "example2",
+    url: "/lovable-uploads/5397d569-8d3a-4c33-bc04-ba917f7dc3a1.png",
+    prompt: "Elefante africano caminando en la sabana al atardecer, con cielo anaranjado y siluetas de árboles de acacia"
+  },
+  {
+    id: "example3",
+    url: "/lovable-uploads/a2fe8353-b15a-4164-995a-de27a770bf92.png",
+    prompt: "Calle lluviosa de Tokio por la noche, con personas caminando con paraguas y luces de neón reflejadas en el pavimento mojado"
+  },
+  {
+    id: "example4",
+    url: "/lovable-uploads/7170fe0d-9fa1-475e-ae85-387d309f32e9.png",
+    prompt: "Escena futurista con nave espacial y astronauta observando dos lunas sobre un planeta distante"
+  }
+];
+
 const Creaciones = ({ images }: CreacionesProps) => {
   const { user } = useAuth();
   const [userImages, setUserImages] = useState<UserImage[]>([]);
@@ -49,7 +73,7 @@ const Creaciones = ({ images }: CreacionesProps) => {
         url: img.url,
         prompt: img.prompt
       }))
-    : images;
+    : images.length > 0 ? images : exampleImages;
 
   const handleDeleteImage = (id: string) => {
     setUserImages(prev => prev.filter(img => img.id !== id));
@@ -77,7 +101,7 @@ const Creaciones = ({ images }: CreacionesProps) => {
             <Loader2 className="h-8 w-8 animate-spin mx-auto text-gold-400 mb-4" />
             <p className="text-gold-300">Cargando tus imágenes...</p>
           </div>
-        ) : !user ? (
+        ) : !user && images.length === 0 ? (
           <div className="text-center py-12 bg-black/40 backdrop-blur-md rounded-xl border border-gold-500/10 max-w-xl mx-auto">
             <div className="mb-4 mx-auto w-16 h-16 rounded-full bg-gold-500/10 flex items-center justify-center">
               <LogIn className="h-8 w-8 text-gold-400" />
@@ -120,13 +144,16 @@ const Creaciones = ({ images }: CreacionesProps) => {
             </Link>
           </div>
         ) : (
-          <ImageGallery images={displayImages} onDelete={handleDeleteImage} />
+          <>
+            <h2 className="text-2xl font-bold mb-6 text-gold-300">Galería de inspiración</h2>
+            <ImageGallery images={displayImages} columns={4} />
+          </>
         )}
         
         <div className="max-w-3xl mx-auto mt-16 p-8 bg-black/40 backdrop-blur-md rounded-xl border border-gold-500/10">
           <h3 className="text-2xl font-bold text-gold-400 mb-4">¿Tienes ideas para mejorar la app?</h3>
           <p className="text-gold-100/80 mb-6">
-            Nos encantaría conocer tu opinión y sugerencias para hacer de Luxury AI una herramienta aún mejor para ti.
+            Nos encantaría conocer tu opinión y sugerencias para hacer de Generation.AI una herramienta aún mejor para ti.
           </p>
           <div className="flex justify-center">
             <Button className="bg-gradient-to-r from-gold-400 to-brown-600 text-white py-6 px-8 hover:opacity-90 rounded-xl">
@@ -136,7 +163,7 @@ const Creaciones = ({ images }: CreacionesProps) => {
         </div>
       </main>
       <footer className="py-6 text-center text-sm text-gold-500/50">
-        <p>© 2025 Luxury AI</p>
+        <p>© 2025 Generation.AI</p>
       </footer>
     </div>
   );
