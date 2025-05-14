@@ -2,9 +2,12 @@
 import React, { useState, useEffect } from 'react';
 import { toast } from "sonner";
 import TextPromptInput from './TextPromptInput';
-import { generateTextWithPollinations, TextGenerationSettings } from '@/services/textGenerationService';
+import { generateTextWithPollinations, TextGenerationSettings, initModelFromAllSources } from '@/services/textGenerationService';
 import GeneratedTextDisplay from './GeneratedTextDisplay';
 import { Progress } from "@/components/ui/progress";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { RefreshCcw } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 interface GeneratedTextItem {
   id: string;
@@ -19,41 +22,45 @@ const TextGenerator = () => {
   const [generatedText, setGeneratedText] = useState<GeneratedTextItem | null>(null);
   const [prompt, setPrompt] = useState<string>("");
   const [modelLoadFailed, setModelLoadFailed] = useState(false);
+  const [modelSource, setModelSource] = useState<string>("");
 
   // Check if the model is ready when component mounts
   useEffect(() => {
-    const checkModelStatus = async () => {
-      try {
-        // Import dynamically to avoid SSR issues
-        const { pipeline } = await import('@huggingface/transformers');
-        
-        // Try to load the model with progress tracking
-        await pipeline('text-generation', 'distilgpt2', { 
-          progress_callback: (progressInfo) => {
-            // Handle progress updates safely
-            const progress = 'progress' in progressInfo 
-              ? (progressInfo as any).progress * 100 
-              : ('status' in progressInfo ? 50 : 0);
-            
-            setLoadingProgress(Math.round(progress));
-            console.log(`Model loading: ${Math.round(progress)}%`);
-          }
-        });
-        
-        setIsModelLoading(false);
-        setModelLoadFailed(false);
-      } catch (error) {
-        console.error("Error preloading model:", error);
-        setModelLoadFailed(true);
-        setIsModelLoading(false);
-        toast.error("Error al cargar el modelo de generación de texto", {
-          description: "Se usará un modo offline para generar texto.",
-        });
-      }
-    };
-
-    checkModelStatus();
+    loadModel();
   }, []);
+
+  const loadModel = async () => {
+    setIsModelLoading(true);
+    setModelLoadFailed(false);
+    setLoadingProgress(0);
+    
+    try {
+      const result = await initModelFromAllSources(
+        (progress) => {
+          const progressValue = typeof progress === 'number' ? progress : 0;
+          setLoadingProgress(Math.round(progressValue * 100));
+        }
+      );
+      
+      if (result.success) {
+        setModelSource(result.source || "modelo");
+        setModelLoadFailed(false);
+        toast.success(`Modelo cargado: ${result.source || "modelo"}`, {
+          description: "Listo para generar texto",
+        });
+      } else {
+        throw new Error(result.error || "Error al cargar el modelo");
+      }
+    } catch (error) {
+      console.error("Error preloading model:", error);
+      setModelLoadFailed(true);
+      toast.error("Error al cargar el modelo de generación de texto", {
+        description: "Se usará un modo offline para generar texto.",
+      });
+    } finally {
+      setIsModelLoading(false);
+    }
+  };
 
   const handleGenerate = async (prompt: string, settings: TextGenerationSettings) => {
     if (isGenerating) return;
@@ -131,10 +138,27 @@ const TextGenerator = () => {
         )}
         
         {modelLoadFailed && !isModelLoading && (
-          <div className="mt-4 p-3 bg-orange-500/20 border border-orange-500/30 rounded-md">
-            <p className="text-sm text-white">
-              No se pudo cargar el modelo en línea. Se usará un generador alternativo.
-            </p>
+          <div className="mt-4">
+            <Alert variant="destructive" className="bg-orange-500/20 border-orange-500/30">
+              <AlertDescription className="flex items-center justify-between">
+                <span>No se pudo cargar el modelo en línea. Se usará un generador alternativo.</span>
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  onClick={loadModel}
+                  className="ml-3 bg-white/10 hover:bg-white/20"
+                >
+                  <RefreshCcw className="h-4 w-4 mr-2" />
+                  Reintentar
+                </Button>
+              </AlertDescription>
+            </Alert>
+          </div>
+        )}
+        
+        {!modelLoadFailed && !isModelLoading && modelSource && (
+          <div className="mt-4 text-xs text-gray-500 text-right">
+            Modelo: {modelSource}
           </div>
         )}
       </div>
