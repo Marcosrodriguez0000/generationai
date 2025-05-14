@@ -1,6 +1,6 @@
-
 // Video generation service using Stability AI API
 import { addWatermark } from './watermarkService';
+import { toast } from "sonner"; // Import toast from sonner
 
 export interface VideoGenerationSettings {
   resolution: string;
