@@ -12,24 +12,23 @@ export const addWatermark = (imageUrl: string): string => {
     const baseUrl = `${url.origin}/prompt/`;
     const promptPart = url.pathname.replace('/prompt/', '');
     
-    // Parameters to specify a crop that completely removes the Pollinations.ai watermark
-    // Using a much more aggressive crop at the bottom of the image
+    // Parámetros para eliminar completamente la marca de agua de Pollinations.ai
     const cropParams = {
-      crop: '100p,90p,nowe', // Crop 0% from width but 10% from bottom height
+      crop: '100p,85p,nowe', // Cortar 0% del ancho pero 15% de la altura desde abajo
     };
     
-    // Add our own watermark text
+    // Añadir nuestra propia marca de agua
     const watermarkText = "Generation.AI";
     const watermarkParams = {
       watermark: watermarkText,
       watermarkPosition: 'bottomRight',
-      watermarkSize: '30',
-      watermarkColor: 'd8af32',
+      watermarkSize: '25',
+      watermarkColor: 'ffffff',
       watermarkBg: '000000e6',
-      watermarkPadding: '10'
+      watermarkPadding: '8'
     };
     
-    // Combine all parameters
+    // Combinar todos los parámetros
     const allParams = new URLSearchParams({
       ...cropParams,
       ...watermarkParams,
@@ -39,12 +38,12 @@ export const addWatermark = (imageUrl: string): string => {
       noStore: url.searchParams.get('noStore') || 'true'
     });
     
-    // Construct the new URL with both our watermark and crop settings
+    // Construir la nueva URL con nuestra marca de agua y configuración de recorte
     const processedUrl = `${baseUrl}${promptPart}?${allParams.toString()}`;
     
     return processedUrl;
   } catch (error) {
-    // If invalid URL, return original URL
+    // Si la URL es inválida, devolver la URL original
     console.error("Error processing image:", error);
     return imageUrl;
   }

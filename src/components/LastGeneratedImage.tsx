@@ -1,9 +1,9 @@
 
 import React from 'react';
 import { Link } from "react-router-dom";
-import { Save } from "lucide-react";
+import { Save, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { useAuth } from '@/lib/auth';
 import { ImageItem } from '@/types/image';
@@ -18,39 +18,55 @@ const LastGeneratedImage = ({ image, onSave }: LastGeneratedImageProps) => {
 
   if (!image) return null;
 
+  const handleDownload = () => {
+    const a = document.createElement('a');
+    a.href = image.url;
+    a.download = `generation-ai-${Date.now()}.png`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  };
+
   return (
-    <div className="my-12 max-w-md mx-auto">
-      <h2 className="text-xl font-semibold text-center text-gold-300 mb-4">
+    <div className="my-12 max-w-xl mx-auto">
+      <h2 className="text-xl font-semibold text-center text-white mb-4">
         Tu creación más reciente
       </h2>
-      <Card className="overflow-hidden border-gold-200/20 bg-black/50 backdrop-blur-sm">
-        <AspectRatio ratio={1/1}>
+      <div className="overflow-hidden rounded-lg border border-white/10 bg-[#13131e]">
+        <AspectRatio ratio={1/1} className="bg-[#0c0c14]">
           <img 
             src={image.url} 
             alt={image.prompt} 
             className="w-full h-full object-cover"
           />
         </AspectRatio>
-        <CardHeader className="py-3">
-          <CardTitle className="text-lg text-gold-400">Última creación</CardTitle>
-        </CardHeader>
-        <CardContent className="pb-4">
-          <CardDescription className="text-gold-100/80 mb-4">
+        <div className="p-4">
+          <h3 className="text-white font-medium mb-2">Prompt utilizado</h3>
+          <p className="text-gray-300 text-sm mb-4">
             {image.prompt}
-          </CardDescription>
-          <div className="flex gap-3 justify-center">
+          </p>
+          <div className="flex gap-3 justify-between">
+            <Button
+              onClick={handleDownload}
+              variant="outline" 
+              className="flex-1 bg-white/5 border-white/10 text-white hover:bg-white/10"
+            >
+              <Download className="h-4 w-4 mr-2" />
+              Descargar
+            </Button>
+            
             {user && (
               <Button 
                 onClick={onSave}
-                className="bg-gradient-to-r from-gold-400 to-brown-600 text-white hover:opacity-90"
+                className="flex-1 bg-gradient-to-r from-neon-pink to-neon-blue text-white hover:opacity-90"
               >
                 <Save className="h-4 w-4 mr-2" />
-                Guardar en mi colección
+                Guardar
               </Button>
             )}
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </div>
   );
 };

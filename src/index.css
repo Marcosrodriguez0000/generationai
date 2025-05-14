@@ -5,85 +5,35 @@
 
 @layer base {
   :root {
-    --background: 40 30% 98%;
-    --foreground: 30 25% 10%;
+    --background: 220 20% 5%;
+    --foreground: 210 40% 98%;
 
-    --card: 40 30% 96%;
-    --card-foreground: 30 25% 10%;
+    --card: 220 15% 13%;
+    --card-foreground: 210 40% 98%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 30 25% 10%;
+    --popover: 220 20% 9%;
+    --popover-foreground: 210 40% 98%;
 
-    --primary: 40 80% 50%;
-    --primary-foreground: 210 40% 98%;
+    --primary: 210 40% 98%;
+    --primary-foreground: 220 20% 9%;
 
-    --secondary: 30 50% 40%;
-    --secondary-foreground: 30 25% 10%;
+    --secondary: 220 15% 15%;
+    --secondary-foreground: 210 40% 98%;
 
-    --muted: 30 25% 96%;
-    --muted-foreground: 30 15% 45%;
+    --muted: 220 15% 20%;
+    --muted-foreground: 220 10% 70%;
 
-    --accent: 35 80% 60%;
-    --accent-foreground: 30 25% 10%;
+    --accent: 330 100% 70%;
+    --accent-foreground: 210 40% 98%;
 
-    --destructive: 0 84.2% 60.2%;
+    --destructive: 0 62.8% 50.6%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 30 25% 91%;
-    --input: 30 25% 91%;
-    --ring: 35 80% 50%;
+    --border: 220 15% 20%;
+    --input: 220 15% 20%;
+    --ring: 330 100% 70%;
 
     --radius: 0.5rem;
-
-    --gold-100: #fff8e8;
-    --gold-200: #ffe0a6;
-    --gold-300: #ffd16b;
-    --gold-400: #d4a657;
-    --gold-500: #b38a45;
-    --gold-600: #8e6b2d;
-    --gold-700: #6e4c1d;
-    --gold-800: #4c3110;
-    --gold-900: #2a1c07;
-    
-    --brown-100: #f7e8df;
-    --brown-200: #ebc8b2;
-    --brown-300: #dba585;
-    --brown-400: #c78459;
-    --brown-500: #a66c48;
-    --brown-600: #8e6248;
-    --brown-700: #6e4c35;
-    --brown-800: #4c3425;
-    --brown-900: #2a1c14;
-  }
-
-  .dark {
-    --background: 20 10% 5%;
-    --foreground: 30 10% 95%;
-
-    --card: 20 10% 8%;
-    --card-foreground: 30 10% 95%;
-
-    --popover: 20 10% 8%;
-    --popover-foreground: 30 10% 95%;
-
-    --primary: 40 80% 50%;
-    --primary-foreground: 30 10% 95%;
-
-    --secondary: 30 30% 20%;
-    --secondary-foreground: 30 10% 95%;
-
-    --muted: 20 35% 20%;
-    --muted-foreground: 30 10% 70%;
-
-    --accent: 35 80% 60%;
-    --accent-foreground: 30 10% 95%;
-
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 30 10% 95%;
-
-    --border: 20 35% 20%;
-    --input: 20 35% 20%;
-    --ring: 35 80% 50%;
   }
 }
 
@@ -94,51 +44,43 @@
 
   body {
     @apply bg-background text-foreground;
+    font-feature-settings: "ss01", "ss02", "cv01", "cv02", "cv03";
+  }
+  
+  /* Estilos para scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    @apply bg-white/10 rounded-full;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-white/20;
   }
 }
 
 @layer utilities {
-  .text-gold-gradient {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-gold-400 to-brown-600;
+  .text-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-neon-pink to-neon-blue;
   }
   
-  .gold-glow {
-    @apply shadow-[0_0_15px_rgba(212,166,87,0.5)];
+  .card-hover {
+    @apply transition-all duration-300 hover:translate-y-[-4px] hover:shadow-xl;
   }
   
-  .responsive-container {
-    @apply w-full px-4 sm:px-6 lg:px-8 mx-auto;
-    max-width: 100%;
+  .glass-card {
+    @apply bg-white/5 backdrop-blur-md border border-white/10;
   }
   
-  @screen sm {
-    .responsive-container {
-      max-width: 540px;
-    }
-  }
-  
-  @screen md {
-    .responsive-container {
-      max-width: 720px;
-    }
-  }
-  
-  @screen lg {
-    .responsive-container {
-      max-width: 960px;
-    }
-  }
-  
-  @screen xl {
-    .responsive-container {
-      max-width: 1140px;
-    }
-  }
-  
-  @screen 2xl {
-    .responsive-container {
-      max-width: 1320px;
-    }
+  .neon-glow {
+    box-shadow: 0 0 15px rgba(255, 113, 154, 0.5), 0 0 25px rgba(0, 194, 255, 0.3);
   }
 }
 
@@ -165,55 +107,6 @@
   height: 100%;
   background-image: radial-gradient(2px 2px at calc(100% * var(--x, 0)) calc(100% * var(--y, 0)), rgba(255, 240, 220, 0.5), transparent 50%);
   background-size: 300px 300px;
-}
-
-/* Animated glowing lines */
-.glow-line {
-  position: absolute;
-  background: linear-gradient(90deg, transparent, var(--gold-400), transparent);
-  height: 1px;
-  width: 100%;
-  opacity: 0.2;
-  animation: glow-line-move 8s infinite linear;
-}
-
-.glow-line-1 {
-  top: 20%;
-  transform-origin: left;
-  animation-delay: 0s;
-}
-
-.glow-line-2 {
-  top: 50%;
-  transform-origin: right;
-  animation-delay: 2s;
-}
-
-.glow-line-3 {
-  top: 80%;
-  transform-origin: left;
-  animation-delay: 4s;
-}
-
-@keyframes glow-line-move {
-  0% {
-    transform: translateX(-100%) scaleX(0.1);
-    opacity: 0;
-  }
-  20% {
-    opacity: 0.2;
-  }
-  50% {
-    transform: translateX(0%) scaleX(1);
-    opacity: 0.3;
-  }
-  80% {
-    opacity: 0.2;
-  }
-  100% {
-    transform: translateX(100%) scaleX(0.1);
-    opacity: 0;
-  }
 }
 
 /* Responsive adjustments */

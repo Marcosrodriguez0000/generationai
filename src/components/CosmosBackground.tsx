@@ -3,27 +3,29 @@ import React from 'react';
 
 const CosmosBackground = () => {
   return (
-    <div className="fixed inset-0 -z-10">
-      <div className="absolute inset-0 bg-gradient-to-br from-black to-zinc-900"></div>
-      <div className="absolute top-0 w-full h-[500px] bg-gradient-to-b from-gold-400/10 to-transparent"></div>
-      <div className="absolute bottom-0 w-full h-[500px] bg-gradient-to-t from-brown-600/10 to-transparent"></div>
-      <div className="absolute top-10 left-1/4 w-32 h-32 rounded-full bg-gold-400/10 blur-3xl"></div>
-      <div className="absolute bottom-10 right-1/4 w-40 h-40 rounded-full bg-brown-600/10 blur-3xl"></div>
+    <div className="fixed inset-0 -z-10 overflow-hidden">
+      {/* Fondo principal con degradado oscuro */}
+      <div className="absolute inset-0 bg-gradient-to-br from-[#050510] via-[#0f0f19] to-[#1a1a2e]"></div>
       
-      {/* Stars */}
-      <div className="stars-small"></div>
-      <div className="stars-medium"></div>
-      <div className="stars-large"></div>
+      {/* Efecto de degradado de color superior */}
+      <div className="absolute top-0 left-0 right-0 h-[300px] bg-gradient-to-b from-neon-purple/30 to-transparent"></div>
       
-      {/* Animated glowing lines */}
-      <div className="absolute inset-0 overflow-hidden opacity-20">
-        <div className="glow-line glow-line-1"></div>
-        <div className="glow-line glow-line-2"></div>
-        <div className="glow-line glow-line-3"></div>
-      </div>
+      {/* Efecto de degradado de color lateral */}
+      <div className="absolute top-0 right-0 w-[500px] h-full bg-gradient-to-l from-neon-pink/10 to-transparent"></div>
       
-      {/* Grid overlay */}
-      <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAwIDEwIEwgNDAgMTAgTSAxMCAwIEwgMTAgNDAgTSAwIDIwIEwgNDAgMjAgTSAyMCAwIEwgMjAgNDAgTSAwIDMwIEwgNDAgMzAgTSAzMCAwIEwgMzAgNDAiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2Q0YTY1NyIgc3Ryb2tlLXdpZHRoPSIwLjUiIG9wYWNpdHk9IjAuMDUiLz48L3BhdHRlcm4+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JpZCkiLz48L3N2Zz4=')] opacity-30"></div>
+      {/* Destellos y estrellas */}
+      <div className="stars-small" style={{['--x' as any]: '0.3', ['--y' as any]: '0.7'}}></div>
+      <div className="stars-medium" style={{['--x' as any]: '0.5', ['--y' as any]: '0.3'}}></div>
+      <div className="stars-large" style={{['--x' as any]: '0.8', ['--y' as any]: '0.9'}}></div>
+      
+      {/* Brillo tenue en la parte inferior */}
+      <div className="absolute bottom-0 left-0 right-0 h-[200px] bg-gradient-to-t from-neon-blue/5 to-transparent"></div>
+      
+      {/* Línea horizontal sutil */}
+      <div className="absolute top-[70px] left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
+      
+      {/* Cuadrícula sutil */}
+      <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAwIDEwIEwgNDAgMTAgTSAxMCAwIEwgMTAgNDAgTSAwIDIwIEwgNDAgMjAgTSAyMCAwIEwgMjAgNDAgTSAwIDMwIEwgNDAgMzAgTSAzMCAwIEwgMzAgNDAiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2ZmZmZmZiIgc3Ryb2tlLXdpZHRoPSIwLjMiIG9wYWNpdHk9IjAuMDUiLz48L3BhdHRlcm4+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JpZCkiLz48L3N2Zz4=')] opacity-20"></div>
     </div>
   );
 };
