@@ -12,6 +12,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { useAuth } from '@/lib/auth';
+import ImageGallery from '@/components/ImageGallery';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 interface ImageItem {
   id: string;
@@ -40,6 +42,27 @@ const exampleImages: ImageItem[] = [
     id: "example4",
     url: "/lovable-uploads/320d93c4-bd61-47d1-895b-3aae110db3f2.png",
     prompt: "Retrato hiperrealista de un hombre mayor con expresión pensativa, arrugas detalladas, iluminación dramática lateral, fotografía en primer plano con enfoque en la textura de la piel"
+  },
+  // Nuevas imágenes añadidas
+  {
+    id: "example5",
+    url: "/lovable-uploads/81ebe13b-f3e0-4241-ad7f-a8171be4d604.png",
+    prompt: "Reloj de lujo con esfera negra y detalles dorados sobre fondo negro aterciopelado, fotografía de producto de alta calidad, iluminación premium"
+  },
+  {
+    id: "example6",
+    url: "/lovable-uploads/960f4a5e-5cbc-4422-b617-a6e3243cf080.png",
+    prompt: "Taza de café con leche con espuma cremosa y caramelo sobre mesa de madera rústica, fotografía gastronómica con enfoque selectivo, iluminación cálida"
+  },
+  {
+    id: "example7",
+    url: "/lovable-uploads/a5178690-a147-4f3b-a9ea-6930e431c878.png",
+    prompt: "Hamburguesa gourmet flotante con queso cheddar derretido, lechuga fresca y tomate sobre fondo oscuro difuminado, fotografía publicitaria de alimentos"
+  },
+  {
+    id: "example8",
+    url: "/lovable-uploads/933918f5-51fe-44d5-a927-ff1f83961b9c.png",
+    prompt: "Oficina en casa minimalista con escritorio de madera, silla ergonómica, ordenador Mac, plantas decorativas y arte en la pared, estilo escandinavo, luz natural"
   }
 ];
 
@@ -52,6 +75,7 @@ const Index = ({ generatedImages, setGeneratedImages }: IndexProps) => {
   const [isGenerating, setIsGenerating] = useState(false);
   const [lastGeneratedImage, setLastGeneratedImage] = useState<ImageItem | null>(null);
   const { user } = useAuth();
+  const isMobile = useIsMobile();
 
   const handleGenerate = async (prompt: string) => {
     setIsGenerating(true);
@@ -177,29 +201,7 @@ const Index = ({ generatedImages, setGeneratedImages }: IndexProps) => {
             Nuestra tecnología de inteligencia artificial puede generar imágenes impresionantes a partir de tus descripciones. Inspírate con estos ejemplos creados por nuestra IA.
           </p>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto mb-12">
-            {exampleImages.map((example) => (
-              <Card key={example.id} className="overflow-hidden border-gold-200/20 dark:border-gold-900/20 bg-black/50 backdrop-blur-sm hover:shadow-gold-500/10 hover:shadow-lg transition-all duration-300">
-                <div className="overflow-hidden">
-                  <AspectRatio ratio={1/1}>
-                    <img 
-                      src={example.url} 
-                      alt={example.prompt} 
-                      className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
-                    />
-                  </AspectRatio>
-                </div>
-                <CardHeader className="py-3">
-                  <CardTitle className="text-lg text-gold-400">Ejemplo de Prompt</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <CardDescription className="text-gold-100/80">
-                    {example.prompt}
-                  </CardDescription>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+          <ImageGallery images={exampleImages} columns={4} />
           
           <div className="max-w-3xl mx-auto mt-16 p-8 bg-black/40 backdrop-blur-md rounded-xl border border-gold-500/10">
             {!user ? (

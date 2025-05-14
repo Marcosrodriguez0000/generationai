@@ -5,6 +5,7 @@ import { Button } from './ui/button';
 import { AspectRatio } from './ui/aspect-ratio';
 import { deleteUserImage } from '@/services/userImageService';
 import { toast } from 'sonner';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 interface ImageItem {
   id: string;
@@ -16,15 +17,23 @@ interface ImageGalleryProps {
   images: ImageItem[];
   showTitle?: boolean;
   onDelete?: (id: string) => void;
+  columns?: number;
 }
 
-const ImageGallery = ({ images, showTitle = false, onDelete }: ImageGalleryProps) => {
+const ImageGallery = ({ 
+  images, 
+  showTitle = false, 
+  onDelete,
+  columns = 3 
+}: ImageGalleryProps) => {
+  const isMobile = useIsMobile();
+  
   if (images.length === 0) return null;
 
   const handleDownload = (url: string, index: number) => {
     const a = document.createElement('a');
     a.href = url;
-    a.download = `luxuryai-image-${index}.png`;
+    a.download = `generation-ai-image-${index}.png`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -42,12 +51,19 @@ const ImageGallery = ({ images, showTitle = false, onDelete }: ImageGalleryProps
     }
   };
 
+  // Determine grid columns based on screen size and props
+  const getGridColumns = () => {
+    if (isMobile) return 'grid-cols-2';
+    if (columns === 4) return 'grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4';
+    return 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3';
+  };
+
   return (
     <div className="mt-12">
       {showTitle && (
         <h2 className="text-2xl font-bold mb-6 text-gold-300">Imágenes Generadas</h2>
       )}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className={`grid ${getGridColumns()} gap-4 sm:gap-6`}>
         {images.map((image, index) => (
           <div 
             key={image.id} 
@@ -58,19 +74,21 @@ const ImageGallery = ({ images, showTitle = false, onDelete }: ImageGalleryProps
                 src={image.url} 
                 alt={image.prompt} 
                 className="w-full h-full object-cover"
+                loading="lazy"
               />
             </AspectRatio>
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4">
-              <p className="text-gold-100 text-sm line-clamp-2 mb-2">{image.prompt}</p>
+              <p className="text-gold-100 text-xs sm:text-sm line-clamp-2 mb-2">{image.prompt}</p>
               <div className="flex gap-2 justify-between">
                 <Button 
                   size="sm"
                   variant="outline"
-                  className="flex-1 bg-gold-500/10 backdrop-blur-sm border-gold-400/20 text-gold-100 hover:bg-gold-500/20"
+                  className="flex-1 bg-gold-500/10 backdrop-blur-sm border-gold-400/20 text-gold-100 hover:bg-gold-500/20 text-xs sm:text-sm"
                   onClick={() => handleDownload(image.url, index)}
                 >
-                  <Download className="h-4 w-4 mr-2" />
-                  Descargar
+                  <Download className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
+                  <span className="sm:inline hidden">Descargar</span>
+                  <span className="sm:hidden inline">↓</span>
                 </Button>
                 {onDelete && (
                   <Button 
@@ -79,7 +97,7 @@ const ImageGallery = ({ images, showTitle = false, onDelete }: ImageGalleryProps
                     className="bg-red-500/40 hover:bg-red-500/60 backdrop-blur-sm"
                     onClick={() => handleDelete(image.id)}
                   >
-                    <Trash2 className="h-4 w-4" />
+                    <Trash2 className="h-3 w-3 sm:h-4 sm:w-4" />
                   </Button>
                 )}
               </div>
