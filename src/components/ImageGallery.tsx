@@ -96,15 +96,17 @@ const ImageGallery = ({
             <AspectRatio ratio={1/1}>
               <img 
                 src={image.url} 
-                alt={image.prompt} 
+                alt={galleryType === 'examples' ? "Example image" : image.prompt} 
                 className="w-full h-full object-cover"
                 loading="lazy"
               />
             </AspectRatio>
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-2">
-              <p className="text-gold-100 text-xs line-clamp-2 mb-1">{image.prompt}</p>
-              
-              {galleryType === 'user' && (
+            
+            {/* For user gallery images, show hover details with buttons */}
+            {galleryType === 'user' && (
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-2">
+                <p className="text-gold-100 text-xs line-clamp-2 mb-1">{image.prompt}</p>
+                
                 <div className="flex gap-2 justify-between">
                   <Button 
                     size="sm"
@@ -127,10 +129,10 @@ const ImageGallery = ({
                     </Button>
                   )}
                 </div>
-              )}
-            </div>
+              </div>
+            )}
             
-            {/* Removed the prompt text display for example images */}
+            {/* Removed all prompt displays for example images */}
           </div>
         ))}
       </div>
