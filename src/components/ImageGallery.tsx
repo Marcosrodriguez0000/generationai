@@ -130,13 +130,7 @@ const ImageGallery = ({
               )}
             </div>
             
-            {galleryType === 'examples' && (
-              <div className="p-2 bg-[#13131e]/80">
-                <p className="text-gray-400 text-[10px] truncate">
-                  {image.prompt}
-                </p>
-              </div>
-            )}
+            {/* Removed the prompt text display for example images */}
           </div>
         ))}
       </div>
