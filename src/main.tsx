@@ -8,5 +8,6 @@ const root = document.getElementById('root');
 if (!root) {
   console.error('Root element not found');
 } else {
-  createRoot(root).render(<App />);
+  const reactRoot = createRoot(root);
+  reactRoot.render(<App />);
 }

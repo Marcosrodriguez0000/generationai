@@ -23,7 +23,9 @@ export default defineConfig(({ mode }) => ({
   build: {
     // Improve build performance
     target: 'es2015',
-    minify: 'esbuild',  // Using esbuild for minification instead of terser
+    minify: 'esbuild',
+    cssMinify: 'esbuild',
+    sourcemap: false,
     // Split chunks to improve loading performance
     rollupOptions: {
       output: {
