@@ -21,11 +21,13 @@ export default defineConfig(({ mode }) => ({
     },
   },
   build: {
-    // Improve build performance
+    // Improved build configuration
     target: 'es2015',
     minify: 'esbuild',
     cssMinify: 'esbuild',
     sourcemap: false,
+    chunkSizeWarningLimit: 1000, // Increase warning limit
+    assetsInlineLimit: 4096,     // Inline small assets
     // Split chunks to improve loading performance
     rollupOptions: {
       output: {
