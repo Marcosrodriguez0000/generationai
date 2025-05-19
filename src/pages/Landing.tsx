@@ -1,38 +1,50 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, BrainCircuit, Sparkles, ImageIcon } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
-import ParallaxBackground from '@/components/ParallaxBackground';
 
 const LandingPage = () => {
   const [currentSection, setCurrentSection] = useState(0);
   const [isIntroComplete, setIsIntroComplete] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
-  
-  const brainSections = [
+  const sections = [
     {
       title: "GENERATION.AI",
-      subtitle: "Inteligencia Artificial para Creatividad Visual",
-      description: "Una nueva forma de dar vida a tus ideas a través de imágenes generadas por IA"
+      subtitle: "La nueva era de la creación con inteligencia artificial",
+      description: "Creatividad sin límites al alcance de todos"
     },
     {
-      title: "INTELIGENCIA",
-      subtitle: "Algoritmos neuronales avanzados",
-      description: "Nuestro cerebro digital comprende contextos complejos y produce resultados sorprendentes"
+      title: "IMÁGENES",
+      subtitle: "Convierte tus ideas en imágenes impactantes",
+      description: "Describe lo que imaginas y déjanos hacer el resto"
     },
     {
-      title: "CREATIVIDAD",
-      subtitle: "Sin límites para tu imaginación",
-      description: "Desde lo más realista hasta lo más surrealista, todo es posible con nuestro generador"
+      title: "TEXTOS",
+      subtitle: "Potencia tu creatividad escrita",
+      description: "Genera contenido persuasivo en segundos"
     },
     {
-      title: "DETALLE",
-      subtitle: "Precisión impresionante",
-      description: "Cada imagen generada contiene detalles minuciosos que hacen brillar tu visión"
+      title: "VIDEO",
+      subtitle: "Da vida a tus ideas",
+      description: "Crea videos impactantes con inteligencia artificial"
     }
   ];
+
+  useEffect(() => {
+    if (currentSection < sections.length - 1) {
+      const timer = setTimeout(() => {
+        setCurrentSection(prev => prev + 1);
+      }, 3000);
+      return () => clearTimeout(timer);
+    } else if (currentSection === sections.length - 1 && !isIntroComplete) {
+      const timer = setTimeout(() => {
+        setIsIntroComplete(true);
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [currentSection, sections.length, isIntroComplete]);
 
   const handleScroll = () => {
     if (containerRef.current) {
@@ -40,34 +52,23 @@ const LandingPage = () => {
       const height = containerRef.current.clientHeight;
       const newSection = Math.floor(scrollPosition / height);
       
-      if (newSection !== currentSection && newSection >= 0 && newSection < brainSections.length) {
+      if (newSection !== currentSection && newSection >= 0 && newSection < sections.length) {
         setCurrentSection(newSection);
       }
       
-      if (scrollPosition > (brainSections.length - 0.5) * height && !isIntroComplete) {
+      if (scrollPosition > (sections.length - 0.5) * height && !isIntroComplete) {
         setIsIntroComplete(true);
       }
     }
   };
 
-  useEffect(() => {
-    const container = containerRef.current;
-    if (container) {
-      container.addEventListener('scroll', handleScroll);
-      return () => {
-        container.removeEventListener('scroll', handleScroll);
-      };
-    }
-  }, [currentSection]);
-
   return (
     <div 
       ref={containerRef}
-      className="h-screen w-full overflow-auto snap-y snap-mandatory"
+      className="h-screen w-full overflow-auto snap-y snap-mandatory bg-black text-white"
+      onScroll={handleScroll}
     >
-      <ParallaxBackground />
-      
-      {brainSections.map((section, index) => (
+      {sections.map((section, index) => (
         <motion.section 
           key={index}
           className={`h-screen w-full flex flex-col items-center justify-center snap-start px-6 relative ${
@@ -79,91 +80,45 @@ const LandingPage = () => {
             transition: { duration: 1 }
           }}
         >
-          <motion.div 
-            className="brain-section-content text-center max-w-2xl mx-auto glass-card p-6 md:p-8 rounded-xl backdrop-blur-lg"
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ 
-              opacity: currentSection === index ? 1 : 0,
-              y: currentSection === index ? 0 : 30,
-              transition: { delay: 0.3, duration: 0.8 }
-            }}
+          <div className="absolute inset-0 pointer-events-none">
+            <div className="stars-small" style={{ '--x': '0.3', '--y': '0.7' } as React.CSSProperties}></div>
+            <div className="stars-medium" style={{ '--x': '0.5', '--y': '0.2' } as React.CSSProperties}></div>
+            <div className="stars-large" style={{ '--x': '0.8', '--y': '0.5' } as React.CSSProperties}></div>
+          </div>
+
+          <motion.h1 
+            className="text-5xl md:text-7xl font-bold mb-4 text-gradient"
+            initial={{ y: 50 }}
+            animate={{ y: 0 }}
+            transition={{ delay: 0.2, duration: 0.8 }}
           >
-            <motion.h1 
-              className="text-5xl md:text-7xl font-bold mb-4 text-gradient"
-              initial={{ y: 50 }}
-              animate={{ y: 0 }}
-              transition={{ delay: 0.2, duration: 0.8 }}
-            >
-              {section.title}
-            </motion.h1>
-            
-            <motion.h2 
-              className="text-xl md:text-3xl mb-6 text-gray-300"
-              initial={{ y: 50 }}
-              animate={{ y: 0 }}
-              transition={{ delay: 0.4, duration: 0.8 }}
-            >
-              {section.subtitle}
-            </motion.h2>
-            
-            <motion.p 
-              className="text-lg max-w-md text-center mx-auto text-gray-400"
-              initial={{ y: 50, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ delay: 0.6, duration: 0.8 }}
-            >
-              {section.description}
-            </motion.p>
-            
-            {index < brainSections.length - 1 && (
-              <motion.div 
-                className="absolute bottom-8 left-1/2 transform -translate-x-1/2"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: [0, 1, 0] }}
-                transition={{ repeat: Infinity, duration: 2 }}
-              >
-                <ArrowRight className="transform rotate-90" />
-                <span className="sr-only">Desplázate hacia abajo</span>
-              </motion.div>
-            )}
-          </motion.div>
-        </motion.section>
-      ))}
-      
-      {isIntroComplete && (
-        <section className="h-screen w-full flex flex-col items-center justify-center snap-start px-6 relative">
-          <motion.div 
-            className="brain-final-section max-w-3xl mx-auto text-center glass-card p-8 rounded-xl backdrop-blur-lg"
-            initial={{ opacity: 0, y: 50 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
+            {section.title}
+          </motion.h1>
+          
+          <motion.h2 
+            className="text-xl md:text-3xl mb-6 text-gray-300"
+            initial={{ y: 50 }}
+            animate={{ y: 0 }}
+            transition={{ delay: 0.4, duration: 0.8 }}
           >
-            <BrainCircuit className="w-20 h-20 mx-auto mb-6 text-neon-blue" />
-            
-            <motion.h2 
-              className="text-4xl md:text-5xl font-bold mb-6 text-gradient"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.2, duration: 0.8 }}
-            >
-              Generación de Imágenes Inteligente
-            </motion.h2>
-            
-            <motion.p
-              className="text-xl text-gray-300 mb-8"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.4, duration: 0.8 }}
-            >
-              Describe lo que imaginas y deja que nuestra inteligencia artificial
-              lo convierta en una imagen impresionante
-            </motion.p>
-            
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.6, duration: 0.8 }}
-              className="mt-8"
+            {section.subtitle}
+          </motion.h2>
+          
+          <motion.p 
+            className="text-lg max-w-md text-center text-gray-400"
+            initial={{ y: 50, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ delay: 0.6, duration: 0.8 }}
+          >
+            {section.description}
+          </motion.p>
+          
+          {index === sections.length - 1 && isIntroComplete && (
+            <motion.div 
+              className="mt-12"
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.8, duration: 0.5 }}
             >
               <Link to="/home">
                 <Button 
@@ -171,11 +126,54 @@ const LandingPage = () => {
                   size="xl"
                   className="animate-glow"
                 >
-                  Comenzar ahora <Sparkles className="ml-2" />
+                  Comenzar ahora <ArrowRight className="ml-2" />
                 </Button>
               </Link>
             </motion.div>
-          </motion.div>
+          )}
+          
+          {index < sections.length - 1 && (
+            <motion.div 
+              className="absolute bottom-8 left-1/2 transform -translate-x-1/2"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: [0, 1, 0] }}
+              transition={{ repeat: Infinity, duration: 2 }}
+            >
+              <ArrowRight className="transform rotate-90" />
+              <span className="sr-only">Scroll down</span>
+            </motion.div>
+          )}
+        </motion.section>
+      ))}
+      
+      {isIntroComplete && (
+        <section className="h-screen w-full flex flex-col items-center justify-center snap-start px-6 relative">
+          <div className="text-center">
+            <motion.h2 
+              className="text-4xl md:text-6xl font-bold mb-8 text-gradient"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.8 }}
+            >
+              Tu imaginación es el límite
+            </motion.h2>
+            
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5, duration: 0.8 }}
+            >
+              <Link to="/home">
+                <Button 
+                  variant="neon"
+                  size="xl"
+                  className="animate-glow"
+                >
+                  Comenzar ahora <ArrowRight className="ml-2" />
+                </Button>
+              </Link>
+            </motion.div>
+          </div>
         </section>
       )}
     </div>
