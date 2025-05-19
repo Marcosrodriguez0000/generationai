@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Link } from "react-router-dom";
-import { Images, Save } from "lucide-react";
+import { Images, Save, BrainCircuit } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from '@/lib/auth';
 
@@ -12,7 +12,10 @@ const InfoSection = () => {
     <div className="max-w-3xl mx-auto mt-16 p-8 bg-black/40 backdrop-blur-md rounded-xl border border-neon-blue/10">
       {!user ? (
         <>
-          <h3 className="text-2xl font-bold text-neon-blue mb-4">Crea tu cuenta para guardar tus creaciones</h3>
+          <div className="flex items-center justify-center mb-4">
+            <BrainCircuit className="h-8 w-8 text-neon-blue mr-3" />
+            <h3 className="text-2xl font-bold text-neon-blue">Crea tu cuenta para guardar tus creaciones</h3>
+          </div>
           <p className="text-gray-300/80 mb-6">
             Regístrate para guardar todas tus imágenes generadas y acceder a ellas en cualquier momento desde cualquier dispositivo.
           </p>
@@ -31,7 +34,10 @@ const InfoSection = () => {
         </>
       ) : (
         <>
-          <h3 className="text-2xl font-bold text-neon-blue mb-4">¡Gracias por unirte a Generation.AI!</h3>
+          <div className="flex items-center justify-center mb-4">
+            <BrainCircuit className="h-8 w-8 text-neon-blue mr-3" />
+            <h3 className="text-2xl font-bold text-neon-blue">¡Gracias por unirte a Generation.AI!</h3>
+          </div>
           <p className="text-gray-300/80 mb-6">
             Ahora puedes guardar todas tus creaciones y acceder a ellas desde cualquier dispositivo.
           </p>
