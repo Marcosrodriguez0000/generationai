@@ -1,34 +1,36 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Sparkles, ImageIcon, Camera, WandSparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
+import ParallaxBackground from '@/components/ParallaxBackground';
 
 const LandingPage = () => {
   const [currentSection, setCurrentSection] = useState(0);
   const [isIntroComplete, setIsIntroComplete] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+  
   const sections = [
     {
       title: "GENERATION.AI",
-      subtitle: "La nueva era de la creación con inteligencia artificial",
-      description: "Creatividad sin límites al alcance de todos"
+      subtitle: "Creación de imágenes con inteligencia artificial",
+      description: "Transforma tus ideas en impresionantes visuales con solo describirlas"
     },
     {
-      title: "IMÁGENES",
-      subtitle: "Convierte tus ideas en imágenes impactantes",
-      description: "Describe lo que imaginas y déjanos hacer el resto"
+      title: "IMAGINACIÓN",
+      subtitle: "Dale vida a tus ideas más creativas",
+      description: "Desde paisajes de fantasía hasta diseños futuristas, todo está a tu alcance"
     },
     {
-      title: "TEXTOS",
-      subtitle: "Potencia tu creatividad escrita",
-      description: "Genera contenido persuasivo en segundos"
+      title: "PRECISIÓN",
+      subtitle: "Control total sobre tus creaciones",
+      description: "Ajusta cada detalle hasta lograr exactamente lo que imaginas"
     },
     {
-      title: "VIDEO",
-      subtitle: "Da vida a tus ideas",
-      description: "Crea videos impactantes con inteligencia artificial"
+      title: "RAPIDEZ",
+      subtitle: "Resultados sorprendentes en segundos",
+      description: "Obtén creaciones profesionales sin esperas largas"
     }
   ];
 
@@ -65,9 +67,11 @@ const LandingPage = () => {
   return (
     <div 
       ref={containerRef}
-      className="h-screen w-full overflow-auto snap-y snap-mandatory bg-black text-white"
+      className="h-screen w-full overflow-auto snap-y snap-mandatory"
       onScroll={handleScroll}
     >
+      <ParallaxBackground />
+      
       {sections.map((section, index) => (
         <motion.section 
           key={index}
@@ -80,12 +84,6 @@ const LandingPage = () => {
             transition: { duration: 1 }
           }}
         >
-          <div className="absolute inset-0 pointer-events-none">
-            <div className="stars-small" style={{ '--x': '0.3', '--y': '0.7' } as React.CSSProperties}></div>
-            <div className="stars-medium" style={{ '--x': '0.5', '--y': '0.2' } as React.CSSProperties}></div>
-            <div className="stars-large" style={{ '--x': '0.8', '--y': '0.5' } as React.CSSProperties}></div>
-          </div>
-
           <motion.h1 
             className="text-5xl md:text-7xl font-bold mb-4 text-gradient"
             initial={{ y: 50 }}
@@ -126,7 +124,7 @@ const LandingPage = () => {
                   size="xl"
                   className="animate-glow"
                 >
-                  Comenzar ahora <ArrowRight className="ml-2" />
+                  Crear imágenes <ArrowRight className="ml-2" />
                 </Button>
               </Link>
             </motion.div>
@@ -148,20 +146,62 @@ const LandingPage = () => {
       
       {isIntroComplete && (
         <section className="h-screen w-full flex flex-col items-center justify-center snap-start px-6 relative">
-          <div className="text-center">
+          <div className="max-w-5xl mx-auto text-center glass-card p-8 rounded-xl">
             <motion.h2 
               className="text-4xl md:text-6xl font-bold mb-8 text-gradient"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.8 }}
             >
-              Tu imaginación es el límite
+              Generador de imágenes AI
             </motion.h2>
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 my-12">
+              <motion.div 
+                className="glass-card p-6 rounded-xl image-feature"
+                initial={{ opacity: 0, y: 50 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3, duration: 0.8 }}
+              >
+                <div className="bg-neon-pink/20 p-4 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                  <ImageIcon className="w-8 h-8 text-neon-pink" />
+                </div>
+                <h3 className="text-xl font-bold mb-2">Calidad excepcional</h3>
+                <p className="text-gray-300">Genera imágenes con un nivel de detalle y realismo sorprendente</p>
+              </motion.div>
+              
+              <motion.div 
+                className="glass-card p-6 rounded-xl image-feature"
+                initial={{ opacity: 0, y: 50 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5, duration: 0.8 }}
+              >
+                <div className="bg-neon-blue/20 p-4 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                  <WandSparkles className="w-8 h-8 text-neon-blue" />
+                </div>
+                <h3 className="text-xl font-bold mb-2">Fácil de usar</h3>
+                <p className="text-gray-300">Interfaz intuitiva que no requiere conocimientos técnicos</p>
+              </motion.div>
+              
+              <motion.div 
+                className="glass-card p-6 rounded-xl image-feature"
+                initial={{ opacity: 0, y: 50 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.7, duration: 0.8 }}
+              >
+                <div className="bg-neon-green/20 p-4 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                  <Camera className="w-8 h-8 text-neon-green" />
+                </div>
+                <h3 className="text-xl font-bold mb-2">Personalizable</h3>
+                <p className="text-gray-300">Ajustes avanzados para crear exactamente lo que necesitas</p>
+              </motion.div>
+            </div>
             
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.5, duration: 0.8 }}
+              transition={{ delay: 0.9, duration: 0.8 }}
+              className="mt-8"
             >
               <Link to="/home">
                 <Button 
@@ -169,7 +209,7 @@ const LandingPage = () => {
                   size="xl"
                   className="animate-glow"
                 >
-                  Comenzar ahora <ArrowRight className="ml-2" />
+                  Comenzar ahora <Sparkles className="ml-2" />
                 </Button>
               </Link>
             </motion.div>
