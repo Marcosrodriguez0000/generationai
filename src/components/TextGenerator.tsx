@@ -1,174 +1,137 @@
 
-import React, { useState, useEffect } from 'react';
-import { toast } from "sonner";
-import TextPromptInput from './TextPromptInput';
-import { generateTextWithPollinations, TextGenerationSettings, initModelFromAllSources } from '@/services/textGenerationService';
-import GeneratedTextDisplay from './GeneratedTextDisplay';
-import { Progress } from "@/components/ui/progress";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { RefreshCcw } from "lucide-react";
-import { Button } from "@/components/ui/button";
-
-interface GeneratedTextItem {
-  id: string;
-  text: string;
-  prompt: string;
-}
+import React, { useState } from 'react';
+import { Button } from './ui/button';
+import { Textarea } from './ui/textarea';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from './ui/card';
+import { Sparkles } from 'lucide-react';
+import { toast } from 'sonner';
+import ApiKeyInput from './ApiKeyInput';
 
 const TextGenerator = () => {
+  const [prompt, setPrompt] = useState('');
+  const [generatedText, setGeneratedText] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
-  const [isModelLoading, setIsModelLoading] = useState(true);
-  const [loadingProgress, setLoadingProgress] = useState(0);
-  const [generatedText, setGeneratedText] = useState<GeneratedTextItem | null>(null);
-  const [prompt, setPrompt] = useState<string>("");
-  const [modelLoadFailed, setModelLoadFailed] = useState(false);
-  const [modelSource, setModelSource] = useState<string>("");
+  const [apiKey, setApiKey] = useState('');
 
-  // Check if the model is ready when component mounts
-  useEffect(() => {
-    loadModel();
-  }, []);
-
-  const loadModel = async () => {
-    setIsModelLoading(true);
-    setModelLoadFailed(false);
-    setLoadingProgress(0);
-    
-    try {
-      const result = await initModelFromAllSources(
-        (progress) => {
-          const progressValue = typeof progress === 'number' ? progress : 0;
-          setLoadingProgress(Math.round(progressValue * 100));
-        }
-      );
-      
-      if (result.success) {
-        setModelSource(result.source || "modelo");
-        setModelLoadFailed(false);
-        toast.success(`Modelo cargado: ${result.source || "modelo"}`, {
-          description: "Listo para generar texto",
-        });
-      } else {
-        throw new Error(result.error || "Error al cargar el modelo");
-      }
-    } catch (error) {
-      console.error("Error preloading model:", error);
-      setModelLoadFailed(true);
-      toast.error("Error al cargar el modelo de generación de texto", {
-        description: "Se usará un modo offline para generar texto.",
+  const handleGenerate = async () => {
+    if (!prompt.trim()) return;
+    if (!apiKey) {
+      toast.error('API Key requerida', {
+        description: 'Por favor configura tu API Key primero',
       });
-    } finally {
-      setIsModelLoading(false);
+      return;
     }
-  };
 
-  const handleGenerate = async (prompt: string, settings: TextGenerationSettings) => {
-    if (isGenerating) return;
-    
     setIsGenerating(true);
-    setPrompt(prompt);
     
     try {
-      toast("Generando texto...", {
-        description: "Esto puede tomar unos segundos, por favor espera.",
-      });
-
-      // Generate text using model
-      const text = await generateTextWithPollinations(prompt, settings);
-      
-      // Create new text item
-      const newText: GeneratedTextItem = {
-        id: Date.now().toString(),
-        text,
-        prompt,
-      };
-
-      // Set the generated text
-      setGeneratedText(newText);
-
-      toast.success("¡Texto generado exitosamente!", {
-        description: "Tu texto está listo.",
+      toast('Generando texto...', {
+        description: 'Esto puede tomar unos segundos.',
       });
       
+      // Simulate text generation (replace with actual API call)
+      setTimeout(() => {
+        // Example generated text
+        const dummyText = `Basado en tu prompt: "${prompt}"\n\n` +
+          'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed tincidunt, ' +
+          'eros ac ultricies pellentesque, justo urna venenatis nulla, at interdum ' +
+          'tortor mauris id nisi. Nulla facilisi. Aenean euismod, nisl sed cursus ' +
+          'gravida, magna lorem interdum libero, vel hendrerit nibh libero vel nunc.';
+          
+        setGeneratedText(dummyText);
+        setIsGenerating(false);
+        
+        toast.success('¡Texto generado exitosamente!', {
+          description: 'Tu texto ha sido creado.',
+        });
+      }, 2000);
     } catch (error) {
-      console.error("Error generating text:", error);
-      toast.error("Error al generar el texto", {
-        description: error instanceof Error ? error.message : "Ha ocurrido un error al intentar generar el texto.",
+      console.error('Error generating text:', error);
+      toast.error('Error al generar el texto', {
+        description: 'Ha ocurrido un error. Por favor intenta nuevamente.',
       });
-    } finally {
       setIsGenerating(false);
     }
   };
 
-  const handleSaveText = () => {
-    if (!generatedText) return;
-    
-    toast.success("Texto guardado", {
-      description: "El texto se ha guardado en tu colección",
-    });
-  };
-
   return (
-    <div className="max-w-3xl mx-auto mb-12 mt-8">
+    <div className="max-w-4xl mx-auto space-y-8">
       <div className="text-center">
         <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-neon-pink to-neon-blue mb-6">
-          Generador de Textos IA
+          Generador de Texto AI
         </h1>
         <p className="text-gray-300 text-lg mb-8">
-          Describe el texto que quieres crear y la IA lo generará para ti
+          Ingresa un prompt y deja que la IA genere texto increíble para ti
         </p>
       </div>
       
-      <div className="relative mb-12 glass-card p-6 rounded-xl backdrop-blur-lg bg-black/20 border border-white/5">
-        {isModelLoading ? (
-          <div className="flex flex-col items-center justify-center py-8">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-neon-pink mb-4"></div>
-            <p className="text-white text-center">Cargando modelo de IA...</p>
-            <p className="text-gray-400 text-sm mt-2">Esto puede tardar unos momentos la primera vez</p>
-            <div className="w-full max-w-xs mt-4">
-              <Progress value={loadingProgress} className="h-2" />
-              <p className="text-xs text-gray-400 text-right mt-1">{loadingProgress}%</p>
-            </div>
+      <Card className="glass-card bg-black/20 border border-white/5 backdrop-blur-lg">
+        <CardHeader>
+          <CardTitle>Crear nuevo texto</CardTitle>
+          <CardDescription>
+            Describe lo que quieres generar y la IA hará el resto
+          </CardDescription>
+          <div className="flex justify-end">
+            <ApiKeyInput 
+              onApiKeyChange={setApiKey}
+              apiKey={apiKey}
+            />
           </div>
-        ) : (
-          <TextPromptInput 
-            onGenerate={handleGenerate} 
-            isGenerating={isGenerating} 
+        </CardHeader>
+        <CardContent>
+          <Textarea
+            placeholder="Escribe tu prompt aquí..."
+            className="min-h-[150px] bg-black/30 border-neon-blue/20"
+            value={prompt}
+            onChange={(e) => setPrompt(e.target.value)}
           />
-        )}
-        
-        {modelLoadFailed && !isModelLoading && (
-          <div className="mt-4">
-            <Alert variant="destructive" className="bg-orange-500/20 border-orange-500/30">
-              <AlertDescription className="flex items-center justify-between">
-                <span>No se pudo cargar el modelo en línea. Se usará un generador alternativo.</span>
-                <Button 
-                  variant="outline" 
-                  size="sm" 
-                  onClick={loadModel}
-                  className="ml-3 bg-white/10 hover:bg-white/20"
-                >
-                  <RefreshCcw className="h-4 w-4 mr-2" />
-                  Reintentar
-                </Button>
-              </AlertDescription>
-            </Alert>
-          </div>
-        )}
-        
-        {!modelLoadFailed && !isModelLoading && modelSource && (
-          <div className="mt-4 text-xs text-gray-500 text-right">
-            Modelo: {modelSource}
-          </div>
-        )}
-      </div>
+        </CardContent>
+        <CardFooter className="flex justify-end">
+          <Button
+            onClick={handleGenerate}
+            disabled={!prompt.trim() || isGenerating}
+            className="bg-gradient-to-r from-neon-pink to-neon-blue text-white hover:opacity-90"
+          >
+            {isGenerating ? (
+              <span className="flex items-center gap-2">
+                <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                Generando...
+              </span>
+            ) : (
+              <span className="flex items-center gap-2">
+                <Sparkles className="h-5 w-5" />
+                Generar Texto
+              </span>
+            )}
+          </Button>
+        </CardFooter>
+      </Card>
       
       {generatedText && (
-        <GeneratedTextDisplay 
-          text={generatedText.text}
-          prompt={generatedText.prompt}
-          onSave={handleSaveText}
-        />
+        <Card className="glass-card bg-black/20 border border-white/5 backdrop-blur-lg">
+          <CardHeader>
+            <CardTitle>Texto Generado</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="bg-black/30 rounded-md p-4 whitespace-pre-wrap">
+              {generatedText}
+            </div>
+          </CardContent>
+          <CardFooter className="flex justify-end">
+            <Button
+              variant="outline"
+              onClick={() => {
+                navigator.clipboard.writeText(generatedText);
+                toast.success('Texto copiado al portapapeles');
+              }}
+            >
+              Copiar al portapapeles
+            </Button>
+          </CardFooter>
+        </Card>
       )}
     </div>
   );

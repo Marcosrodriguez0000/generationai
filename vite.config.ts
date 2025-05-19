@@ -21,14 +21,13 @@ export default defineConfig(({ mode }) => ({
     },
   },
   build: {
-    // Improved build configuration
+    // Optimized build configuration
     target: 'es2015',
-    minify: 'esbuild',
-    cssMinify: 'esbuild',
+    minify: true,
+    cssMinify: true,
     sourcemap: false,
-    chunkSizeWarningLimit: 1000, // Increase warning limit
-    assetsInlineLimit: 4096,     // Inline small assets
-    // Split chunks to improve loading performance
+    chunkSizeWarningLimit: 1500,
+    assetsInlineLimit: 4096,
     rollupOptions: {
       output: {
         manualChunks: {
@@ -40,7 +39,6 @@ export default defineConfig(({ mode }) => ({
           ui: [
             '@radix-ui/react-accordion',
             '@radix-ui/react-alert-dialog',
-            // Other UI components can be listed here
           ]
         },
       },

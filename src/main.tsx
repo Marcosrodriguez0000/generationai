@@ -3,16 +3,14 @@ import { createRoot } from 'react-dom/client'
 import App from './App.tsx'
 import './index.css'
 
-// Improved rendering initialization
-const rootElement = document.getElementById('root');
+// Simple, reliable mounting
+const container = document.getElementById('root');
 
-if (!rootElement) {
-  console.error('Root element not found - initialization failed');
-} else {
-  const reactRoot = createRoot(rootElement);
-  
-  // Render the application
-  reactRoot.render(<App />);
-  
-  console.log('Application successfully mounted');
-}
+if (!container) {
+  console.error('Fatal: Root element not found');
+  throw new Error('Root element not found');
+} 
+
+const root = createRoot(container);
+root.render(<App />);
+console.log('Application mounted successfully');
