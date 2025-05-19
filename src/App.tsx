@@ -6,7 +6,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { useState } from "react";
 import { AuthProvider } from "./lib/auth";
-import Index from "./pages/Index";
+import LandingPage from "./pages/Landing";
+import Home from "./pages/Home";
 import NotFound from "./pages/NotFound";
 import Creaciones from "./pages/Creaciones";
 import Login from "./pages/Login";
@@ -26,7 +27,8 @@ const App = () => {
           <Sonner />
           <BrowserRouter>
             <Routes>
-              <Route path="/" element={<Index generatedImages={generatedImages} setGeneratedImages={setGeneratedImages} />} />
+              <Route path="/" element={<LandingPage />} />
+              <Route path="/home" element={<Home generatedImages={generatedImages} setGeneratedImages={setGeneratedImages} />} />
               <Route path="/creaciones" element={<Creaciones images={generatedImages} />} />
               <Route path="/login" element={<Login />} />
               <Route path="/registro" element={<Registro />} />

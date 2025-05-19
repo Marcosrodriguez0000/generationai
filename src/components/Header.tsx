@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/lib/auth';
 import { Button } from './ui/button';
-import { Menu, X, Images, Text } from 'lucide-react';
+import { Menu, X, Images, Text, Home } from 'lucide-react';
 import { useIsMobile } from '@/hooks/use-mobile';
 
 const Header = () => {
@@ -45,8 +45,16 @@ const Header = () => {
             <nav className="flex items-center space-x-1">
               <Link
                 to="/"
-                className="px-3 py-2 text-sm text-gray-300 hover:text-white hover:bg-white/5 rounded-md transition-colors"
+                className="px-3 py-2 text-sm text-gray-300 hover:text-white hover:bg-white/5 rounded-md transition-colors flex items-center"
               >
+                <Home size={16} className="mr-1" />
+                Inicio
+              </Link>
+              <Link
+                to="/home"
+                className="px-3 py-2 text-sm text-gray-300 hover:text-white hover:bg-white/5 rounded-md transition-colors flex items-center"
+              >
+                <Images size={16} className="mr-1" />
                 Generador
               </Link>
               <Link
@@ -89,9 +97,18 @@ const Header = () => {
           <nav className="mt-3 py-2 bg-black/80 backdrop-blur-lg rounded-lg border border-white/10">
             <Link
               to="/"
-              className="block px-4 py-2.5 text-gray-300 hover:bg-white/5"
+              className="block px-4 py-2.5 text-gray-300 hover:bg-white/5 flex items-center"
               onClick={() => setIsOpen(false)}
             >
+              <Home size={16} className="mr-2" />
+              Inicio
+            </Link>
+            <Link
+              to="/home"
+              className="block px-4 py-2.5 text-gray-300 hover:bg-white/5 flex items-center"
+              onClick={() => setIsOpen(false)}
+            >
+              <Images size={16} className="mr-2" />
               Generador
             </Link>
             <Link

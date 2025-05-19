@@ -45,6 +45,8 @@
   body {
     @apply bg-background text-foreground;
     font-feature-settings: "ss01", "ss02", "cv01", "cv02", "cv03";
+    overflow-x: hidden;
+    scroll-behavior: smooth;
   }
   
   /* Estilos para scrollbar */
@@ -81,6 +83,15 @@
   
   .neon-glow {
     box-shadow: 0 0 15px rgba(255, 113, 154, 0.5), 0 0 25px rgba(0, 194, 255, 0.3);
+  }
+
+  /* Snap scrolling utilities */
+  .snap-y {
+    scroll-snap-type: y mandatory;
+  }
+  
+  .snap-start {
+    scroll-snap-align: start;
   }
 }
 
@@ -125,6 +136,34 @@
   50% {
     box-shadow: 0 0 20px rgba(255, 113, 154, 0.5), 0 0 30px rgba(0, 194, 255, 0.3);
   }
+}
+
+/* Animations for landing page */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(50px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 1s ease-out forwards;
+}
+
+.animate-slide-up {
+  animation: slideUp 0.8s ease-out forwards;
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
 }
 
 /* Responsive adjustments */
