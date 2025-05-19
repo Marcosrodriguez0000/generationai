@@ -1,3 +1,4 @@
+
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import path from "path";
@@ -22,7 +23,7 @@ export default defineConfig(({ mode }) => ({
   build: {
     // Improve build performance
     target: 'es2015',
-    minify: 'esbuild',  // Cambiado de 'terser' a 'esbuild' para evitar problemas
+    minify: 'esbuild',  // Using esbuild for minification instead of terser
     // Split chunks to improve loading performance
     rollupOptions: {
       output: {
