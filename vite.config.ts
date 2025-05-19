@@ -22,13 +22,7 @@ export default defineConfig(({ mode }) => ({
   build: {
     // Improve build performance
     target: 'es2015',
-    minify: 'terser',
-    terserOptions: {
-      compress: {
-        // Remove console logs in production
-        drop_console: mode === 'production',
-      },
-    },
+    minify: 'esbuild',  // Cambiado de 'terser' a 'esbuild' para evitar problemas
     // Split chunks to improve loading performance
     rollupOptions: {
       output: {
