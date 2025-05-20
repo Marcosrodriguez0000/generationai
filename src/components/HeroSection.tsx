@@ -8,7 +8,7 @@ const HeroSection = () => {
         Generation.AI
       </h1>
       <p className="text-lg text-gold-300 mb-6">
-        Describe lo que imaginas y deja que la IA lo convierta en realidad
+        Convierte tus ideas en imágenes impactantes con la mejor IA generativa
       </p>
     </div>
   );

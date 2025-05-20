@@ -12,9 +12,9 @@ const InfoSection = () => {
     <div className="max-w-3xl mx-auto mt-16 p-8 bg-black/40 backdrop-blur-md rounded-xl border border-gold-500/10">
       {!user ? (
         <>
-          <h3 className="text-2xl font-bold text-gold-400 mb-4">Crea tu cuenta para guardar tus creaciones</h3>
+          <h3 className="text-2xl font-bold text-gold-400 mb-4">Crea tu cuenta y guarda tus creaciones visuales</h3>
           <p className="text-gold-100/80 mb-6">
-            Regístrate para guardar todas tus imágenes generadas y acceder a ellas en cualquier momento desde cualquier dispositivo.
+            Regístrate para guardar todas tus imágenes generadas y acceder a tu galería personal desde cualquier dispositivo. Potencia tu creatividad visual sin límites.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link to="/login">
@@ -31,15 +31,15 @@ const InfoSection = () => {
         </>
       ) : (
         <>
-          <h3 className="text-2xl font-bold text-gold-400 mb-4">¡Gracias por unirte a Generation.AI!</h3>
+          <h3 className="text-2xl font-bold text-gold-400 mb-4">¡Bienvenido a tu espacio creativo visual!</h3>
           <p className="text-gold-100/80 mb-6">
-            Ahora puedes guardar todas tus creaciones y acceder a ellas desde cualquier dispositivo.
+            Ahora puedes generar y guardar todas tus creaciones visuales para acceder a ellas cuando quieras.
           </p>
           <div className="flex justify-center">
             <Link to="/creaciones">
               <Button className="bg-gradient-to-r from-gold-400 to-brown-600 text-white hover:opacity-90">
                 <Images className="h-4 w-4 mr-2" />
-                Ver mis creaciones
+                Ver mi galería de imágenes
               </Button>
             </Link>
           </div>

@@ -12,23 +12,23 @@ const LandingPage = () => {
   const sections = [
     {
       title: "GENERATION.AI",
-      subtitle: "La nueva era de la creación con inteligencia artificial",
-      description: "Creatividad sin límites al alcance de todos"
+      subtitle: "El generador de imágenes definitivo",
+      description: "Creatividad visual sin límites al alcance de todos"
     },
     {
-      title: "IMÁGENES",
+      title: "IMÁGENES REALISTAS",
       subtitle: "Convierte tus ideas en imágenes impactantes",
-      description: "Describe lo que imaginas y déjanos hacer el resto"
+      description: "Describe lo que imaginas y nuestra IA lo hará realidad"
     },
     {
-      title: "TEXTOS",
-      subtitle: "Potencia tu creatividad escrita",
-      description: "Genera contenido persuasivo en segundos"
+      title: "ESTILOS ÚNICOS",
+      subtitle: "Personaliza el estilo artístico de tus creaciones",
+      description: "Desde fotografía realista hasta arte abstracto o ilustraciones"
     },
     {
-      title: "VIDEO",
-      subtitle: "Da vida a tus ideas",
-      description: "Crea videos impactantes con inteligencia artificial"
+      title: "EDICIÓN INTUITIVA",
+      subtitle: "Refina tus creaciones con facilidad",
+      description: "Modifica y perfecciona tus imágenes con instrucciones simples"
     }
   ];
 
@@ -126,7 +126,7 @@ const LandingPage = () => {
                   size="xl"
                   className="animate-glow"
                 >
-                  Comenzar ahora <ArrowRight className="ml-2" />
+                  Crear imágenes ahora <ArrowRight className="ml-2" />
                 </Button>
               </Link>
             </motion.div>
@@ -155,7 +155,7 @@ const LandingPage = () => {
               animate={{ opacity: 1 }}
               transition={{ duration: 0.8 }}
             >
-              Tu imaginación es el límite
+              Tu imaginación visual es el límite
             </motion.h2>
             
             <motion.div
@@ -169,7 +169,7 @@ const LandingPage = () => {
                   size="xl"
                   className="animate-glow"
                 >
-                  Comenzar ahora <ArrowRight className="ml-2" />
+                  Generar imágenes ahora <ArrowRight className="ml-2" />
                 </Button>
               </Link>
             </motion.div>
