@@ -52,7 +52,6 @@
     font-feature-settings: "ss01", "ss02", "cv01", "cv02", "cv03";
     overflow-x: hidden;
     scroll-behavior: smooth;
-    background: radial-gradient(ellipse at center, rgba(74, 20, 140, 0.2) 0%, rgba(0, 0, 0, 1) 70%);
     background-attachment: fixed;
   }
   
@@ -103,6 +102,17 @@
   }
 }
 
+@keyframes pulse-star {
+  0%, 100% { 
+    opacity: var(--opacity);
+    transform: scale(1);
+  }
+  50% { 
+    opacity: calc(var(--opacity) * 0.6);
+    transform: scale(0.8);
+  }
+}
+
 .animate-glow {
   animation: pulseGlow 3s ease-in-out infinite;
 }
@@ -115,4 +125,11 @@
 
 .animate-fade-in {
   animation: fadeIn 1s ease-out forwards;
+}
+
+/* Star field styling */
+.star {
+  --opacity: 0.7;
+  position: absolute;
+  border-radius: 50%;
 }

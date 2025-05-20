@@ -8,6 +8,10 @@ import { Sparkles } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { ImageItem } from '@/types/image';
 import { Toaster } from "@/components/ui/sonner";
+import Header from '@/components/Header';
+import CosmosBackground from '@/components/CosmosBackground';
+import ExamplesSection from '@/components/ExamplesSection';
+import Footer from '@/components/Footer';
 
 interface IndexProps {
   generatedImages: ImageItem[];
@@ -66,47 +70,129 @@ const Index = ({ generatedImages, setGeneratedImages }: IndexProps) => {
     }
   };
 
+  // These are the same example images used in the Home component
+  const exampleImages: ImageItem[] = [
+    {
+      id: "example1",
+      url: "/lovable-uploads/1beca87b-3afc-4311-90eb-d102237b51de.png",
+      prompt: "Retrato en blanco y negro de hombre con barba, iluminación dramática de estudio"
+    },
+    {
+      id: "example2",
+      url: "/lovable-uploads/44077103-c1f1-439e-b79c-17facdc4b0a1.png",
+      prompt: "Estatua griega con gafas de sol rosadas, auriculares y chicle, estilo moderno"
+    },
+    {
+      id: "example3",
+      url: "/lovable-uploads/ac16ab61-8c45-4060-87af-984af62b0b49.png",
+      prompt: "Dragón dorado con ojos azules brillantes, detalle de escamas y textura realista"
+    },
+    {
+      id: "example4",
+      url: "/lovable-uploads/67c20ac8-f57f-4415-9e95-ab013380ea69.png",
+      prompt: "Casa moderna de diseño minimalista con fachada de cristal curvada"
+    },
+    {
+      id: "example5",
+      url: "/lovable-uploads/734f2359-a7ce-4a38-87a5-b1da0be658dd.png",
+      prompt: "Pareja bailando bajo un cielo estrellado con la Vía Láctea visible"
+    },
+    {
+      id: "example6",
+      url: "/lovable-uploads/d39c38e0-84e5-4d33-808f-89c51a0a571b.png",
+      prompt: "Frasco de perfume de lujo con etiqueta azul y dorada"
+    },
+    {
+      id: "example7",
+      url: "/lovable-uploads/320d93c4-bd61-47d1-895b-3aae110db3f2.png",
+      prompt: "Retrato hiperrealista de un hombre mayor con expresión pensativa"
+    },
+    {
+      id: "example8",
+      url: "/lovable-uploads/81ebe13b-f3e0-4241-ad7f-a8171be4d604.png",
+      prompt: "Reloj de lujo con esfera negra y detalles dorados"
+    },
+    {
+      id: "example9",
+      url: "/lovable-uploads/960f4a5e-5cbc-4422-b617-a6e3243cf080.png",
+      prompt: "Taza de café con leche con espuma cremosa y caramelo"
+    },
+    {
+      id: "example10",
+      url: "/lovable-uploads/933918f5-51fe-44d5-a927-ff1f83961b9c.png",
+      prompt: "Paisaje de montañas con lago cristalino reflejo al atardecer"
+    },
+    {
+      id: "example11",
+      url: "/lovable-uploads/5397d569-8d3a-4c33-bc04-ba917f7dc3a1.png",
+      prompt: "Anillo de compromiso con diamante brillante sobre terciopelo negro"
+    },
+    {
+      id: "example12",
+      url: "/lovable-uploads/7170fe0d-9fa1-475e-ae85-387d309f32e9.png",
+      prompt: "Automóvil deportivo rojo brillante en carretera costera curva"
+    }
+  ];
+
   return (
-    <div className="flex items-center justify-center min-h-screen bg-black">
-      <Toaster />
-      <div className="w-full max-w-md p-8 rounded-lg bg-black/80 text-center">
-        <h1 className="text-3xl font-bold text-white mb-4">Generation.AI</h1>
-        <p className="text-white/80 text-sm mb-8">
-          Describe lo que imaginas y deja que la inteligencia artificial lo convierta en realidad
-        </p>
-        
-        <form onSubmit={handleGenerate} className="space-y-4">
-          <textarea
-            className="w-full p-3 text-white bg-black/50 border border-purple-500/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500/50 resize-none"
-            placeholder="Quiero..."
-            rows={3}
-            value={prompt}
-            onChange={(e) => setPrompt(e.target.value)}
-            disabled={isGenerating}
-          />
+    <div className="min-h-screen flex flex-col bg-[#050510]">
+      <CosmosBackground />
+      <Header />
+      
+      <main className="flex-1 container mx-auto px-5 py-10">
+        {/* Sección de información personal o descripción */}
+        <div className="max-w-3xl mx-auto mb-12 mt-8">
+          <div className="text-center">
+            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-neon-pink to-neon-blue mb-6">
+              Generation.AI
+            </h1>
+            <p className="text-gray-300 text-lg mb-8">
+              Describe lo que imaginas y deja que la inteligencia artificial lo convierta en realidad
+            </p>
+          </div>
           
-          <Button
-            type="submit"
-            disabled={!prompt.trim() || isGenerating}
-            className="w-full py-2 px-4 bg-black border border-purple-500 text-white rounded-lg hover:bg-purple-500/20 transition-colors"
-          >
-            {isGenerating ? (
-              <span className="flex items-center justify-center gap-2">
-                <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                </svg>
-                Generando...
-              </span>
-            ) : (
-              <span className="flex items-center justify-center gap-2">
-                <Sparkles className="h-5 w-5" />
-                Generar Imagen
-              </span>
-            )}
-          </Button>
-        </form>
-      </div>
+          {/* Barra para escribir prompts con estilo moderno */}
+          <div className="relative mb-12 glass-card p-6 rounded-xl backdrop-blur-lg bg-black/20 border border-white/5">
+            <form onSubmit={handleGenerate} className="space-y-4">
+              <textarea
+                className="w-full p-3 text-white bg-black/50 border border-purple-500/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500/50 resize-none"
+                placeholder="Describe lo que quieres crear..."
+                rows={3}
+                value={prompt}
+                onChange={(e) => setPrompt(e.target.value)}
+                disabled={isGenerating}
+              />
+              
+              <Button
+                type="submit"
+                disabled={!prompt.trim() || isGenerating}
+                className="w-full py-2 px-4 bg-black border border-purple-500 text-white rounded-lg hover:bg-purple-500/20 transition-colors"
+              >
+                {isGenerating ? (
+                  <span className="flex items-center justify-center gap-2">
+                    <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Generando...
+                  </span>
+                ) : (
+                  <span className="flex items-center justify-center gap-2">
+                    <Sparkles className="h-5 w-5" />
+                    Generar Imagen
+                  </span>
+                )}
+              </Button>
+            </form>
+          </div>
+        </div>
+        
+        {/* Sección de ejemplos */}
+        <ExamplesSection exampleImages={exampleImages} />
+      </main>
+      
+      <Footer />
+      <Toaster />
     </div>
   );
 };

@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/lib/auth';
 import { Button } from './ui/button';
-import { Menu, X, Images, Text, Home } from 'lucide-react';
+import { Menu, X, Images, Home } from 'lucide-react';
 import { useIsMobile } from '@/hooks/use-mobile';
 
 const Header = () => {
@@ -22,8 +22,8 @@ const Header = () => {
   };
 
   return (
-    <header className="sticky top-0 z-50 border-b border-white/10 bg-black/50 backdrop-blur-xl">
-      <div className="container mx-auto px-4 py-3">
+    <header className="sticky top-0 z-50 border-b border-[#222222] bg-black backdrop-blur-xl">
+      <div className="mx-auto w-full max-w-[1200px] px-4 py-3">
         <div className="flex items-center justify-between">
           <Link to="/" className="flex items-center text-white">
             <span className="text-xl md:text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-neon-pink to-neon-blue">
@@ -56,13 +56,6 @@ const Header = () => {
               >
                 <Images size={16} className="mr-1" />
                 Generador
-              </Link>
-              <Link
-                to="/texto"
-                className="px-3 py-2 text-sm text-gray-300 hover:text-white hover:bg-white/5 rounded-md transition-colors flex items-center"
-              >
-                <Text size={16} className="mr-1" />
-                Textos
               </Link>
               <Link
                 to="/creaciones"
@@ -110,14 +103,6 @@ const Header = () => {
             >
               <Images size={16} className="mr-2" />
               Generador
-            </Link>
-            <Link
-              to="/texto"
-              className="block px-4 py-2.5 text-gray-300 hover:bg-white/5 flex items-center"
-              onClick={() => setIsOpen(false)}
-            >
-              <Text size={16} className="mr-2" />
-              Textos
             </Link>
             <Link
               to="/creaciones"
