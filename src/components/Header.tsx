@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/lib/auth';
 import { Button } from './ui/button';
-import { Menu, X, Images, Home } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
 import { useIsMobile } from '@/hooks/use-mobile';
 
 const Header = () => {
@@ -22,12 +22,21 @@ const Header = () => {
   };
 
   return (
-    <header className="sticky top-0 z-50 border-b border-[#222222] bg-black/80 backdrop-blur-xl">
-      <div className="mx-auto w-full max-w-[1200px] px-4 py-3 flex flex-row justify-between items-center">
+    <header className="sticky top-0 z-50 border-b border-[#222222] bg-black backdrop-blur-xl">
+      <div className="mx-auto w-full max-w-[1200px] px-10 py-3 flex flex-row justify-between items-center">
         <Link to="/" className="flex items-center text-white">
-          <span className="text-xl md:text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-500 via-blue-500 to-indigo-500">
-            Generation.AI
-          </span>
+          <div className="flex items-center gap-2">
+            <div className="bg-white rounded-md p-1">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M3 8L8 13L3 18" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M8 8L13 13L8 18" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M13 8L18 13L13 18" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </div>
+            <span className="text-xl md:text-2xl font-bold">
+              GenerationAI
+            </span>
+          </div>
         </Link>
 
         {isMobile ? (
@@ -41,44 +50,35 @@ const Header = () => {
             </button>
           </div>
         ) : (
-          <nav className="flex items-center space-x-2">
+          <nav className="flex items-center space-x-8">
             <Link
               to="/"
-              className="px-3 py-2 text-sm text-gray-300 hover:text-white hover:bg-white/5 rounded-md transition-colors flex items-center"
+              className="px-3 py-2 text-base text-gray-300 hover:text-white transition-colors"
             >
-              <Home size={16} className="mr-1" />
               Inicio
             </Link>
             <Link
               to="/home"
-              className="px-3 py-2 text-sm text-gray-300 hover:text-white hover:bg-white/5 rounded-md transition-colors flex items-center"
+              className="px-3 py-2 text-base text-gray-300 hover:text-white transition-colors"
             >
-              <Images size={16} className="mr-1" />
               Generador
             </Link>
             <Link
               to="/creaciones"
-              className="px-3 py-2 text-sm text-gray-300 hover:text-white hover:bg-white/5 rounded-md transition-colors"
+              className="px-3 py-2 text-base text-gray-300 hover:text-white transition-colors"
             >
-              Mis Creaciones
+              Mis creaciones
             </Link>
             {user ? (
-              <Button variant="ghost" className="text-sm text-gray-300" onClick={handleLogout}>
+              <Button variant="ghost" className="text-base text-gray-300" onClick={handleLogout}>
                 Cerrar sesión
               </Button>
             ) : (
-              <div className="flex items-center space-x-2">
-                <Link to="/login">
-                  <Button variant="ghost" size="sm" className="text-gray-300 hover:text-white hover:bg-white/5">
-                    Iniciar sesión
-                  </Button>
-                </Link>
-                <Link to="/registro">
-                  <Button size="sm" className="bg-gradient-to-r from-purple-500 to-blue-600 hover:from-purple-600 hover:to-blue-700 text-white border-0">
-                    Registro
-                  </Button>
-                </Link>
-              </div>
+              <Link to="/login">
+                <Button size="sm" className="bg-[#9333EA] hover:bg-[#7E22CE] text-white border-0 rounded-md px-6">
+                  Iniciar Sesión
+                </Button>
+              </Link>
             )}
           </nav>
         )}

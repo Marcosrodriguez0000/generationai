@@ -39,12 +39,16 @@
     --neon-purple: 255 70% 65%;
     --neon-blue: 215 100% 60%;
     --neon-pink: 330 90% 65%;
+    --purple: 271 81% 56%;
+    --purple-light: 269 97% 85%;
+    --purple-dark: 273 56% 45%;
   }
 }
 
 @layer base {
   * {
     @apply border-border;
+    box-sizing: border-box;
   }
 
   body {
