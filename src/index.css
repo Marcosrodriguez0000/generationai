@@ -93,21 +93,6 @@
   .snap-start {
     scroll-snap-align: start;
   }
-
-  /* Imagen AI flotante */
-  .ai-image-object {
-    filter: drop-shadow(0 0 15px rgba(255, 113, 154, 0.5)) drop-shadow(0 0 25px rgba(0, 194, 255, 0.3));
-    animation: floating 6s ease-in-out infinite;
-  }
-
-  .image-feature {
-    transition: all 0.5s ease;
-  }
-
-  .image-feature:hover {
-    transform: translateY(-10px);
-    filter: drop-shadow(0 10px 15px rgba(0, 0, 0, 0.3));
-  }
 }
 
 /* Animated stars */
@@ -151,11 +136,6 @@
   50% {
     box-shadow: 0 0 20px rgba(255, 113, 154, 0.5), 0 0 30px rgba(0, 194, 255, 0.3);
   }
-}
-
-@keyframes floating {
-  0%, 100% { transform: translateY(0px) rotate(0deg); }
-  50% { transform: translateY(-20px) rotate(3deg); }
 }
 
 /* Animations for landing page */
