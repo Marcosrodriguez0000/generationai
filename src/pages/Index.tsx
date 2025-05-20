@@ -70,7 +70,7 @@ const Index = ({ generatedImages, setGeneratedImages }: IndexProps) => {
     }
   };
 
-  // These are the same example images used in the Home component
+  // These are the example images
   const exampleImages: ImageItem[] = [
     {
       id: "example1",
@@ -143,7 +143,7 @@ const Index = ({ generatedImages, setGeneratedImages }: IndexProps) => {
         {/* Sección de información personal o descripción */}
         <div className="max-w-3xl mx-auto mb-12 mt-8">
           <div className="text-center">
-            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-neon-pink to-neon-blue mb-6">
+            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-500 via-blue-500 to-indigo-500 mb-6">
               Generation.AI
             </h1>
             <p className="text-gray-300 text-lg mb-8">
@@ -155,7 +155,7 @@ const Index = ({ generatedImages, setGeneratedImages }: IndexProps) => {
           <div className="relative mb-12 glass-card p-6 rounded-xl backdrop-blur-lg bg-black/20 border border-white/5">
             <form onSubmit={handleGenerate} className="space-y-4">
               <textarea
-                className="w-full p-3 text-white bg-black/50 border border-purple-500/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500/50 resize-none"
+                className="w-full p-4 text-white bg-black/70 border border-purple-500/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/50 resize-none"
                 placeholder="Describe lo que quieres crear..."
                 rows={3}
                 value={prompt}
@@ -166,7 +166,7 @@ const Index = ({ generatedImages, setGeneratedImages }: IndexProps) => {
               <Button
                 type="submit"
                 disabled={!prompt.trim() || isGenerating}
-                className="w-full py-2 px-4 bg-black border border-purple-500 text-white rounded-lg hover:bg-purple-500/20 transition-colors"
+                className="w-full py-2 px-4 bg-gradient-to-r from-purple-500 to-blue-600 hover:from-purple-600 hover:to-blue-700 text-white rounded-lg border-0 transition-all"
               >
                 {isGenerating ? (
                   <span className="flex items-center justify-center gap-2">

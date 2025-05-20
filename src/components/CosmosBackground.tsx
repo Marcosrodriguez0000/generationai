@@ -75,48 +75,62 @@ const CosmosBackground = () => {
   return (
     <div ref={backgroundRef} className="fixed inset-0 -z-10 overflow-hidden">
       {/* Main gradient background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-[#050510] via-[#0f0f19] to-[#1a1a2e]"></div>
+      <div className="absolute inset-0 bg-gradient-to-br from-[#050510] via-[#0a0a18] to-[#0f0f24]"></div>
       
-      {/* Animated gradient orbs */}
+      {/* Primary blob-like gradient orbs */}
       <motion.div 
-        className="parallax-element absolute top-1/4 -left-[300px] w-[600px] h-[600px] rounded-full bg-gradient-to-r from-neon-purple/40 to-neon-pink/30 blur-3xl"
+        className="parallax-element absolute top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[600px] rounded-full bg-gradient-to-br from-purple-600/30 to-blue-500/20 blur-3xl animate-blob"
         animate={{ 
           x: [0, 50, 0], 
           y: [0, -50, 0],
-          scale: [1, 1.1, 1]
         }}
         transition={{ 
           duration: 20, 
           repeat: Infinity,
           repeatType: "reverse" 
         }}
-        data-speed="0.03"
+        data-speed="0.02"
       />
       
       <motion.div 
-        className="parallax-element absolute bottom-1/3 right-1/4 w-[400px] h-[400px] rounded-full bg-gradient-to-r from-neon-blue/20 to-neon-purple/20 blur-3xl"
+        className="parallax-element absolute bottom-1/4 right-1/4 w-[500px] h-[500px] rounded-full bg-gradient-to-br from-blue-600/20 to-indigo-500/20 blur-3xl animate-blob"
         animate={{ 
           x: [0, -70, 0], 
           y: [0, 50, 0],
-          scale: [1, 1.15, 1]
         }}
         transition={{ 
           duration: 25, 
           repeat: Infinity,
-          repeatType: "reverse" 
+          repeatType: "reverse",
+          delay: 1
         }}
-        data-speed="0.05"
+        data-speed="0.03"
+      />
+      
+      <motion.div 
+        className="parallax-element absolute top-2/4 right-1/3 w-[400px] h-[400px] rounded-full bg-gradient-to-br from-indigo-500/20 to-purple-600/20 blur-3xl animate-blob"
+        animate={{ 
+          x: [0, 60, 0], 
+          y: [0, 40, 0],
+        }}
+        transition={{ 
+          duration: 18, 
+          repeat: Infinity,
+          repeatType: "reverse",
+          delay: 2
+        }}
+        data-speed="0.04"
       />
       
       {/* Subtle grid lines */}
-      <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAwIDEwIEwgNDAgMTAgTSAxMCAwIEwgMTAgNDAgTSAwIDIwIEwgNDAgMjAgTSAyMCAwIEwgMjAgNDAgTSAwIDMwIEwgNDAgMzAgTSAzMCAwIEwgMzAgNDAiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2ZmZmZmZiIgc3Ryb2tlLXdpZHRoPSIwLjMiIG9wYWNpdHk9IjAuMDUiLz48L3BhdHRlcm4+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JpZCkiLz48L3N2Zz4=')] opacity-20"></div>
+      <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAwIDEwIEwgNDAgMTAgTSAxMCAwIEwgMTAgNDAgTSAwIDIwIEwgNDAgMjAgTSAyMCAwIEwgMjAgNDAgTSAwIDMwIEwgNDAgMzAgTSAzMCAwIEwgMzAgNDAiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2ZmZmZmZiIgc3Ryb2tlLXdpZHRoPSIwLjIiIG9wYWNpdHk9IjAuMDUiLz48L3BhdHRlcm4+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JpZCkiLz48L3N2Zz4=')] opacity-20"></div>
       
       {/* Horizontal line accent */}
       <div className="absolute top-[70px] left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
       
       {/* Additional gradient highlights */}
-      <div className="absolute top-0 left-0 right-0 h-[300px] bg-gradient-to-b from-neon-purple/20 to-transparent"></div>
-      <div className="absolute bottom-0 left-0 right-0 h-[250px] bg-gradient-to-t from-neon-blue/10 to-transparent"></div>
+      <div className="absolute top-0 left-0 right-0 h-[200px] bg-gradient-to-b from-indigo-900/20 to-transparent"></div>
+      <div className="absolute bottom-0 left-0 right-0 h-[200px] bg-gradient-to-t from-blue-900/10 to-transparent"></div>
     </div>
   );
 };
