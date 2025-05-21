@@ -42,12 +42,14 @@ const Header = () => {
           </div>
         ) : (
           <nav className="flex items-center space-x-8">
-            <Link
-              to="/"
+            <a
+              href="https://generationia.framer.website/"
+              target="_blank"
+              rel="noopener noreferrer"
               className="px-3 py-2 text-base text-white hover:text-white transition-colors"
             >
               Inicio
-            </Link>
+            </a>
             <Link
               to="/home"
               className="px-3 py-2 text-base text-white hover:text-white transition-colors"
@@ -77,13 +79,15 @@ const Header = () => {
         {/* Mobile Menu */}
         {isMobile && isOpen && (
           <nav className="mt-3 py-2 bg-black/90 backdrop-blur-lg rounded-lg border border-white/10 absolute top-full left-4 right-4">
-            <Link
-              to="/"
+            <a
+              href="https://generationia.framer.website/"
+              target="_blank"
+              rel="noopener noreferrer"
               className="block px-4 py-2.5 text-white hover:bg-white/5 flex items-center"
               onClick={() => setIsOpen(false)}
             >
               Inicio
-            </Link>
+            </a>
             <Link
               to="/home"
               className="block px-4 py-2.5 text-white hover:bg-white/5 flex items-center"
