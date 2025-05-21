@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { toast } from "sonner";
 import { generateImage } from "@/services/imageService";
@@ -152,22 +153,22 @@ const Index = ({ generatedImages, setGeneratedImages }: IndexProps) => {
           {/* Barra para escribir prompts con estilo moderno */}
           <div className="relative mb-12 glass-card p-6 rounded-xl backdrop-blur-lg bg-black/20 border border-white/5">
             <form onSubmit={handleGenerate} className="space-y-4">
-              <div className="flex flex-col md:flex-row gap-2">
-                <textarea
-                  className="w-full p-4 text-white bg-black/70 border border-purple-500/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/50 resize-none"
-                  placeholder="Describe lo que quieres crear..."
-                  rows={3}
-                  value={prompt}
-                  onChange={(e) => setPrompt(e.target.value)}
-                  disabled={isGenerating}
-                />
-                
+              <textarea
+                className="w-full p-4 text-white bg-black/70 border border-purple-500/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/50 resize-none"
+                placeholder="Describe lo que quieres crear..."
+                rows={3}
+                value={prompt}
+                onChange={(e) => setPrompt(e.target.value)}
+                disabled={isGenerating}
+              />
+              
+              <div className="flex justify-end">
                 <Button
                   type="submit"
                   disabled={!prompt.trim() || isGenerating}
-                  className="px-6 py-2 bg-[#9333EA] hover:bg-[#7E22CE] text-white rounded-lg border-0 transition-all"
+                  className="bg-[#9333EA] hover:bg-[#7E22CE] text-white border-0 rounded-md px-6"
                 >
-                  {isGenerating ? "Generando..." : "Generar Imagen"}
+                  {isGenerating ? "Generando..." : "Generar imagen"}
                 </Button>
               </div>
             </form>

@@ -26,7 +26,7 @@ const Header = () => {
       <div className="mx-auto w-full max-w-[1200px] px-10 py-3 flex flex-row justify-between items-center">
         <Link to="/" className="flex items-center text-white">
           <div className="flex items-center">
-            <img src="/lovable-uploads/48157cfc-e17c-48ae-b114-17d8de9c9469.png" alt="GenerationAI Logo" className="h-8" />
+            <img src="/lovable-uploads/48157cfc-e17c-48ae-b114-17d8de9c9469.png" alt="GenerationAI Logo" className="h-10" />
           </div>
         </Link>
 

@@ -14,7 +14,7 @@ const CreationsCallToAction = ({ count }: CreationsCallToActionProps) => {
   return (
     <div className="text-center mb-16">
       <Link to="/creaciones">
-        <Button variant="outline" className="bg-gold-500/10 border-gold-400/20 text-gold-400 hover:bg-gold-500/20">
+        <Button className="bg-[#9333EA] hover:bg-[#7E22CE] text-white border-0 rounded-md px-6">
           <Images className="h-4 w-4 mr-2" />
           Ver mis creaciones ({count})
         </Button>

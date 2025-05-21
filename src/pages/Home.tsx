@@ -12,6 +12,7 @@ import CreationsCallToAction from '@/components/CreationsCallToAction';
 import Footer from '@/components/Footer';
 import { ImageItem } from '@/types/image';
 import ExamplesSection from '@/components/ExamplesSection';
+import { Button } from '@/components/ui/button';
 
 // Ejemplos de imágenes IA con sus prompts y badges
 const exampleImages: ImageItem[] = [
@@ -90,9 +91,12 @@ interface HomeProps {
 const Home = ({ generatedImages, setGeneratedImages }: HomeProps) => {
   const [isGenerating, setIsGenerating] = React.useState(false);
   const [lastGeneratedImage, setLastGeneratedImage] = React.useState<ImageItem | null>(null);
+  const [prompt, setPrompt] = React.useState('');
   const { user } = useAuth();
 
-  const handleGenerate = async (prompt: string) => {
+  const handleGenerate = async () => {
+    if (!prompt.trim() || isGenerating) return;
+    
     setIsGenerating(true);
 
     try {
@@ -161,7 +165,6 @@ const Home = ({ generatedImages, setGeneratedImages }: HomeProps) => {
       <Header />
       
       <main className="flex-1 container mx-auto px-5 py-10">
-        {/* Sección de información personal o descripción */}
         <div className="max-w-3xl mx-auto mb-12 mt-8">
           <div className="text-center">
             <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-[#9333EA] mb-6">
@@ -174,22 +177,24 @@ const Home = ({ generatedImages, setGeneratedImages }: HomeProps) => {
           
           {/* Barra para escribir prompts con estilo moderno */}
           <div className="relative mb-12 glass-card p-6 rounded-xl backdrop-blur-lg bg-black/20 border border-white/5">
-            <div className="flex flex-col md:flex-row gap-2">
-              <textarea
-                className="w-full p-4 text-white bg-black/70 border border-purple-500/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/50 resize-none"
-                placeholder="Describe lo que quieres crear..."
-                rows={3}
-                disabled={isGenerating}
-                onChange={(e) => {}}
-              />
-              
-              <button
-                onClick={() => {}}
-                disabled={isGenerating}
-                className="px-6 py-2 bg-[#9333EA] hover:bg-[#7E22CE] text-white rounded-lg border-0 transition-all"
+            <textarea
+              className="w-full p-4 text-white bg-black/70 border border-purple-500/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/50 resize-none"
+              placeholder="Describe lo que quieres crear..."
+              rows={3}
+              value={prompt}
+              onChange={(e) => setPrompt(e.target.value)}
+              disabled={isGenerating}
+            />
+            
+            <div className="flex justify-end mt-3">
+              <Button
+                type="button"
+                onClick={handleGenerate}
+                disabled={!prompt.trim() || isGenerating}
+                className="bg-[#9333EA] hover:bg-[#7E22CE] text-white border-0 rounded-md px-6"
               >
-                {isGenerating ? "Generando..." : "Generar Imagen"}
-              </button>
+                {isGenerating ? "Generando..." : "Generar imagen"}
+              </Button>
             </div>
           </div>
           
