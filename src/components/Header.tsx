@@ -26,7 +26,7 @@ const Header = () => {
       <div className="mx-auto w-full max-w-[1200px] px-10 py-3 flex flex-row justify-between items-center">
         <Link to="/" className="flex items-center text-white">
           <div className="flex items-center">
-            <img src="/lovable-uploads/0c9a0d3f-6cdc-4e45-9932-3447870de15a.png" alt="GenerationAI Logo" className="h-8" />
+            <img src="/lovable-uploads/48157cfc-e17c-48ae-b114-17d8de9c9469.png" alt="GenerationAI Logo" className="h-8" />
           </div>
         </Link>
 
@@ -34,7 +34,7 @@ const Header = () => {
           <div className="flex items-center">
             <button
               onClick={toggleMenu}
-              className="p-2 text-white hover:text-blue-400 transition-colors"
+              className="p-2 text-white hover:text-white transition-colors"
               aria-label="Toggle menu"
             >
               {isOpen ? <X size={24} /> : <Menu size={24} />}
@@ -44,24 +44,24 @@ const Header = () => {
           <nav className="flex items-center space-x-8">
             <Link
               to="/"
-              className="px-3 py-2 text-base text-gray-300 hover:text-white transition-colors"
+              className="px-3 py-2 text-base text-white hover:text-white transition-colors"
             >
               Inicio
             </Link>
             <Link
               to="/home"
-              className="px-3 py-2 text-base text-gray-300 hover:text-white transition-colors"
+              className="px-3 py-2 text-base text-white hover:text-white transition-colors"
             >
               Generador
             </Link>
             <Link
               to="/creaciones"
-              className="px-3 py-2 text-base text-gray-300 hover:text-white transition-colors"
+              className="px-3 py-2 text-base text-white hover:text-white transition-colors"
             >
               Mis creaciones
             </Link>
             {user ? (
-              <Button variant="ghost" className="text-base text-gray-300" onClick={handleLogout}>
+              <Button variant="ghost" className="text-base text-white" onClick={handleLogout}>
                 Cerrar sesión
               </Button>
             ) : (
@@ -79,21 +79,21 @@ const Header = () => {
           <nav className="mt-3 py-2 bg-black/90 backdrop-blur-lg rounded-lg border border-white/10 absolute top-full left-4 right-4">
             <Link
               to="/"
-              className="block px-4 py-2.5 text-gray-300 hover:bg-white/5 flex items-center"
+              className="block px-4 py-2.5 text-white hover:bg-white/5 flex items-center"
               onClick={() => setIsOpen(false)}
             >
               Inicio
             </Link>
             <Link
               to="/home"
-              className="block px-4 py-2.5 text-gray-300 hover:bg-white/5 flex items-center"
+              className="block px-4 py-2.5 text-white hover:bg-white/5 flex items-center"
               onClick={() => setIsOpen(false)}
             >
               Generador
             </Link>
             <Link
               to="/creaciones"
-              className="block px-4 py-2.5 text-gray-300 hover:bg-white/5"
+              className="block px-4 py-2.5 text-white hover:bg-white/5"
               onClick={() => setIsOpen(false)}
             >
               Mis Creaciones
@@ -101,7 +101,7 @@ const Header = () => {
             {user ? (
               <Button
                 variant="ghost"
-                className="w-full justify-start text-left px-4 py-2.5 text-gray-300 hover:bg-white/5 rounded-none"
+                className="w-full justify-start text-left px-4 py-2.5 text-white hover:bg-white/5 rounded-none"
                 onClick={() => {
                   handleLogout();
                   setIsOpen(false);
@@ -113,14 +113,14 @@ const Header = () => {
               <>
                 <Link
                   to="/login"
-                  className="block px-4 py-2.5 text-gray-300 hover:bg-white/5"
+                  className="block px-4 py-2.5 text-white hover:bg-white/5"
                   onClick={() => setIsOpen(false)}
                 >
                   Iniciar sesión
                 </Link>
                 <Link
                   to="/registro"
-                  className="block px-4 py-2.5 text-gray-300 hover:bg-white/5"
+                  className="block px-4 py-2.5 text-white hover:bg-white/5"
                   onClick={() => setIsOpen(false)}
                 >
                   Registro

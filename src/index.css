@@ -52,7 +52,7 @@
   }
 
   body {
-    @apply bg-black text-foreground;
+    @apply bg-black text-white;
     font-feature-settings: "ss01", "ss02", "cv01", "cv02", "cv03";
     overflow-x: hidden;
     scroll-behavior: smooth;
@@ -154,4 +154,3 @@
   position: absolute;
   border-radius: 50%;
 }
-

@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
-import { Sparkles, UserPlus } from "lucide-react";
+import { UserPlus } from "lucide-react";
 
 const Registro = () => {
   const [email, setEmail] = useState("");
@@ -61,20 +61,17 @@ const Registro = () => {
       <main className="flex-1 flex items-center justify-center px-4">
         <Card className="w-full max-w-md border-white/10 bg-black/50 backdrop-blur-sm">
           <CardHeader className="space-y-1 text-center">
-            <div className="flex justify-center mb-2">
-              <Sparkles className="h-8 w-8 text-neon-blue" />
-            </div>
-            <CardTitle className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-neon-pink to-neon-blue">
+            <CardTitle className="text-2xl font-bold text-white">
               Crear Cuenta
             </CardTitle>
-            <CardDescription className="text-white/80">
+            <CardDescription className="text-white">
               Regístrate para guardar tus creaciones
             </CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
-                <label htmlFor="email" className="text-sm font-medium text-white/90">
+                <label htmlFor="email" className="text-sm font-medium text-white">
                   Email
                 </label>
                 <Input
@@ -88,7 +85,7 @@ const Registro = () => {
                 />
               </div>
               <div className="space-y-2">
-                <label htmlFor="password" className="text-sm font-medium text-white/90">
+                <label htmlFor="password" className="text-sm font-medium text-white">
                   Contraseña
                 </label>
                 <Input
@@ -102,7 +99,7 @@ const Registro = () => {
                 />
               </div>
               <div className="space-y-2">
-                <label htmlFor="confirm-password" className="text-sm font-medium text-white/90">
+                <label htmlFor="confirm-password" className="text-sm font-medium text-white">
                   Confirmar Contraseña
                 </label>
                 <Input
@@ -124,7 +121,7 @@ const Registro = () => {
 
               <Button
                 type="submit"
-                className="w-full bg-gradient-to-r from-neon-pink to-neon-blue text-white hover:opacity-90 shadow-glow"
+                className="w-full bg-[#9333EA] hover:bg-[#7E22CE] text-white"
                 disabled={loading}
               >
                 {loading ? (
@@ -139,14 +136,14 @@ const Registro = () => {
             </form>
           </CardContent>
           <CardFooter className="flex flex-col space-y-4">
-            <div className="text-center text-sm text-white/70">
+            <div className="text-center text-sm text-white">
               ¿Ya tienes una cuenta?{" "}
-              <Link to="/login" className="text-neon-blue hover:underline">
+              <Link to="/login" className="text-white hover:underline">
                 Iniciar sesión
               </Link>
             </div>
             <div className="text-center">
-              <Link to="/" className="text-sm text-neon-pink hover:underline">
+              <Link to="/" className="text-sm text-white hover:underline">
                 Volver al inicio
               </Link>
             </div>

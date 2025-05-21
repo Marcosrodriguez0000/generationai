@@ -164,20 +164,33 @@ const Home = ({ generatedImages, setGeneratedImages }: HomeProps) => {
         {/* Sección de información personal o descripción */}
         <div className="max-w-3xl mx-auto mb-12 mt-8">
           <div className="text-center">
-            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-neon-pink to-neon-blue mb-6">
+            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-[#9333EA] mb-6">
               Generation.AI
             </h1>
-            <p className="text-gray-300 text-lg mb-8">
+            <p className="text-white text-lg mb-8">
               Describe lo que imaginas y deja que la inteligencia artificial lo convierta en realidad
             </p>
           </div>
           
           {/* Barra para escribir prompts con estilo moderno */}
           <div className="relative mb-12 glass-card p-6 rounded-xl backdrop-blur-lg bg-black/20 border border-white/5">
-            <PromptInput 
-              onGenerate={handleGenerate} 
-              isGenerating={isGenerating} 
-            />
+            <div className="flex flex-col md:flex-row gap-2">
+              <textarea
+                className="w-full p-4 text-white bg-black/70 border border-purple-500/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/50 resize-none"
+                placeholder="Describe lo que quieres crear..."
+                rows={3}
+                disabled={isGenerating}
+                onChange={(e) => {}}
+              />
+              
+              <button
+                onClick={() => {}}
+                disabled={isGenerating}
+                className="px-6 py-2 bg-[#9333EA] hover:bg-[#7E22CE] text-white rounded-lg border-0 transition-all"
+              >
+                {isGenerating ? "Generando..." : "Generar Imagen"}
+              </button>
+            </div>
           </div>
           
           {/* Sección de la última imagen generada */}
