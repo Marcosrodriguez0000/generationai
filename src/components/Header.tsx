@@ -41,34 +41,34 @@ const Header = () => {
             </button>
           </div>
         ) : (
-          <nav className="flex items-center space-x-8">
+          <nav className="flex items-center space-x-4">
             <a
               href="https://generationia.framer.website/"
               target="_blank"
               rel="noopener noreferrer"
-              className="px-3 py-2 text-sm text-white hover:text-white transition-colors"
+              className="px-2 py-1.5 text-xs text-white hover:text-white transition-colors"
             >
               Inicio
             </a>
             <Link
               to="/home"
-              className="px-3 py-2 text-sm text-white hover:text-white transition-colors"
+              className="px-2 py-1.5 text-xs text-white hover:text-white transition-colors"
             >
               Generador
             </Link>
             <Link
               to="/creaciones"
-              className="px-3 py-2 text-sm text-white hover:text-white transition-colors"
+              className="px-2 py-1.5 text-xs text-white hover:text-white transition-colors"
             >
               Mis creaciones
             </Link>
             {user ? (
-              <Button variant="ghost" className="text-sm text-white" onClick={handleLogout}>
+              <Button variant="ghost" className="text-xs text-white px-2 py-1 h-7" onClick={handleLogout}>
                 Cerrar sesión
               </Button>
             ) : (
               <Link to="/login">
-                <Button size="sm" className="bg-[#9333EA] hover:bg-[#7E22CE] text-white border-0 rounded-md px-6">
+                <Button size="sm" className="bg-[#9333EA] hover:bg-[#7E22CE] text-white border-0 rounded-md px-4 py-1 h-7 text-xs">
                   Iniciar Sesión
                 </Button>
               </Link>
@@ -83,21 +83,21 @@ const Header = () => {
               href="https://generationia.framer.website/"
               target="_blank"
               rel="noopener noreferrer"
-              className="block px-4 py-2.5 text-sm text-white hover:bg-white/5 flex items-center"
+              className="block px-4 py-2 text-xs text-white hover:bg-white/5 flex items-center"
               onClick={() => setIsOpen(false)}
             >
               Inicio
             </a>
             <Link
               to="/home"
-              className="block px-4 py-2.5 text-sm text-white hover:bg-white/5 flex items-center"
+              className="block px-4 py-2 text-xs text-white hover:bg-white/5 flex items-center"
               onClick={() => setIsOpen(false)}
             >
               Generador
             </Link>
             <Link
               to="/creaciones"
-              className="block px-4 py-2.5 text-sm text-white hover:bg-white/5"
+              className="block px-4 py-2 text-xs text-white hover:bg-white/5"
               onClick={() => setIsOpen(false)}
             >
               Mis Creaciones
@@ -105,7 +105,7 @@ const Header = () => {
             {user ? (
               <Button
                 variant="ghost"
-                className="w-full justify-start text-left px-4 py-2.5 text-sm text-white hover:bg-white/5 rounded-none"
+                className="w-full justify-start text-left px-4 py-2 text-xs text-white hover:bg-white/5 rounded-none"
                 onClick={() => {
                   handleLogout();
                   setIsOpen(false);
@@ -117,14 +117,14 @@ const Header = () => {
               <>
                 <Link
                   to="/login"
-                  className="block px-4 py-2.5 text-sm text-white hover:bg-white/5"
+                  className="block px-4 py-2 text-xs text-white hover:bg-white/5"
                   onClick={() => setIsOpen(false)}
                 >
                   Iniciar sesión
                 </Link>
                 <Link
                   to="/registro"
-                  className="block px-4 py-2.5 text-sm text-white hover:bg-white/5"
+                  className="block px-4 py-2 text-xs text-white hover:bg-white/5"
                   onClick={() => setIsOpen(false)}
                 >
                   Registro
