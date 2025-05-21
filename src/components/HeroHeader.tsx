@@ -3,7 +3,7 @@ import React from 'react';
 
 const HeroHeader = () => {
   return (
-    <div className="text-center">
+    <div className="text-center font-inter">
       <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-[#9333EA] mb-6">
         Generation.AI
       </h1>
