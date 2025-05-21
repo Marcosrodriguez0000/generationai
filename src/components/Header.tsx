@@ -25,17 +25,8 @@ const Header = () => {
     <header className="sticky top-0 z-50 border-b border-[#222222] bg-black backdrop-blur-xl">
       <div className="mx-auto w-full max-w-[1200px] px-10 py-3 flex flex-row justify-between items-center">
         <Link to="/" className="flex items-center text-white">
-          <div className="flex items-center gap-2">
-            <div className="bg-white rounded-md p-1">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M3 8L8 13L3 18" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                <path d="M8 8L13 13L8 18" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                <path d="M13 8L18 13L13 18" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
-            </div>
-            <span className="text-xl md:text-2xl font-bold">
-              GenerationAI
-            </span>
+          <div className="flex items-center">
+            <img src="/lovable-uploads/0c9a0d3f-6cdc-4e45-9932-3447870de15a.png" alt="GenerationAI Logo" className="h-8" />
           </div>
         </Link>
 
@@ -91,7 +82,6 @@ const Header = () => {
               className="block px-4 py-2.5 text-gray-300 hover:bg-white/5 flex items-center"
               onClick={() => setIsOpen(false)}
             >
-              <Home size={16} className="mr-2" />
               Inicio
             </Link>
             <Link
@@ -99,7 +89,6 @@ const Header = () => {
               className="block px-4 py-2.5 text-gray-300 hover:bg-white/5 flex items-center"
               onClick={() => setIsOpen(false)}
             >
-              <Images size={16} className="mr-2" />
               Generador
             </Link>
             <Link
