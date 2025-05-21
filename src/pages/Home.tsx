@@ -1,8 +1,6 @@
-
 import React from 'react';
 import { toast } from "sonner";
 import Header from "@/components/Header";
-import PromptInput from "@/components/PromptInput";
 import CosmosBackground from "@/components/CosmosBackground";
 import { generateImage } from "@/services/imageService";
 import { saveUserImage } from "@/services/userImageService";
@@ -12,7 +10,8 @@ import CreationsCallToAction from '@/components/CreationsCallToAction';
 import Footer from '@/components/Footer';
 import { ImageItem } from '@/types/image';
 import ExamplesSection from '@/components/ExamplesSection';
-import { Button } from '@/components/ui/button';
+import HeroHeader from '@/components/HeroHeader';
+import PromptGenerator from '@/components/PromptGenerator';
 
 // Ejemplos de imágenes IA con sus prompts y badges
 const exampleImages: ImageItem[] = [
@@ -91,10 +90,9 @@ interface HomeProps {
 const Home = ({ generatedImages, setGeneratedImages }: HomeProps) => {
   const [isGenerating, setIsGenerating] = React.useState(false);
   const [lastGeneratedImage, setLastGeneratedImage] = React.useState<ImageItem | null>(null);
-  const [prompt, setPrompt] = React.useState('');
   const { user } = useAuth();
 
-  const handleGenerate = async () => {
+  const handleGenerate = async (prompt: string) => {
     if (!prompt.trim() || isGenerating) return;
     
     setIsGenerating(true);
@@ -166,37 +164,10 @@ const Home = ({ generatedImages, setGeneratedImages }: HomeProps) => {
       
       <main className="flex-1 container mx-auto px-5 py-10">
         <div className="max-w-3xl mx-auto mb-12 mt-8">
-          <div className="text-center">
-            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-[#9333EA] mb-6">
-              Generation.AI
-            </h1>
-            <p className="text-white text-lg mb-8">
-              Describe lo que imaginas y deja que la inteligencia artificial lo convierta en realidad
-            </p>
-          </div>
+          <HeroHeader />
           
           {/* Barra para escribir prompts con estilo moderno */}
-          <div className="relative mb-12 glass-card p-6 rounded-xl backdrop-blur-lg bg-black/20 border border-white/5">
-            <textarea
-              className="w-full p-4 text-white bg-black/70 border border-purple-500/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/50 resize-none"
-              placeholder="Describe lo que quieres crear..."
-              rows={3}
-              value={prompt}
-              onChange={(e) => setPrompt(e.target.value)}
-              disabled={isGenerating}
-            />
-            
-            <div className="flex justify-end mt-3">
-              <Button
-                type="button"
-                onClick={handleGenerate}
-                disabled={!prompt.trim() || isGenerating}
-                className="bg-[#9333EA] hover:bg-[#7E22CE] text-white border-0 rounded-md px-6"
-              >
-                {isGenerating ? "Generando..." : "Generar imagen"}
-              </Button>
-            </div>
-          </div>
+          <PromptGenerator onGenerate={handleGenerate} isGenerating={isGenerating} />
           
           {/* Sección de la última imagen generada */}
           <LastGeneratedImage image={lastGeneratedImage} onSave={handleSaveImage} />
