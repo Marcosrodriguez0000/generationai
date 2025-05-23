@@ -132,7 +132,12 @@ const ImageGallery = ({
               </div>
             )}
             
-            {/* Removed all prompt displays for example images */}
+            {/* Display prompt below examples images */}
+            {galleryType === 'examples' && (
+              <div className="p-2 bg-black/60">
+                <p className="text-gold-100 text-xs line-clamp-2">{image.prompt}</p>
+              </div>
+            )}
           </div>
         ))}
       </div>

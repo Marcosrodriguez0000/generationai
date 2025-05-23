@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { toast } from "sonner";
 import { generateImage } from "@/services/imageService";
@@ -11,6 +10,8 @@ import Header from '@/components/Header';
 import CosmosBackground from '@/components/CosmosBackground';
 import ExamplesSection from '@/components/ExamplesSection';
 import Footer from '@/components/Footer';
+import PromptGenerator from '@/components/PromptGenerator';
+import HeroHeader from '@/components/HeroHeader';
 
 interface IndexProps {
   generatedImages: ImageItem[];
@@ -19,11 +20,10 @@ interface IndexProps {
 
 const Index = ({ generatedImages, setGeneratedImages }: IndexProps) => {
   const [isGenerating, setIsGenerating] = useState(false);
-  const [prompt, setPrompt] = useState('');
+  const [lastGeneratedImage, setLastGeneratedImage] = useState<ImageItem | null>(null);
   const { user } = useAuth();
 
-  const handleGenerate = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleGenerate = async (prompt: string) => {
     if (!prompt.trim() || isGenerating) return;
     
     setIsGenerating(true);
@@ -43,6 +43,9 @@ const Index = ({ generatedImages, setGeneratedImages }: IndexProps) => {
         prompt,
         badge: "NEW"
       };
+      
+      // Set the last generated image
+      setLastGeneratedImage(newImage);
       
       // Add the new image to the beginning of the array
       setGeneratedImages(prev => [newImage, ...prev]);
@@ -141,38 +144,14 @@ const Index = ({ generatedImages, setGeneratedImages }: IndexProps) => {
       <main className="flex-1 container mx-auto px-5 py-10">
         {/* Sección de información personal o descripción */}
         <div className="max-w-3xl mx-auto mb-12 mt-8">
-          <div className="text-center">
-            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-[#9333EA] mb-6">
-              Generation.AI
-            </h1>
-            <p className="text-white text-lg mb-8">
-              Describe lo que imaginas y deja que la inteligencia artificial lo convierta en realidad
-            </p>
-          </div>
+          <HeroHeader />
           
           {/* Barra para escribir prompts con estilo moderno */}
-          <div className="relative mb-12 glass-card p-6 rounded-xl backdrop-blur-lg bg-black/20 border border-white/5">
-            <form onSubmit={handleGenerate} className="space-y-4">
-              <textarea
-                className="w-full p-4 text-white bg-black/70 border border-purple-500/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/50 resize-none"
-                placeholder="Describe lo que quieres crear..."
-                rows={3}
-                value={prompt}
-                onChange={(e) => setPrompt(e.target.value)}
-                disabled={isGenerating}
-              />
-              
-              <div className="flex justify-end">
-                <Button
-                  type="submit"
-                  disabled={!prompt.trim() || isGenerating}
-                  className="bg-[#9333EA] hover:bg-[#7E22CE] text-white border-0 rounded-md px-6"
-                >
-                  {isGenerating ? "Generando..." : "Generar imagen"}
-                </Button>
-              </div>
-            </form>
-          </div>
+          <PromptGenerator 
+            onGenerate={handleGenerate} 
+            isGenerating={isGenerating} 
+            lastGeneratedImage={lastGeneratedImage}
+          />
         </div>
         
         {/* Sección de ejemplos */}

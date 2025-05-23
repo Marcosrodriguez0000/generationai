@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { toast } from "sonner";
 import Header from "@/components/Header";
@@ -167,10 +168,14 @@ const Home = ({ generatedImages, setGeneratedImages }: HomeProps) => {
           <HeroHeader />
           
           {/* Barra para escribir prompts con estilo moderno */}
-          <PromptGenerator onGenerate={handleGenerate} isGenerating={isGenerating} />
+          <PromptGenerator 
+            onGenerate={handleGenerate} 
+            isGenerating={isGenerating} 
+            lastGeneratedImage={lastGeneratedImage}
+          />
           
-          {/* Sección de la última imagen generada */}
-          <LastGeneratedImage image={lastGeneratedImage} onSave={handleSaveImage} />
+          {/* Ya no necesitamos mostrar la última imagen generada aquí pues se muestra debajo del PromptGenerator */}
+          {/* <LastGeneratedImage image={lastGeneratedImage} onSave={handleSaveImage} /> */}
           
           {/* Ver mis creaciones */}
           <CreationsCallToAction count={generatedImages.length} />
