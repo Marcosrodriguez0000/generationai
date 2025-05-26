@@ -1,3 +1,4 @@
+
 // Supabase Edge Function service for Pixar character generation
 export interface CivitAISettings {
   model: string;
@@ -42,8 +43,24 @@ export interface PixarCharacterData {
   additionalDetails: string;
 }
 
-// Supabase Edge Function URL
-const SUPABASE_FUNCTION_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/generate-pixar`;
+// Get Supabase configuration with fallbacks
+const getSupabaseConfig = () => {
+  const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+  const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+  
+  console.log('🔧 Supabase URL:', supabaseUrl);
+  console.log('🔧 Supabase Key exists:', !!supabaseKey);
+  
+  if (!supabaseUrl || !supabaseKey) {
+    throw new Error('Supabase configuration missing. Please check your environment variables.');
+  }
+  
+  return {
+    url: supabaseUrl,
+    key: supabaseKey,
+    functionUrl: `${supabaseUrl}/functions/v1/generate-pixar`
+  };
+};
 
 // Para compatibilidad con el componente existente
 export const setHuggingFaceApiKey = (apiKey: string) => {
@@ -156,13 +173,14 @@ export const generatePixarCharacter = async (
   console.log('📝 Prompt construido:', prompt);
   
   try {
-    console.log('📤 Enviando request a Supabase Edge Function');
+    const config = getSupabaseConfig();
+    console.log('📤 Enviando request a Supabase Edge Function:', config.functionUrl);
     
-    const response = await fetch(SUPABASE_FUNCTION_URL, {
+    const response = await fetch(config.functionUrl, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
+        'Authorization': `Bearer ${config.key}`,
       },
       body: JSON.stringify({
         prompt: prompt,
@@ -200,11 +218,13 @@ export const generatePixarFromText = async (
   const enhancedPrompt = `disney pixar style 3d character: ${description}, high quality, vibrant colors, professional animation style`;
   
   try {
-    const response = await fetch(SUPABASE_FUNCTION_URL, {
+    const config = getSupabaseConfig();
+    
+    const response = await fetch(config.functionUrl, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
+        'Authorization': `Bearer ${config.key}`,
       },
       body: JSON.stringify({
         prompt: enhancedPrompt,
