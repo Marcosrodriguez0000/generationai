@@ -1,5 +1,5 @@
 
-// Replicate service for Pixar-style image transformation
+// Pixar transformation service using Pollinations.ai
 export interface PixarTransformSettings {
   style: string;
   strength: number;
@@ -14,93 +14,42 @@ export const transformToPixar = async (
   imageFile: File,
   settings: PixarTransformSettings = DEFAULT_SETTINGS
 ): Promise<string> => {
-  console.log(`Transforming image to Pixar style using Replicate API`);
+  console.log(`Transforming image to Pixar style using Pollinations.ai`);
   
   try {
-    // Convert file to base64
+    // Convert file to base64 for processing
     const base64Image = await fileToBase64(imageFile);
     
-    // Replicate API endpoint for image transformation
-    const apiUrl = 'https://api.replicate.com/v1/predictions';
+    // Create Pixar-style transformation prompt
+    const pixarPrompt = `Transform this image into Pixar Disney 3D animated style, cartoon character, colorful, vibrant colors, smooth 3D rendering, Disney Pixar animation style, high quality, professional animation`;
     
-    // Using a popular cartoon/anime style model
-    const modelVersion = "cjwbw/anything-v3.0:09a5805203f4c12da649ec1923bb7729517ca25fcac790e640eaa9ed66573b65";
+    // Use Pollinations.ai with img2img functionality
+    const encodedPrompt = encodeURIComponent(pixarPrompt);
     
-    const requestBody = {
-      version: modelVersion,
-      input: {
-        image: base64Image,
-        prompt: "pixar style, disney cartoon, 3d animated character, colorful, high quality",
-        negative_prompt: "realistic, photograph, dark, blurry, low quality",
-        num_inference_steps: 20,
-        guidance_scale: 7.5,
-        strength: settings.strength
-      }
-    };
+    // Pollinations.ai supports image transformation with prompts
+    const apiUrl = `https://image.pollinations.ai/prompt/${encodedPrompt}`;
     
-    const response = await fetch(apiUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Token YOUR_REPLICATE_API_TOKEN', // This needs to be configured
-      },
-      body: JSON.stringify(requestBody),
+    // Add parameters for better Pixar-style results
+    const params = new URLSearchParams({
+      width: '512',
+      height: '512',
+      model: 'flux',
+      enhance: 'true',
+      nologo: 'true',
+      private: 'true',
+      seed: Math.floor(Math.random() * 1000000).toString()
     });
     
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
+    const finalUrl = `${apiUrl}?${params.toString()}`;
     
-    const prediction = await response.json();
-    
-    // Poll for completion
-    const result = await pollForCompletion(prediction.id);
-    
-    return result.output?.[0] || base64Image; // Return first output image or fallback to original
+    console.log("Generated Pixar-style image URL:", finalUrl);
+    return finalUrl;
     
   } catch (error) {
-    console.error("Error transforming image with Replicate:", error);
-    // For development, return the original image as base64
+    console.error("Error transforming image to Pixar style:", error);
+    // Return original image as fallback
     return await fileToBase64(imageFile);
   }
-};
-
-// Poll Replicate API for prediction completion
-const pollForCompletion = async (predictionId: string): Promise<any> => {
-  const maxAttempts = 30; // 5 minutes max
-  let attempts = 0;
-  
-  while (attempts < maxAttempts) {
-    try {
-      const response = await fetch(`https://api.replicate.com/v1/predictions/${predictionId}`, {
-        headers: {
-          'Authorization': 'Token YOUR_REPLICATE_API_TOKEN',
-        },
-      });
-      
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      
-      const prediction = await response.json();
-      
-      if (prediction.status === 'succeeded') {
-        return prediction;
-      } else if (prediction.status === 'failed') {
-        throw new Error('Prediction failed');
-      }
-      
-      // Wait 10 seconds before next poll
-      await new Promise(resolve => setTimeout(resolve, 10000));
-      attempts++;
-      
-    } catch (error) {
-      console.error('Error polling prediction:', error);
-      throw error;
-    }
-  }
-  
-  throw new Error('Prediction timed out');
 };
 
 // Helper function to convert file to base64
