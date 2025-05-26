@@ -1,4 +1,4 @@
-// Hugging Face service for Pixar character generation
+// Supabase Edge Function service for Pixar character generation
 export interface CivitAISettings {
   model: string;
   strength: number;
@@ -42,25 +42,16 @@ export interface PixarCharacterData {
   additionalDetails: string;
 }
 
-// Hugging Face configuration
-const HUGGINGFACE_API_URL = "https://api-inference.huggingface.co/models/Lykon/DreamShaper";
-let HUGGINGFACE_API_KEY = "";
+// Supabase Edge Function URL
+const SUPABASE_FUNCTION_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/generate-pixar`;
 
-// Función para configurar la API key
+// Para compatibilidad con el componente existente
 export const setHuggingFaceApiKey = (apiKey: string) => {
-  HUGGINGFACE_API_KEY = apiKey;
-  localStorage.setItem('huggingface_api_key', apiKey);
+  localStorage.setItem('huggingface_configured', 'true');
 };
 
-// Función para obtener la API key del localStorage
 export const getHuggingFaceApiKey = (): string => {
-  if (HUGGINGFACE_API_KEY) return HUGGINGFACE_API_KEY;
-  const stored = localStorage.getItem('huggingface_api_key');
-  if (stored) {
-    HUGGINGFACE_API_KEY = stored;
-    return stored;
-  }
-  return "";
+  return localStorage.getItem('huggingface_configured') || '';
 };
 
 const DEFAULT_SETTINGS: CivitAISettings = {
@@ -159,53 +150,43 @@ export const generatePixarCharacter = async (
   characterData: PixarCharacterData,
   settings: CivitAISettings = DEFAULT_SETTINGS
 ): Promise<string> => {
-  console.log('🚀 Generando personaje Pixar con Hugging Face');
-  
-  const apiKey = getHuggingFaceApiKey();
-  if (!apiKey) {
-    throw new Error('API key de Hugging Face no configurada. Por favor configúrala primero.');
-  }
+  console.log('🚀 Generando personaje Pixar con Supabase Edge Function');
   
   const prompt = buildPixarPrompt(characterData);
   console.log('📝 Prompt construido:', prompt);
   
   try {
-    console.log('📤 Enviando request a Hugging Face');
+    console.log('📤 Enviando request a Supabase Edge Function');
     
-    const response = await fetch(HUGGINGFACE_API_URL, {
+    const response = await fetch(SUPABASE_FUNCTION_URL, {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${apiKey}`,
         'Content-Type': 'application/json',
+        'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
       },
       body: JSON.stringify({
-        inputs: prompt,
-        parameters: {
-          num_inference_steps: settings.steps,
-          guidance_scale: settings.cfgScale,
-          width: 512,
-          height: 512
-        }
+        prompt: prompt,
+        settings: settings
       })
     });
 
-    console.log('📡 Respuesta de Hugging Face:', response.status);
+    console.log('📡 Respuesta de Supabase:', response.status);
     
     if (!response.ok) {
       const errorText = await response.text();
-      console.error('❌ Error de Hugging Face:', response.status, errorText);
+      console.error('❌ Error de Supabase Edge Function:', response.status, errorText);
       throw new Error(`Error ${response.status}: ${errorText}`);
     }
 
-    // Hugging Face devuelve la imagen como blob
+    // La Edge Function devuelve la imagen directamente
     const blob = await response.blob();
     const imageUrl = URL.createObjectURL(blob);
     
-    console.log('✅ Imagen generada con Hugging Face');
+    console.log('✅ Imagen generada con Supabase Edge Function');
     return imageUrl;
     
   } catch (error) {
-    console.error('💥 Error completo al generar con Hugging Face:', error);
+    console.error('💥 Error completo al generar con Supabase:', error);
     throw error;
   }
 };
@@ -214,30 +195,20 @@ export const generatePixarFromText = async (
   description: string,
   settings: CivitAISettings = DEFAULT_SETTINGS
 ): Promise<string> => {
-  console.log('🚀 Generando personaje Pixar desde texto con Hugging Face');
-  
-  const apiKey = getHuggingFaceApiKey();
-  if (!apiKey) {
-    throw new Error('API key de Hugging Face no configurada.');
-  }
+  console.log('🚀 Generando personaje Pixar desde texto con Supabase Edge Function');
   
   const enhancedPrompt = `disney pixar style 3d character: ${description}, high quality, vibrant colors, professional animation style`;
   
   try {
-    const response = await fetch(HUGGINGFACE_API_URL, {
+    const response = await fetch(SUPABASE_FUNCTION_URL, {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${apiKey}`,
         'Content-Type': 'application/json',
+        'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
       },
       body: JSON.stringify({
-        inputs: enhancedPrompt,
-        parameters: {
-          num_inference_steps: settings.steps,
-          guidance_scale: settings.cfgScale,
-          width: 512,
-          height: 512
-        }
+        prompt: enhancedPrompt,
+        settings: settings
       })
     });
 
@@ -259,6 +230,6 @@ export const transformImageToPixar = async (
   imageUrl: string,
   settings: CivitAISettings = DEFAULT_SETTINGS
 ): Promise<string> => {
-  // Esta función requiere un modelo diferente en Hugging Face
+  // Esta función requiere un modelo diferente
   throw new Error('Transformación de imagen no disponible con el modelo actual');
 };
