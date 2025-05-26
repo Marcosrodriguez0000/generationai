@@ -11,6 +11,7 @@ import NotFound from "./pages/NotFound";
 import Creaciones from "./pages/Creaciones";
 import Login from "./pages/Login";
 import Registro from "./pages/Registro";
+import PixarPage from "./pages/PixarPage";
 
 const queryClient = new QueryClient();
 
@@ -28,6 +29,7 @@ const App = () => {
               <Route path="/" element={<Index generatedImages={generatedImages} setGeneratedImages={setGeneratedImages} />} />
               <Route path="/home" element={<Index generatedImages={generatedImages} setGeneratedImages={setGeneratedImages} />} />
               <Route path="/creaciones" element={<Creaciones images={generatedImages} />} />
+              <Route path="/pixar" element={<PixarPage />} />
               <Route path="/login" element={<Login />} />
               <Route path="/registro" element={<Registro />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
