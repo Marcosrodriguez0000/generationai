@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { transformToPixar, FluxTransformSettings } from '@/services/fluxAiService';
+import { transformToPixar, PixarTransformSettings } from '@/services/replicateService';
 import ImageUploader from './ImageUploader';
 import { Button } from './ui/button';
 import { Slider } from './ui/slider';
@@ -14,7 +14,7 @@ const PixarTransformer = () => {
   const [transformedImage, setTransformedImage] = useState<string | null>(null);
   const [isTransforming, setIsTransforming] = useState(false);
   const [originalFile, setOriginalFile] = useState<File | null>(null);
-  const [settings, setSettings] = useState<FluxTransformSettings>({
+  const [settings, setSettings] = useState<PixarTransformSettings>({
     style: "pixar",
     strength: 0.8
   });
@@ -41,7 +41,7 @@ const PixarTransformer = () => {
     
     try {
       toast("Transformando a estilo Pixar...", {
-        description: "Esto puede tomar unos segundos usando Flux AI.",
+        description: "Esto puede tomar unos minutos usando Replicate AI.",
       });
 
       const result = await transformToPixar(originalFile, settings);
@@ -82,7 +82,7 @@ const PixarTransformer = () => {
         </p>
         <div className="flex items-center justify-center gap-2 text-sm text-gray-400">
           <Sparkles className="h-4 w-4" />
-          <span>Powered by Flux AI</span>
+          <span>Powered by Replicate AI</span>
         </div>
       </div>
 
