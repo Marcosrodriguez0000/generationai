@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
@@ -9,8 +9,24 @@ import { setHuggingFaceApiKey, getHuggingFaceApiKey } from '@/services/civitaiSe
 import { toast } from 'sonner';
 
 const HuggingFaceApiKeyConfig = () => {
-  const [apiKey, setApiKey] = useState(getHuggingFaceApiKey());
-  const [isConfigured, setIsConfigured] = useState(!!getHuggingFaceApiKey());
+  const [apiKey, setApiKey] = useState('');
+  const [isConfigured, setIsConfigured] = useState(false);
+
+  useEffect(() => {
+    // Configurar automáticamente la API key proporcionada
+    const providedKey = 'hf_hGnobzgBMgInUPgrwlepKhWTWnqeZNYDI';
+    const existingKey = getHuggingFaceApiKey();
+    
+    if (!existingKey && providedKey) {
+      setHuggingFaceApiKey(providedKey);
+      setIsConfigured(true);
+      toast.success('API key configurada automáticamente', {
+        description: 'Hugging Face está listo para generar personajes'
+      });
+    } else if (existingKey) {
+      setIsConfigured(true);
+    }
+  }, []);
 
   const handleSaveApiKey = () => {
     if (!apiKey.trim()) {
