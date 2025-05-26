@@ -1,6 +1,5 @@
-
 import React, { useState } from 'react';
-import { generatePixarCharacter, CivitAISettings } from '@/services/civitaiService';
+import { generatePixarCharacter, CivitAISettings, getHuggingFaceApiKey } from '@/services/civitaiService';
 import { Button } from './ui/button';
 import { Slider } from './ui/slider';
 import { Label } from './ui/label';
@@ -8,15 +7,16 @@ import { toast } from "sonner";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Download, Sparkles, RefreshCw } from 'lucide-react';
 import PixarCharacterForm, { PixarCharacterData } from './PixarCharacterForm';
+import HuggingFaceApiKeyConfig from './HuggingFaceApiKeyConfig';
 
 const PixarTransformer = () => {
   const [transformedImage, setTransformedImage] = useState<string | null>(null);
   const [isTransforming, setIsTransforming] = useState(false);
   const [settings, setSettings] = useState<CivitAISettings>({
-    model: "pixar-3d-animation",
+    model: "dreamshaper",
     strength: 0.8,
-    steps: 30,
-    cfgScale: 7.5
+    steps: 25,
+    cfgScale: 7
   });
   
   const [characterData, setCharacterData] = useState<PixarCharacterData>({
@@ -43,6 +43,11 @@ const PixarTransformer = () => {
   });
 
   const handleTransform = async () => {
+    if (!getHuggingFaceApiKey()) {
+      toast.error("Error", { description: "Por favor configura tu API key de Hugging Face primero." });
+      return;
+    }
+
     if (!characterData.name || !characterData.age || !characterData.gender) {
       toast.error("Error", { description: "Por favor completa al menos el nombre, edad y género del personaje." });
       return;
@@ -51,18 +56,18 @@ const PixarTransformer = () => {
     setIsTransforming(true);
     
     try {
-      toast("Generando personaje Pixar con CivitAI...", {
-        description: "Creando tu personaje detallado con modelos profesionales. Esto puede tomar unos minutos.",
+      toast("Generando personaje Pixar con Hugging Face...", {
+        description: "Creando tu personaje con IA gratuita. Esto puede tomar unos segundos.",
       });
 
       const result = await generatePixarCharacter(characterData, settings);
       setTransformedImage(result);
       
-      toast.success("¡Personaje Pixar creado con CivitAI!", {
-        description: "Tu personaje ha sido generado exitosamente con calidad profesional.",
+      toast.success("¡Personaje Pixar creado!", {
+        description: "Tu personaje ha sido generado exitosamente.",
       });
     } catch (error) {
-      console.error("Error generating Pixar character with CivitAI:", error);
+      console.error("Error generating Pixar character:", error);
       toast.error("Error en la generación", {
         description: "No se pudo generar el personaje. Por favor intenta de nuevo.",
       });
@@ -115,12 +120,17 @@ const PixarTransformer = () => {
           Generador de Personajes Pixar
         </h1>
         <p className="text-lg text-gray-300 mb-6">
-          Diseña tu personaje Pixar ideal con nuestro formulario detallado y genera imágenes profesionales con CivitAI
+          Diseña tu personaje Pixar ideal con nuestro formulario detallado y genera imágenes profesionales con Hugging Face (Gratis)
         </p>
         <div className="flex items-center justify-center gap-2 text-sm text-gray-400">
           <Sparkles className="h-4 w-4" />
-          <span>Powered by CivitAI Professional Models</span>
+          <span>Powered by Hugging Face - Gratis e Ilimitado</span>
         </div>
+      </div>
+
+      {/* Configuración de API Key */}
+      <div className="mb-8">
+        <HuggingFaceApiKeyConfig />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -136,26 +146,11 @@ const PixarTransformer = () => {
 
         {/* Columna derecha: Resultado y configuración (1 columna) */}
         <div className="space-y-6">
-          {/* Configuración de CivitAI */}
+          {/* Configuración de Hugging Face */}
           <div className="glass-card p-6 rounded-xl backdrop-blur-lg bg-black/20 border border-white/5">
-            <h3 className="font-medium text-white mb-4">Ajustes CivitAI</h3>
+            <h3 className="font-medium text-white mb-4">Ajustes de Generación</h3>
             
             <div className="space-y-6">
-              <div className="space-y-2">
-                <div className="flex justify-between">
-                  <Label htmlFor="strength">Intensidad Pixar</Label>
-                  <span className="text-sm text-muted-foreground">{settings.strength.toFixed(1)}</span>
-                </div>
-                <Slider
-                  id="strength"
-                  min={0.3}
-                  max={1.0}
-                  step={0.1}
-                  value={[settings.strength]}
-                  onValueChange={(value) => setSettings({...settings, strength: value[0]})}
-                />
-              </div>
-              
               <div className="space-y-2">
                 <div className="flex justify-between">
                   <Label htmlFor="steps">Pasos de generación</Label>
@@ -163,8 +158,8 @@ const PixarTransformer = () => {
                 </div>
                 <Slider
                   id="steps"
-                  min={20}
-                  max={50}
+                  min={15}
+                  max={35}
                   step={5}
                   value={[settings.steps]}
                   onValueChange={(value) => setSettings({...settings, steps: value[0]})}
@@ -179,7 +174,7 @@ const PixarTransformer = () => {
                 <Slider
                   id="cfgScale"
                   min={5}
-                  max={15}
+                  max={12}
                   step={0.5}
                   value={[settings.cfgScale]}
                   onValueChange={(value) => setSettings({...settings, cfgScale: value[0]})}
@@ -196,7 +191,7 @@ const PixarTransformer = () => {
               <div className="h-[400px] bg-[#13131e] rounded-lg border border-white/10 flex items-center justify-center">
                 <div className="text-center p-6">
                   <Sparkles className="h-16 w-16 mx-auto text-gray-500 mb-4" />
-                  <p className="text-gray-400">Completa el formulario para generar tu personaje</p>
+                  <p className="text-gray-400">Configura Hugging Face y completa el formulario para generar tu personaje</p>
                 </div>
               </div>
             )}
@@ -245,7 +240,6 @@ const PixarTransformer = () => {
                     <div className="text-gray-300 text-sm space-y-1">
                       {characterData.age && <p><span className="font-medium">Edad:</span> {characterData.age}</p>}
                       {characterData.gender && <p><span className="font-medium">Género:</span> {characterData.gender}</p>}
-                      {characterData.pixarStyle && <p><span className="font-medium">Estilo:</span> {characterData.pixarStyle}</p>}
                     </div>
                   </div>
                 )}
