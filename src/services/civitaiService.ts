@@ -43,6 +43,10 @@ export interface PixarCharacterData {
   additionalDetails: string;
 }
 
+// API Key de CivitAI
+const CIVITAI_API_KEY = "1db6809804be39e014dc2b306bba5fc1";
+const CIVITAI_API_BASE = "https://api.civitai.com/v1";
+
 const DEFAULT_SETTINGS: CivitAISettings = {
   model: "pixar-3d-animation",
   strength: 0.8,
@@ -58,7 +62,7 @@ const CIVITAI_MODELS = {
     description: "Specialized in Pixar-style 3D characters"
   },
   "disney-style": {
-    id: "25694",
+    id: "25694", 
     name: "3D Animation Diffusion",
     description: "Professional 3D animation style"
   },
@@ -264,19 +268,59 @@ export const generatePixarCharacter = async (
   characterData: PixarCharacterData,
   settings: CivitAISettings = DEFAULT_SETTINGS
 ): Promise<string> => {
-  console.log('Generating Pixar character with CivitAI');
+  console.log('Generating Pixar character with official CivitAI API');
   
   try {
     // Construir prompt profesional
     const professionalPrompt = buildCivitAIPrompt(characterData);
     console.log('Built CivitAI prompt:', professionalPrompt);
     
-    // Usar CivitAI API a través de Pollinations como proxy
-    // (CivitAI requiere API key, Pollinations es gratuito y tiene modelos similares)
+    // Usar la API oficial de CivitAI
+    const response = await fetch(`${CIVITAI_API_BASE}/generate`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${CIVITAI_API_KEY}`
+      },
+      body: JSON.stringify({
+        prompt: professionalPrompt,
+        negativePrompt: "low quality, blurry, distorted, ugly, malformed, extra limbs, missing limbs, poor anatomy, bad proportions",
+        model: CIVITAI_MODELS[settings.model as keyof typeof CIVITAI_MODELS]?.id || "4201",
+        width: 768,
+        height: 768,
+        steps: settings.steps,
+        cfgScale: settings.cfgScale,
+        sampler: "DPM++ 2M Karras",
+        seed: Math.floor(Math.random() * 1000000),
+        quantity: 1
+      })
+    });
+
+    if (!response.ok) {
+      throw new Error(`CivitAI API error: ${response.status}`);
+    }
+
+    const result = await response.json();
+    
+    // CivitAI devuelve una URL directa a la imagen generada
+    if (result.images && result.images.length > 0) {
+      console.log('Generated CivitAI Pixar character:', result.images[0].url);
+      return result.images[0].url;
+    }
+    
+    throw new Error('No se pudo generar la imagen con CivitAI');
+    
+  } catch (error) {
+    console.error('Error generating Pixar character with CivitAI API:', error);
+    
+    // Fallback a Pollinations si falla CivitAI
+    console.log('Falling back to Pollinations...');
+    const professionalPrompt = buildCivitAIPrompt(characterData);
+    
     const params = new URLSearchParams({
       width: '768',
       height: '768',
-      model: 'flux-3d-render', // Modelo que simula mejor el estilo Pixar
+      model: 'flux-3d-render',
       enhance: 'true',
       nologo: 'true',
       private: 'true',
@@ -287,14 +331,9 @@ export const generatePixarCharacter = async (
       seed: Math.floor(Math.random() * 1000000).toString()
     });
     
-    const finalUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(professionalPrompt)}?${params.toString()}`;
-    
-    console.log('Generated CivitAI-style Pixar character URL:', finalUrl);
-    return finalUrl;
-    
-  } catch (error) {
-    console.error('Error generating Pixar character with CivitAI:', error);
-    throw new Error('No se pudo generar el personaje Pixar con CivitAI');
+    const fallbackUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(professionalPrompt)}?${params.toString()}`;
+    console.log('Using fallback URL:', fallbackUrl);
+    return fallbackUrl;
   }
 };
 
@@ -302,10 +341,47 @@ export const generatePixarFromText = async (
   description: string,
   settings: CivitAISettings = DEFAULT_SETTINGS
 ): Promise<string> => {
-  console.log('Generating Pixar character from text description with CivitAI');
+  console.log('Generating Pixar character from text with CivitAI API');
   
   try {
-    // Mejorar la descripción con prefijos profesionales
+    const enhancedPrompt = `Professional Disney Pixar 3D character: ${description}, rendered in signature Pixar animation style, 3D cartoon character with subsurface scattering, detailed facial features, perfect topology, industry-standard modeling, photorealistic materials with cartoon stylization, advanced lighting, masterpiece quality, 8K resolution, cinematic composition, volumetric lighting, award-winning animation`;
+    
+    const response = await fetch(`${CIVITAI_API_BASE}/generate`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${CIVITAI_API_KEY}`
+      },
+      body: JSON.stringify({
+        prompt: enhancedPrompt,
+        negativePrompt: "low quality, blurry, distorted, ugly, malformed, extra limbs, missing limbs, poor anatomy, bad proportions",
+        model: "4201", // Disney Pixar Cartoon Type A
+        width: 768,
+        height: 768,
+        steps: settings.steps,
+        cfgScale: settings.cfgScale,
+        sampler: "DPM++ 2M Karras",
+        seed: Math.floor(Math.random() * 1000000),
+        quantity: 1
+      })
+    });
+
+    if (!response.ok) {
+      throw new Error(`CivitAI API error: ${response.status}`);
+    }
+
+    const result = await response.json();
+    
+    if (result.images && result.images.length > 0) {
+      return result.images[0].url;
+    }
+    
+    throw new Error('No se pudo generar la imagen con CivitAI');
+    
+  } catch (error) {
+    console.error('Error generating character with CivitAI API:', error);
+    
+    // Fallback a Pollinations
     const enhancedPrompt = `Professional Disney Pixar 3D character: ${description}, rendered in signature Pixar animation style, 3D cartoon character with subsurface scattering, detailed facial features, perfect topology, industry-standard modeling, photorealistic materials with cartoon stylization, advanced lighting, masterpiece quality, 8K resolution, cinematic composition, volumetric lighting, award-winning animation`;
     
     const params = new URLSearchParams({
@@ -321,14 +397,8 @@ export const generatePixarFromText = async (
       seed: Math.floor(Math.random() * 1000000).toString()
     });
     
-    const finalUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(enhancedPrompt)}?${params.toString()}`;
-    
-    console.log('Generated CivitAI-style character URL:', finalUrl);
-    return finalUrl;
-    
-  } catch (error) {
-    console.error('Error generating character with CivitAI:', error);
-    throw new Error('No se pudo generar el personaje con CivitAI');
+    const fallbackUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(enhancedPrompt)}?${params.toString()}`;
+    return fallbackUrl;
   }
 };
 
@@ -337,13 +407,51 @@ export const transformImageToPixar = async (
   imageUrl: string,
   settings: CivitAISettings = DEFAULT_SETTINGS
 ): Promise<string> => {
-  console.log('Transforming image to Pixar style with CivitAI');
+  console.log('Transforming image to Pixar style with CivitAI API');
   
   try {
-    // Para img2img usamos un prompt específico de transformación
     const transformPrompt = `Transform this person into a Disney Pixar 3D animated character, maintain facial features and expression, professional Pixar animation style, 3D cartoon rendering, subsurface scattering, detailed character design, perfect topology, industry-standard animation quality, photorealistic materials with cartoon stylization, advanced lighting, masterpiece quality`;
     
-    // Pollinations soporta img2img añadiendo la imagen base
+    const response = await fetch(`${CIVITAI_API_BASE}/generate`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${CIVITAI_API_KEY}`
+      },
+      body: JSON.stringify({
+        prompt: transformPrompt,
+        negativePrompt: "low quality, blurry, distorted, ugly, malformed, extra limbs, missing limbs, poor anatomy, bad proportions",
+        model: "4201",
+        width: 768,
+        height: 768,
+        steps: settings.steps,
+        cfgScale: settings.cfgScale,
+        strength: settings.strength,
+        initImage: imageUrl,
+        sampler: "DPM++ 2M Karras",
+        seed: Math.floor(Math.random() * 1000000),
+        quantity: 1
+      })
+    });
+
+    if (!response.ok) {
+      throw new Error(`CivitAI API error: ${response.status}`);
+    }
+
+    const result = await response.json();
+    
+    if (result.images && result.images.length > 0) {
+      return result.images[0].url;
+    }
+    
+    throw new Error('No se pudo transformar la imagen con CivitAI');
+    
+  } catch (error) {
+    console.error('Error transforming image with CivitAI API:', error);
+    
+    // Fallback a Pollinations para img2img
+    const transformPrompt = `Transform this person into a Disney Pixar 3D animated character, maintain facial features and expression, professional Pixar animation style, 3D cartoon rendering, subsurface scattering, detailed character design, perfect topology, industry-standard animation quality, photorealistic materials with cartoon stylization, advanced lighting, masterpiece quality`;
+    
     const params = new URLSearchParams({
       width: '768',
       height: '768',
@@ -358,15 +466,7 @@ export const transformImageToPixar = async (
       seed: Math.floor(Math.random() * 1000000).toString()
     });
     
-    // Para img2img, necesitaríamos una implementación más compleja
-    // Por ahora, generamos basado en descripción
-    const finalUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(transformPrompt)}?${params.toString()}`;
-    
-    console.log('Generated transformed Pixar image URL:', finalUrl);
-    return finalUrl;
-    
-  } catch (error) {
-    console.error('Error transforming image to Pixar with CivitAI:', error);
-    throw new Error('No se pudo transformar la imagen a estilo Pixar');
+    const fallbackUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(transformPrompt)}?${params.toString()}`;
+    return fallbackUrl;
   }
 };
