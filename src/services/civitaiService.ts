@@ -1,5 +1,5 @@
 
-// CivitAI service for professional Pixar character generation
+// CivitAI service for professional Pixar character generation via Supabase Edge Functions
 export interface CivitAISettings {
   model: string;
   strength: number;
@@ -43,8 +43,8 @@ export interface PixarCharacterData {
   additionalDetails: string;
 }
 
-// API Key de CivitAI
-const CIVITAI_API_KEY = "1db6809804be39e014dc2b306bba5fc1";
+// Supabase Edge Function URL
+const EDGE_FUNCTION_URL = "https://xvkzkbxngrbhhubkqnvx.supabase.co/functions/v1/generate-pixar-character";
 
 const DEFAULT_SETTINGS: CivitAISettings = {
   model: "pixar-3d-animation",
@@ -244,69 +244,40 @@ const buildCivitAIPrompt = (characterData: PixarCharacterData): string => {
   return prompt.trim().replace(/,\s*$/, '');
 };
 
-// Función temporal que genera imagen usando Pollinations pero con prompts optimizados para Pixar
-const generateWithPollinations = async (prompt: string): Promise<string> => {
-  console.log('🔄 USANDO POLLINATIONS temporalmente debido a problemas con CivitAI API');
-  
-  // Optimizar prompt para Pollinations con enfoque Pixar
-  const optimizedPrompt = `Disney Pixar 3D animated character style, ${prompt}, professional 3D animation quality, Pixar studio rendering, cartoon character design`;
-  
-  const encodedPrompt = encodeURIComponent(optimizedPrompt);
-  const imageUrl = `https://image.pollinations.ai/prompt/${encodedPrompt}?width=768&height=768&seed=${Math.floor(Math.random() * 1000000)}&enhance=true&model=flux`;
-  
-  console.log('✅ Imagen generada con Pollinations (temporal):', imageUrl);
-  return imageUrl;
-};
-
 export const generatePixarCharacter = async (
   characterData: PixarCharacterData,
   settings: CivitAISettings = DEFAULT_SETTINGS
 ): Promise<string> => {
-  console.log('🚀 Intentando generar personaje Pixar con CivitAI API');
+  console.log('🚀 Generando personaje Pixar con CivitAI via Supabase Edge Function');
   
   // Construir prompt profesional
   const professionalPrompt = buildCivitAIPrompt(characterData);
   console.log('📝 Prompt construido:', professionalPrompt);
   
-  const requestBody = {
-    prompt: professionalPrompt,
-    negativePrompt: "low quality, blurry, distorted, ugly, malformed, extra limbs, missing limbs, poor anatomy, bad proportions, worst quality, jpeg artifacts",
-    width: 768,
-    height: 768,
-    steps: settings.steps,
-    cfg_scale: settings.cfgScale,
-    sampler_name: "DPM++ 2M Karras",
-    seed: Math.floor(Math.random() * 1000000),
-    batch_size: 1
-  };
-  
-  console.log('📤 Enviando request a CivitAI con body:', requestBody);
-  
   try {
-    // Intentar API de CivitAI con mejor configuración
-    const response = await fetch('https://civitai.com/api/v1/images/generate', {
+    console.log('📤 Enviando request a Supabase Edge Function');
+    
+    const response = await fetch(EDGE_FUNCTION_URL, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${CIVITAI_API_KEY}`,
-        'User-Agent': 'PixarGenerator/1.0'
       },
-      body: JSON.stringify(requestBody)
+      body: JSON.stringify({
+        prompt: professionalPrompt,
+        settings: settings
+      })
     });
 
-    console.log('📡 Respuesta de CivitAI:', response.status, response.statusText);
+    console.log('📡 Respuesta de Edge Function:', response.status, response.statusText);
     
     if (!response.ok) {
       const errorText = await response.text();
-      console.error('❌ Error de CivitAI API:', response.status, errorText);
-      
-      // Si CivitAI falla, usar Pollinations temporalmente
-      console.log('🔄 CivitAI falló, usando Pollinations como respaldo');
-      return await generateWithPollinations(professionalPrompt);
+      console.error('❌ Error de Edge Function:', response.status, errorText);
+      throw new Error(`Error ${response.status}: ${errorText}`);
     }
 
     const result = await response.json();
-    console.log('✅ Respuesta completa de CivitAI:', result);
+    console.log('✅ Respuesta completa de CivitAI via Edge Function:', result);
     
     // Procesar respuesta de CivitAI
     if (result.images && result.images.length > 0) {
@@ -316,14 +287,12 @@ export const generatePixarCharacter = async (
       console.log('🎨 Imagen generada con CivitAI:', result.image);
       return result.image;
     } else {
-      console.log('⚠️ CivitAI no devolvió imagen válida, usando Pollinations');
-      return await generateWithPollinations(professionalPrompt);
+      throw new Error('CivitAI no devolvió una imagen válida');
     }
     
   } catch (error) {
-    console.error('💥 Error completo en CivitAI:', error);
-    console.log('🔄 Usando Pollinations debido al error');
-    return await generateWithPollinations(professionalPrompt);
+    console.error('💥 Error completo al generar con CivitAI:', error);
+    throw error;
   }
 };
 
@@ -331,34 +300,25 @@ export const generatePixarFromText = async (
   description: string,
   settings: CivitAISettings = DEFAULT_SETTINGS
 ): Promise<string> => {
-  console.log('🚀 Generando personaje Pixar desde texto');
+  console.log('🚀 Generando personaje Pixar desde texto via Edge Function');
   
   const enhancedPrompt = `Professional Disney Pixar 3D character: ${description}, rendered in signature Pixar animation style, 3D cartoon character with subsurface scattering, detailed facial features, perfect topology, industry-standard modeling, photorealistic materials with cartoon stylization, advanced lighting, masterpiece quality, 8K resolution, cinematic composition, volumetric lighting, award-winning animation`;
   
   try {
-    const response = await fetch('https://civitai.com/api/v1/images/generate', {
+    const response = await fetch(EDGE_FUNCTION_URL, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${CIVITAI_API_KEY}`,
-        'User-Agent': 'PixarGenerator/1.0'
       },
       body: JSON.stringify({
         prompt: enhancedPrompt,
-        negativePrompt: "low quality, blurry, distorted, ugly, malformed, extra limbs, missing limbs, poor anatomy, bad proportions",
-        width: 768,
-        height: 768,
-        steps: settings.steps,
-        cfg_scale: settings.cfgScale,
-        sampler_name: "DPM++ 2M Karras",
-        seed: Math.floor(Math.random() * 1000000),
-        batch_size: 1
+        settings: settings
       })
     });
 
     if (!response.ok) {
-      console.error('❌ Error en CivitAI, usando Pollinations');
-      return await generateWithPollinations(enhancedPrompt);
+      const errorText = await response.text();
+      throw new Error(`Error ${response.status}: ${errorText}`);
     }
 
     const result = await response.json();
@@ -368,12 +328,12 @@ export const generatePixarFromText = async (
     } else if (result.image) {
       return result.image;
     } else {
-      return await generateWithPollinations(enhancedPrompt);
+      throw new Error('No se pudo generar la imagen');
     }
     
   } catch (error) {
     console.error('💥 Error en generatePixarFromText:', error);
-    return await generateWithPollinations(enhancedPrompt);
+    throw error;
   }
 };
 
@@ -381,36 +341,28 @@ export const transformImageToPixar = async (
   imageUrl: string,
   settings: CivitAISettings = DEFAULT_SETTINGS
 ): Promise<string> => {
-  console.log('🚀 Transformando imagen a estilo Pixar');
+  console.log('🚀 Transformando imagen a estilo Pixar via Edge Function');
   
   const transformPrompt = `Transform this person into a Disney Pixar 3D animated character, maintain facial features and expression, professional Pixar animation style, 3D cartoon rendering, subsurface scattering, detailed character design, perfect topology, industry-standard animation quality, photorealistic materials with cartoon stylization, advanced lighting, masterpiece quality`;
   
   try {
-    const response = await fetch('https://civitai.com/api/v1/images/generate', {
+    const response = await fetch(EDGE_FUNCTION_URL, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${CIVITAI_API_KEY}`,
-        'User-Agent': 'PixarGenerator/1.0'
       },
       body: JSON.stringify({
         prompt: transformPrompt,
-        negativePrompt: "low quality, blurry, distorted, ugly, malformed, extra limbs, missing limbs, poor anatomy, bad proportions",
-        width: 768,
-        height: 768,
-        steps: settings.steps,
-        cfg_scale: settings.cfgScale,
-        denoising_strength: settings.strength,
-        init_images: [imageUrl],
-        sampler_name: "DPM++ 2M Karras",
-        seed: Math.floor(Math.random() * 1000000),
-        batch_size: 1
+        settings: {
+          ...settings,
+          init_images: [imageUrl]
+        }
       })
     });
 
     if (!response.ok) {
-      console.error('❌ Error en transformImageToPixar, usando Pollinations');
-      return await generateWithPollinations(transformPrompt);
+      const errorText = await response.text();
+      throw new Error(`Error ${response.status}: ${errorText}`);
     }
 
     const result = await response.json();
@@ -420,11 +372,11 @@ export const transformImageToPixar = async (
     } else if (result.image) {
       return result.image;
     } else {
-      return await generateWithPollinations(transformPrompt);
+      throw new Error('No se pudo transformar la imagen');
     }
     
   } catch (error) {
     console.error('💥 Error en transformImageToPixar:', error);
-    return await generateWithPollinations(transformPrompt);
+    throw error;
   }
 };
