@@ -1,4 +1,3 @@
-
 // CivitAI service for professional Pixar character generation via Supabase Edge Functions
 export interface CivitAISettings {
   model: string;
@@ -43,8 +42,12 @@ export interface PixarCharacterData {
   additionalDetails: string;
 }
 
+// Supabase configuration
+const SUPABASE_URL = "https://xvkzkbxngrbhhubkqnvx.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh2a3prYnhuZ3JiaGh1YmtxbnZ4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDcxNDM2MjQsImV4cCI6MjA2MjcxOTYyNH0.wRzoxVZ0jaOAvZ8Mh7EQUl5dFRc33NKqHHd3Aayk_fc";
+
 // Supabase Edge Function URL
-const EDGE_FUNCTION_URL = "https://xvkzkbxngrbhhubkqnvx.supabase.co/functions/v1/generate-pixar-character";
+const EDGE_FUNCTION_URL = `${SUPABASE_URL}/functions/v1/generate-pixar-character`;
 
 const DEFAULT_SETTINGS: CivitAISettings = {
   model: "pixar-3d-animation",
@@ -261,6 +264,8 @@ export const generatePixarCharacter = async (
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+        'apikey': SUPABASE_ANON_KEY,
       },
       body: JSON.stringify({
         prompt: professionalPrompt,
@@ -309,6 +314,8 @@ export const generatePixarFromText = async (
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+        'apikey': SUPABASE_ANON_KEY,
       },
       body: JSON.stringify({
         prompt: enhancedPrompt,
@@ -350,6 +357,8 @@ export const transformImageToPixar = async (
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+        'apikey': SUPABASE_ANON_KEY,
       },
       body: JSON.stringify({
         prompt: transformPrompt,
