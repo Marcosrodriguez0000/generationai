@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { transformToPixarFromForm, PixarTransformSettings } from '@/services/replicateService';
+import { generatePixarCharacter, CivitAISettings } from '@/services/civitaiService';
 import { Button } from './ui/button';
 import { Slider } from './ui/slider';
 import { Label } from './ui/label';
@@ -12,9 +12,11 @@ import PixarCharacterForm, { PixarCharacterData } from './PixarCharacterForm';
 const PixarTransformer = () => {
   const [transformedImage, setTransformedImage] = useState<string | null>(null);
   const [isTransforming, setIsTransforming] = useState(false);
-  const [settings, setSettings] = useState<PixarTransformSettings>({
-    style: "pixar",
-    strength: 0.8
+  const [settings, setSettings] = useState<CivitAISettings>({
+    model: "pixar-3d-animation",
+    strength: 0.8,
+    steps: 30,
+    cfgScale: 7.5
   });
   
   const [characterData, setCharacterData] = useState<PixarCharacterData>({
@@ -49,18 +51,18 @@ const PixarTransformer = () => {
     setIsTransforming(true);
     
     try {
-      toast("Generando personaje Pixar...", {
-        description: "Creando tu personaje detallado con IA. Esto puede tomar unos minutos.",
+      toast("Generando personaje Pixar con CivitAI...", {
+        description: "Creando tu personaje detallado con modelos profesionales. Esto puede tomar unos minutos.",
       });
 
-      const result = await transformToPixarFromForm(characterData, settings);
+      const result = await generatePixarCharacter(characterData, settings);
       setTransformedImage(result);
       
-      toast.success("¡Personaje Pixar creado!", {
-        description: "Tu personaje ha sido generado exitosamente con todos los detalles.",
+      toast.success("¡Personaje Pixar creado con CivitAI!", {
+        description: "Tu personaje ha sido generado exitosamente con calidad profesional.",
       });
     } catch (error) {
-      console.error("Error generating Pixar character:", error);
+      console.error("Error generating Pixar character with CivitAI:", error);
       toast.error("Error en la generación", {
         description: "No se pudo generar el personaje. Por favor intenta de nuevo.",
       });
@@ -113,11 +115,11 @@ const PixarTransformer = () => {
           Generador de Personajes Pixar
         </h1>
         <p className="text-lg text-gray-300 mb-6">
-          Diseña tu personaje Pixar ideal con nuestro formulario detallado y genera imágenes profesionales con IA
+          Diseña tu personaje Pixar ideal con nuestro formulario detallado y genera imágenes profesionales con CivitAI
         </p>
         <div className="flex items-center justify-center gap-2 text-sm text-gray-400">
           <Sparkles className="h-4 w-4" />
-          <span>Powered by Pollinations AI</span>
+          <span>Powered by CivitAI Professional Models</span>
         </div>
       </div>
 
@@ -134,9 +136,9 @@ const PixarTransformer = () => {
 
         {/* Columna derecha: Resultado y configuración (1 columna) */}
         <div className="space-y-6">
-          {/* Configuración de generación */}
+          {/* Configuración de CivitAI */}
           <div className="glass-card p-6 rounded-xl backdrop-blur-lg bg-black/20 border border-white/5">
-            <h3 className="font-medium text-white mb-4">Ajustes de Generación</h3>
+            <h3 className="font-medium text-white mb-4">Ajustes CivitAI</h3>
             
             <div className="space-y-6">
               <div className="space-y-2">
@@ -152,9 +154,36 @@ const PixarTransformer = () => {
                   value={[settings.strength]}
                   onValueChange={(value) => setSettings({...settings, strength: value[0]})}
                 />
-                <p className="text-xs text-gray-400">
-                  Controla qué tan fuerte es el estilo Pixar/Disney
-                </p>
+              </div>
+              
+              <div className="space-y-2">
+                <div className="flex justify-between">
+                  <Label htmlFor="steps">Pasos de generación</Label>
+                  <span className="text-sm text-muted-foreground">{settings.steps}</span>
+                </div>
+                <Slider
+                  id="steps"
+                  min={20}
+                  max={50}
+                  step={5}
+                  value={[settings.steps]}
+                  onValueChange={(value) => setSettings({...settings, steps: value[0]})}
+                />
+              </div>
+              
+              <div className="space-y-2">
+                <div className="flex justify-between">
+                  <Label htmlFor="cfgScale">Precisión del prompt</Label>
+                  <span className="text-sm text-muted-foreground">{settings.cfgScale}</span>
+                </div>
+                <Slider
+                  id="cfgScale"
+                  min={5}
+                  max={15}
+                  step={0.5}
+                  value={[settings.cfgScale]}
+                  onValueChange={(value) => setSettings({...settings, cfgScale: value[0]})}
+                />
               </div>
             </div>
           </div>
