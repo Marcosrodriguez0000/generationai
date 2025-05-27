@@ -1,13 +1,18 @@
 
 import React, { useState } from 'react';
-import { transformToPixarFromForm, PixarTransformSettings } from '@/services/replicateService';
+import { generatePixarCharacterWithSupabase, PixarCharacterData } from '@/services/supabasePixarService';
 import { Button } from './ui/button';
 import { Slider } from './ui/slider';
 import { Label } from './ui/label';
 import { toast } from "sonner";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Download, Sparkles, RefreshCw } from 'lucide-react';
-import PixarCharacterForm, { PixarCharacterData } from './PixarCharacterForm';
+import PixarCharacterForm from './PixarCharacterForm';
+
+interface PixarTransformSettings {
+  style: string;
+  strength: number;
+}
 
 const PixarTransformer = () => {
   const [transformedImage, setTransformedImage] = useState<string | null>(null);
@@ -53,7 +58,7 @@ const PixarTransformer = () => {
         description: "Creando tu personaje detallado con IA. Esto puede tomar unos minutos.",
       });
 
-      const result = await transformToPixarFromForm(characterData, settings);
+      const result = await generatePixarCharacterWithSupabase(characterData);
       setTransformedImage(result);
       
       toast.success("¡Personaje Pixar creado!", {
@@ -117,7 +122,7 @@ const PixarTransformer = () => {
         </p>
         <div className="flex items-center justify-center gap-2 text-sm text-gray-400">
           <Sparkles className="h-4 w-4" />
-          <span>Powered by Pollinations AI</span>
+          <span>Powered by Supabase & Pollinations AI</span>
         </div>
       </div>
 
